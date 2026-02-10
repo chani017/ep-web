@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "EP Sans";
+  src:
+    url("https://db.onlinewebfonts.com/t/03d5b20d124cd26dc873bd4a8e42313e.woff2")
+      format("woff2"),
+    url("https://db.onlinewebfonts.com/t/03d5b20d124cd26dc873bd4a8e42313e.woff")
+      format("woff");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "EP Sans";
+  src:
+    url("https://db.onlinewebfonts.com/t/88f10bf18a36407ef36bf30bc25a3618.woff2")
+      format("woff2"),
+    url("https://db.onlinewebfonts.com/t/88f10bf18a36407ef36bf30bc25a3618.woff")
+      format("woff");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "EP Sans";
+  src:
+    url("https://db.onlinewebfonts.com/t/653d9381828e9577fb1e417dc047f89d.woff2")
+      format("woff2"),
+    url("https://db.onlinewebfonts.com/t/653d9381828e9577fb1e417dc047f89d.woff")
+      format("woff");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "EP Gothic";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "EP Gothic";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  --background: #131313;
+  --foreground: #131313;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-ep-sans: "EP Sans", sans-serif;
+  --font-ep-gothic: "EP Gothic", sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "EP Sans", "EP Gothic", sans-serif;
+}
