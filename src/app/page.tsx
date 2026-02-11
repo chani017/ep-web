@@ -4,25 +4,32 @@ import SideBar from "@/components/SideBar";
 
 const POSTS_QUERY = `*[
   _type == "post"
-] | order(publishedAt desc)[0...10] {
+] | order(index desc)[0...20] {
   _id,
-  "title": title_kr,
+  title_kr,
+  title_en,
   slug,
-  publishedAt
+  publishedAt,
+  client,
+  tags,
+  "imageUrl": images[0].asset->url,
+  "playbackId": thumbnail.asset->playbackId
 }`;
 
 const CV_QUERY = `*[
-  _type in ["selExhs", "selExh", "award", "awards"]
+  _type in ["selExhs", "selExh", "award", "awards", "client"]
 ] | order(date asc) {
   _id,
   _type,
   "category": select(
     _type in ["selExhs", "selExh"] => "Selected Exhibitions",
-    _type in ["award", "awards"] => "Award"
+    _type in ["award", "awards"] => "Award",
+    _type == "client" => "Clients"
   ),
   type,
   date,
-  title
+  title,
+  client
 }`;
 
 const options = { next: { revalidate: 30 } };
@@ -38,5 +45,9 @@ export default async function IndexPage() {
     ["award", "awards"].includes(item._type),
   );
 
-  return <SideBar posts={posts} selExhs={selExhs} award={award} />;
+  const clients = cvItems.filter((item) => ["client"].includes(item._type));
+
+  return (
+    <SideBar posts={posts} selExhs={selExhs} award={award} clients={clients} />
+  );
 }

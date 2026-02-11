@@ -52,6 +52,8 @@
 :root {
   --background: #131313;
   --foreground: #131313;
+  --system-text: #e2e2e2;
+  --system-gray: #787878;
 }
 
 @theme inline {
@@ -59,10 +61,38 @@
   --color-foreground: var(--foreground);
   --font-ep-sans: "EP Sans", sans-serif;
   --font-ep-gothic: "EP Gothic", sans-serif;
+  --color-system-text: var(--system-text);
+  --color-system-gray: var(--system-gray);
+  --text-size-xl: 1.4rem;
+  --text-size-lg: 1.1rem;
+  --text-size-md: 1rem;
+  --text-size-sm: 0.8rem;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: "EP Sans", "EP Gothic", sans-serif;
+}
+
+@utility no-scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@utility animate-blink {
+  animation: blink 1s step-end infinite;
 }
