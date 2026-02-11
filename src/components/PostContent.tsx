@@ -96,6 +96,30 @@ export default function PostContent({ post }: PostContentProps) {
                 </div>
               );
             }
+
+            if (item._type === "youtube") {
+              const videoId = item.url?.match(
+                /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
+              )?.[1];
+              if (!videoId) return null;
+
+              return (
+                <div
+                  key={item._key || index}
+                  className="w-full overflow-hidden"
+                  style={{ aspectRatio: "1/1" }}
+                >
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    src={`https://www.youtube.com/embed/${videoId}`}
+                    title="YouTube video player"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              );
+            }
             return null;
           })}
         </div>
