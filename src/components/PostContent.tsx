@@ -135,13 +135,13 @@ export default function PostContent({ post }: PostContentProps) {
 
       {/* 설명글 패널 */}
       <div 
-        className={`absolute bottom-0 left-0 w-full transition-all duration-500 ease-in-out bg-[#131313] z-40 flex flex-col ${
-          isExpanded ? 'h-[600px]' : 'h-[100px]'
+        className={`absolute bottom-0 left-0 w-full transition-all duration-450 ease-in-out bg-[#131313] z-40 flex flex-col ${
+          isExpanded ? 'h-[600px]' : 'h-[70px]'
         }`}
       >
         <div 
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex justify-between items-start p-4 h-full relative overflow-hidden break-keep hover:bg-[#131313]/80 cursor-pointer"
+          className="flex justify-between items-start px-2 pt-2 h-full relative overflow-hidden break-keep hover:bg-[#131313]/80 cursor-pointer"
         >
           <div className={`flex-1 pr-8 h-full ${isExpanded ? 'overflow-y-auto no-scrollbar' : 'overflow-hidden'}`}>
             <div className={`max-w-none text-size-md font-ep-sans text-system-text`}>
@@ -177,7 +177,7 @@ export default function PostContent({ post }: PostContentProps) {
             </div>
           </div>
           
-          <div className="absolute top-4 right-4 p-1">
+          <div className="absolute top-2 right-2">
             <img 
               src="/arrow.svg" 
               alt="Toggle Description"
