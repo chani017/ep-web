@@ -1,6 +1,6 @@
 import { client } from "@/sanity/client";
 import { type SanityDocument } from "next-sanity";
-import PostDetail from "@/components/PostDetail";
+import PostDetail from "@/components/PostContent";
 
 const POST_QUERY = `*[_type == "post" && slug.current == $slug][0] {
   ...,

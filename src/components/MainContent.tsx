@@ -225,11 +225,11 @@ export default function MainContent({
                 <img
                   src="/dropdown.svg"
                   alt="Dropdown"
-                  className={`w-4 h-4 transition-transform duration-200 ${isYearOpen ? "-rotate-180" : ""}`}
+                  className={`w-3 h-3 transition-transform duration-200 ${isYearOpen ? "-rotate-180" : ""}`}
                 />
               </button>
               <div
-                className={`absolute top-full left-0 w-full bg-[#1a1a1a]/95 backdrop-blur-xl border-t border-b border-system-gray/30 z-40 overflow-hidden transition-all duration-200 ease-in-out origin-top ${
+                className={`absolute top-full left-0 w-full bg-[#222222] backdrop-blur-xl border-t border-b border-system-gray/30 z-40 overflow-hidden transition-all duration-200 ease-in-out origin-top ${
                   isYearOpen
                     ? "max-h-48 opacity-100 translate-y-0 overflow-y-auto no-scrollbar shadow-2xl"
                     : "max-h-0 opacity-0 -translate-y-1 pointer-events-none border-transparent"
@@ -240,8 +240,8 @@ export default function MainContent({
                     key={year}
                     className={`px-1.5 py-0.5 text-size-md font-ep-sans cursor-pointer transition-colors ${
                       selectedYear === year
-                        ? "text-system-text"
-                        : "text-system-gray hover:text-system-text hover:bg-white/10"
+                        ? "text-system-text hover:bg-white/10"
+                        : "text-system-text hover:bg-white/10"
                     }`}
                     onClick={() => {
                       setSelectedYear(year);
