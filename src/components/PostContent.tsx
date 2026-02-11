@@ -127,7 +127,6 @@ export default function PostContent({ post }: PostContentProps) {
         </div>
       </div>
 
-      {/* 바닥 그라디언트 (패널 축소시에만 노출) */}
       <div 
         className={`absolute bottom-0 left-0 w-full h-12 bg-linear-to-t from-[#131313] to-transparent z-50 pointer-events-none transition-opacity duration-500 ${
           isExpanded ? 'opacity-0' : 'opacity-100'
