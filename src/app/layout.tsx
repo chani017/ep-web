@@ -1,19 +1,45 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { client } from "@/sanity/client";
+import { type SanityDocument } from "next-sanity";
+import { AppProvider } from "@/context/AppContext";
+import ClientLayout from "@/components/ClientLayout";
 
 export const metadata: Metadata = {
   title: "일상의실천",
   description: "일상의실천",
 };
 
-export default function RootLayout({
+const POSTS_QUERY = `*[
+  _type == "post"
+] | order(publishedAt desc, index desc)[0...100] {
+  _id,
+  title_kr,
+  title_en,
+  slug,
+  publishedAt,
+  client,
+  tags,
+  "imageUrl": images[0].asset->url,
+  "playbackId": thumbnail.asset->playbackId
+}`;
+
+const options = { next: { revalidate: 30 } };
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const posts = await client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options);
+
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased overflow-hidden">
+        <AppProvider>
+          <ClientLayout posts={posts}>{children}</ClientLayout>
+        </AppProvider>
+      </body>
     </html>
   );
 }

@@ -3,11 +3,9 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { type SanityDocument } from "next-sanity";
-import ResizableLayout from "./ResizableLayout";
-import MainContent from "./MainContent";
+import { useAppContext } from "@/context/AppContext";
 
 interface SideBarProps {
-  posts: SanityDocument[];
   selExhs: SanityDocument[];
   award: SanityDocument[];
   clients: SanityDocument[];
@@ -16,13 +14,11 @@ interface SideBarProps {
 type Tab = "Contact" | "CV" | "Client";
 
 export default function SideBar({
-  posts,
   selExhs,
   award,
   clients,
 }: SideBarProps) {
-  const [activeTab, setActiveTab] = useState<Tab>("Contact");
-  const [language, setLanguage] = useState<"kr" | "en">("kr");
+  const { activeTab, language } = useAppContext();
 
   const allCvs = [...(selExhs || []), ...(award || [])];
 
@@ -184,39 +180,9 @@ export default function SideBar({
     }
   };
 
-  const asideContent = (
-    <aside className="flex flex-col h-full">
-      <header className="flex justify-end items-center p-1 border-b border-system-gray submenu h-[2.5rem] gap-x-2 px-2">
-        {(["Contact", "CV", "Client"] as Tab[]).map((tab) => (
-          <div
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`text-[1.4rem] font-light transition-colors cursor-pointer font-ep-sans ${
-              activeTab === tab
-                ? "text-system-text"
-                : "text-system-gray hover:text-system-text"
-            }`}
-          >
-            {tab}
-          </div>
-        ))}
-      </header>
-      <div className="p-2 flex flex-col h-full overflow-y-auto no-scrollbar">
-        {renderAsideContent()}
-      </div>
-    </aside>
-  );
-
   return (
-    <ResizableLayout
-      left={
-        <MainContent
-          posts={posts}
-          language={language}
-          setLanguage={setLanguage}
-        />
-      }
-      right={asideContent}
-    />
+    <div className="p-2 flex flex-col h-full overflow-y-auto no-scrollbar">
+      {renderAsideContent()}
+    </div>
   );
 }

@@ -4,11 +4,10 @@ import React from "react";
 import Link from "next/link";
 import { type SanityDocument } from "next-sanity";
 import MuxPlayer from "@mux/mux-player-react";
+import { useAppContext } from "@/context/AppContext";
 
 interface MainContentProps {
   posts: SanityDocument[];
-  language: "kr" | "en";
-  setLanguage: (lang: "kr" | "en") => void;
 }
 
 const TAG_COLORS: Record<string, string> = {
@@ -22,9 +21,8 @@ const TAG_COLORS: Record<string, string> = {
 
 export default function MainContent({
   posts,
-  language,
-  setLanguage,
 }: MainContentProps) {
+  const { language, setLanguage } = useAppContext();
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedYear, setSelectedYear] = React.useState<string>("Year");
   const [selectedTag, setSelectedTag] = React.useState<string>("All Types");
@@ -141,46 +139,51 @@ export default function MainContent({
           </Link>
         </div>
       </header>
-      <div className="flex flex-wrap justify-start items-center px-2 py-1 gap-x-2 text-size-xl">
-        {[
-          "All Types",
-          "Graphic",
-          "Editorial",
-          "Website",
-          "Identity",
-          "Space",
-          "Practice",
-          "Motion",
-          "Press",
-          "Everyday",
-        ].map((tag) => (
-          <div
-            key={tag}
-            className={`${selectedTag === tag ? "text-system-text" : "text-system-gray"} hover:text-system-text cursor-pointer transition-colors`}
-            onClick={() => setSelectedTag(tag)}
-          >
-            {tag}
-          </div>
-        ))}
-        <button
-          className="ml-auto flex items-center gap-1 text-system-gray hover:text-system-text cursor-pointer transition-colors"
-          onClick={() => setViewMode(viewMode === "img" ? "list" : "img")}
-        >
-          <img src="/change.svg" alt="Change" className="w-4 h-4" />
-          <span>{viewMode}</span>
-        </button>
-      </div>
-
+      {/* 태그 */}
       <div className="flex flex-col h-full overflow-hidden">
+        <div className="bg-background/80 backdrop-blur-md z-30">
+          <div className="flex flex-wrap justify-start items-center px-2 py-1 gap-x-2 text-size-xl">
+            {[
+              "All Types",
+              "Graphic",
+              "Editorial",
+              "Website",
+              "Identity",
+              "Space",
+              "Practice",
+              "Motion",
+              "Press",
+              "Everyday",
+            ].map((tag) => (
+              <div
+                key={tag}
+                className={`${selectedTag === tag ? "text-system-text" : "text-system-gray"} hover:text-system-text cursor-pointer transition-colors`}
+                onClick={() => setSelectedTag(tag)}
+              >
+                {tag}
+              </div>
+            ))}
+            <button
+              className="ml-auto flex items-center gap-1 text-system-gray hover:text-system-text cursor-pointer transition-colors"
+              onClick={() => setViewMode(viewMode === "img" ? "list" : "img")}
+            >
+              <img src="/change.svg" alt="Change" className="w-4 h-4" />
+              <span>{viewMode}</span>
+            </button>
+          </div>
+        </div>
+        {/* 검색, 연도 */}
         <div className="flex-1 overflow-y-auto no-scrollbar" ref={containerRef}>
           <div
-            className="grid px-2 items-end bg-background sticky gap-x-3 top-0 z-20"
+            className="grid px-2 items-end pt-1 pb-1 gap-x-3 pt-10"
             style={{
               gridTemplateColumns: `repeat(${viewMode === "list" ? 4 : cols}, minmax(0, 1fr))`,
             }}
           >
-            <div className={`${viewMode === "list" ? "col-span-2" : `col-span-${Math.max(1, Math.floor(cols / 2))}`} pt-[65px]`}>
-              <div className="flex items-center bg-[#222222] px-1 relative border-b border-system-gray ">
+            <div
+              className={`${viewMode === "list" ? "col-span-2" : `col-span-${Math.max(1, Math.floor(cols / 2))}`} pb-1`}
+            >
+              <div className="flex items-center bg-white/10 px-1 relative border-b border-system-gray/50 ">
                 {!searchTerm && (
                   <span
                     className={`absolute pointer-events-none text-size-md font-ep-sans text-system-text transition-all duration-100 ease-in-out flex items-center ${
@@ -206,12 +209,12 @@ export default function MainContent({
                 <img
                   src="/search.svg"
                   alt="Search"
-                  className="w-4 h-4 shrink-0"
+                  className="w-4 h-4 shrink-0 opacity-70"
                 />
               </div>
             </div>
             <div
-              className="col-span-1 pb-2 border-b border-system-gray relative"
+              className="col-span-1 pb-1 border-b border-system-gray/50 relative"
               ref={yearDropdownRef}
             >
               <button
@@ -226,9 +229,9 @@ export default function MainContent({
                 />
               </button>
               <div
-                className={`absolute top-full left-0 w-full bg-[#222222] border-t border-b border-system-gray z-30 overflow-hidden transition-all duration-200 ease-in-out origin-top ${
+                className={`absolute top-full left-0 w-full bg-[#1a1a1a]/95 backdrop-blur-xl border-t border-b border-system-gray/30 z-40 overflow-hidden transition-all duration-200 ease-in-out origin-top ${
                   isYearOpen
-                    ? "max-h-48 opacity-100 translate-y-0 overflow-y-auto no-scrollbar"
+                    ? "max-h-48 opacity-100 translate-y-0 overflow-y-auto no-scrollbar shadow-2xl"
                     : "max-h-0 opacity-0 -translate-y-1 pointer-events-none border-transparent"
                 }`}
               >
@@ -237,8 +240,8 @@ export default function MainContent({
                     key={year}
                     className={`px-1.5 py-0.5 text-size-md font-ep-sans cursor-pointer transition-colors ${
                       selectedYear === year
-                        ? `text-system-text ${year === "Year" ? "bg-[#222222]" : "bg-[#2a2a2a]"}`
-                        : "text-system-text hover:bg-[#2a2a2a]"
+                        ? "text-system-text"
+                        : "text-system-gray hover:text-system-text hover:bg-white/10"
                     }`}
                     onClick={() => {
                       setSelectedYear(year);
@@ -250,7 +253,7 @@ export default function MainContent({
                 ))}
               </div>
             </div>
-            <div className="col-span-1 text-size-sm text-system-gray font-ep-sans text-left pb-2 border-b border-system-gray">
+            <div className="col-span-1 text-size-sm text-system-gray font-ep-sans text-left pb-1 border-b border-system-gray/50">
               {filteredPosts.length} results
             </div>
           </div>
@@ -298,7 +301,7 @@ export default function MainContent({
             </div>
           ) : (
             <div
-              className="grid gap-4 px-2 py-1 items-start"
+              className="grid gap-2 px-2 py-1 items-start"
               style={{
                 gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
               }}
@@ -307,7 +310,7 @@ export default function MainContent({
                 <Link
                   key={post._id}
                   href={`/${post.slug.current}`}
-                  className="group flex flex-col gap-2"
+                  className="group flex flex-col gap-2 pb-10"
                 >
                   <div className="relative overflow-hidden bg-[#1a1a1a] rounded-sm">
                     {post.playbackId ? (
