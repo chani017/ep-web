@@ -38,6 +38,8 @@ export default function MainContent({
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
   const [isYearOpen, setIsYearOpen] = React.useState(false);
   const [viewMode, setViewMode] = React.useState<"img" | "list">("img");
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const ITEMS_PER_PAGE = 20;
   const yearDropdownRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -84,6 +86,16 @@ export default function MainContent({
       return matchesSearch && matchesYear && matchesTag;
     });
   }, [posts, searchTerm, selectedYear, selectedTag]);
+
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedYear, selectedTag]);
+
+  const totalPages = Math.ceil(filteredPosts.length / ITEMS_PER_PAGE);
+  const paginatedPosts = React.useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredPosts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredPosts, currentPage]);
 
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [cols, setCols] = React.useState(4);
@@ -247,7 +259,7 @@ export default function MainContent({
             {/* 검색, 연도 및 콘텐츠 영역 */}
             <div className="flex-1 overflow-y-auto no-scrollbar relative" ref={containerRef}>
               <div className="sticky top-0 bg-background/80 backdrop-blur-md z-50">
-                <div className="flex flex-wrap justify-start items-center px-2 py-1 gap-x-2 text-size-xl">
+                <div className="relative flex flex-wrap justify-start items-center px-2 py-1 pr-16 gap-x-2 text-size-xl">
                   {[
                     "All Types",
                     "Graphic",
@@ -269,7 +281,7 @@ export default function MainContent({
                     </div>
                   ))}
                   <button
-                    className="ml-auto flex items-center gap-1 text-system-gray hover:text-system-text cursor-pointer transition-colors"
+                    className="absolute right-2 top-1 flex items-center gap-1 text-system-gray hover:text-system-text cursor-pointer transition-colors"
                     onClick={() => setViewMode(viewMode === "img" ? "list" : "img")}
                   >
                     <img src="/change.svg" alt="Change" className="w-4 h-4" />
@@ -278,13 +290,10 @@ export default function MainContent({
                 </div>
               </div>
               <div
-                className="grid px-2 items-end gap-x-3 pt-20 pb-10 "
-                style={{
-                  gridTemplateColumns: `repeat(${viewMode === "list" ? 4 : cols}, minmax(0, 1fr))`,
-                }}
+                className="grid grid-cols-4 px-2 items-stretch gap-x-3 pt-20 pb-10"
               >
                 <div
-                  className={`${viewMode === "list" ? "col-span-2" : `col-span-${Math.max(1, Math.floor(cols / 2))}`} flex items-end bg-system-dark-gray px-1 pb-2 border-b border-system-gray/50 relative`}
+                  className="col-span-2 flex items-end bg-system-dark-gray px-1 pb-2 border-b border-system-gray relative"
                 >
                   {!searchTerm && (
                     <span
@@ -316,7 +325,7 @@ export default function MainContent({
                   />
                 </div>
                 <div
-                  className="col-span-1 pb-1 border-b border-system-gray/50 relative flex items-end"
+                  className="col-span-1 pb-1 border-b border-system-gray relative flex items-end"
                   ref={yearDropdownRef}
                 >
                   <button
@@ -355,15 +364,14 @@ export default function MainContent({
                     ))}
                   </div>
                 </div>
-                <div className="col-span-1 text-size-md text-system-gray font-ep-sans text-left pb-1 border-b border-system-gray/50 flex items-end">
+                <div className="col-span-1 text-size-sm text-system-gray font-ep-sans text-left border-b border-system-gray flex items-center">
                   {filteredPosts.length} results
                 </div>
               </div>
               {viewMode === "list" ? (
                 <div className="grid grid-cols-4 px-2">
-                  {Array.from({ length: Math.max(20, filteredPosts.length) }).map(
-                    (_, index) => {
-                      const post = filteredPosts[index];
+                  {paginatedPosts.map(
+                    (post) => {
                       if (post) {
                         return (
                           <Link
@@ -397,14 +405,15 @@ export default function MainContent({
                             </div>
                           </Link>
                         );
+                      }
+                      return null;
                     }
-                    },
                   )}
                 </div>
               ) : (
                 <div className="flex flex-col px-2 py-1" style={{ gap: "2.5rem" }}>
-                  {Array.from({ length: Math.ceil(filteredPosts.length / cols) }).map((_, rowIndex) => {
-                    const rowItems = filteredPosts.slice(rowIndex * cols, (rowIndex + 1) * cols);
+                  {Array.from({ length: Math.ceil(paginatedPosts.length / cols) }).map((_, rowIndex) => {
+                    const rowItems = paginatedPosts.slice(rowIndex * cols, (rowIndex + 1) * cols);
                     
                     return (
                       <div key={rowIndex} className="flex w-full items-end" style={{ gap: "0.5rem" }}>
@@ -480,6 +489,31 @@ export default function MainContent({
                       </div>
                     );
                   })}
+                </div>
+              )}
+              {/* 페이지네이션 */}
+              {totalPages >= 1 && (
+                <div className="px-2 pt-10 pb-20 flex justify-start items-center text-size-xl">
+                  {Array.from({ length: totalPages }).map((_, i) => (
+                    <React.Fragment key={i + 1}>
+                      <button
+                        onClick={() => {
+                          setCurrentPage(i + 1);
+                          containerRef.current?.scrollTo({ top: 0 });
+                        }}
+                        className={`font-ep-sans transition-colors cursor-pointer ${
+                          currentPage === i + 1
+                            ? "text-system-text"
+                            : "text-system-gray hover:text-system-text"
+                        }`}
+                      >
+                        {i + 1}
+                      </button>
+                      {i < totalPages - 1 && (
+                        <span className="text-system-gray mx-1">/</span>
+                      )}
+                    </React.Fragment>
+                  ))}
                 </div>
               )}
             </div>

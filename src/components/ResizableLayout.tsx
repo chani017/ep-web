@@ -8,7 +8,7 @@ interface ResizableLayoutProps {
 }
 
 export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
-  const [leftWidth, setLeftWidth] = useState(73.5); // Initial width in percentage
+  const [leftWidth, setLeftWidth] = useState(73);
   const [isResizing, setIsResizing] = useState(false);
 
   const startResizing = useCallback(() => {
@@ -23,7 +23,7 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
     (e: MouseEvent) => {
       if (isResizing) {
         const newWidth = (e.clientX / window.innerWidth) * 100;
-        if (newWidth >= 30 && newWidth <= 70) {
+        if (newWidth >= 45 && newWidth <= 73) {
           setLeftWidth(newWidth);
         }
       }
@@ -68,7 +68,7 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
       >
         <div className="flex gap-1 items-center">
           <div className="w-[1px] h-screen bg-system-gray" />
-          <div className="w-[1px] h-10 bg-system-gray group-hover:scale-y-[1.3]" />
+          <div className="w-[1px] h-20 bg-system-gray group-hover:scale-y-[1.3]" />
           <div className="w-[1px] h-screen bg-system-gray" />
         </div>
       </div>

@@ -35,9 +35,7 @@ export default function SideBar({
                   <br />
                   일상의실천은 오늘날 우리가 살아가는 현실에서 디자인이 어떤
                   역할을 해야 하며, 또한 무엇을 할 수 있는가를 고민하는 소규모
-                  공동체입니다.
-                  <br />
-                  그래픽디자인을 기반으로 하고 있지만, 평면 작업에만 머무르지
+                  공동체입니다. 그래픽디자인을 기반으로 하고 있지만, 평면 작업에만 머무르지
                   않는 다양한 디자인의 방법론을 탐구하고 있습니다.
                 </>
               ) : (
@@ -47,9 +45,7 @@ export default function SideBar({
                   <br />
                   Everyday Practice is a small community that contemplates what
                   role design should play in the reality we live in today and
-                  what it can do.
-                  <br />
-                  While based on graphic design, we explore various design
+                  what it can do. While based on graphic design, we explore various design
                   methodologies that go beyond two-dimensional work.
                 </>
               )}
