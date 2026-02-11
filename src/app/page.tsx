@@ -1,6 +1,6 @@
 import { client } from "@/sanity/client";
 import { type SanityDocument } from "next-sanity";
-import SideBar from "@/components/SideBar";
+import SidePanel from "@/components/SidePanel";
 
 const CV_QUERY = `*[
   _type in ["selExhs", "selExh", "award", "awards", "client"]
@@ -32,6 +32,6 @@ export default async function IndexPage() {
   const clients = cvItems.filter((item) => ["client"].includes(item._type));
 
   return (
-    <SideBar selExhs={selExhs} award={award} clients={clients} />
+    <SidePanel selExhs={selExhs} award={award} clients={clients} />
   );
 }

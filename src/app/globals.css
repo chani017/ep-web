@@ -54,6 +54,7 @@
   --foreground: #131313;
   --system-text: #e2e2e2;
   --system-gray: #787878;
+  --system-dark-gray: #222222;
 }
 
 @theme inline {
@@ -63,6 +64,7 @@
   --font-ep-gothic: "EP Gothic", sans-serif;
   --color-system-text: var(--system-text);
   --color-system-gray: var(--system-gray);
+  --color-system-dark-gray: var(--system-dark-gray);
   --text-size-xl: 1.3rem;
   --text-size-lg: 1.1rem;
   --text-size-md: 1rem;

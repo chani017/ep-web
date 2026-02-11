@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 const POSTS_QUERY = `*[
   _type == "post"
-] | order(publishedAt desc, index desc)[0...100] {
+] | order(index desc)[0...100] {
   _id,
   title_kr,
   title_en,
@@ -20,8 +20,13 @@ const POSTS_QUERY = `*[
   publishedAt,
   client,
   tags,
-  "imageUrl": images[0].asset->url,
-  "playbackId": thumbnail.asset->playbackId
+  "imageUrl": select(
+    thumbnail.type == "image" => thumbnail.image.asset->url,
+    thumbnail.type == "video" => thumbnail.video.asset->url, // Mux thumbnail image
+    images[0].asset->url
+  ),
+  thumbnail_size,
+  "playbackId": thumbnail.video.asset->playbackId
 }`;
 
 const options = { next: { revalidate: 30 } };

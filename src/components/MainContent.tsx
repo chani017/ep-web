@@ -95,9 +95,9 @@ export default function MainContent({
       for (const entry of entries) {
         const width = entry.contentRect.width;
         if (width < 380) setCols(1);
-        else if (width < 620) setCols(2);
-        else if (width < 900) setCols(3);
-        else if (width < 1200) setCols(4);
+        else if (width < 620) setCols(1);
+        else if (width < 900) setCols(2);
+        else if (width < 1200) setCols(3);
         else if (width < 1550) setCols(5);
         else setCols(6);
       }
@@ -109,6 +109,7 @@ export default function MainContent({
 
   return (
     <>
+    {/* 메인 헤더 */}
       <header className="flex justify-between items-center p-1 border-b border-system-gray submenu h-[2.5rem]">
         <div className="flex-1 px-1 h-full flex items-center overflow-hidden">
           <div className="relative h-full flex items-center group cursor-pointer w-fit">
@@ -175,7 +176,6 @@ export default function MainContent({
                 </div>
               </div>
             </div>
-            
             <div className="flex flex-col gap-12 pb-2 max-w-[1200px] mx-auto w-full">
               {(currentPost.media || []).map((item: any, index: number) => {
                 if (item._type === "image") {
@@ -244,84 +244,83 @@ export default function MainContent({
           </div>
         ) : (
           <>
-            <div className="bg-background/80 backdrop-blur-md z-30">
-              <div className="flex flex-wrap justify-start items-center px-2 py-1 gap-x-2 text-size-xl">
-                {[
-                  "All Types",
-                  "Graphic",
-                  "Editorial",
-                  "Website",
-                  "Identity",
-                  "Space",
-                  "Practice",
-                  "Motion",
-                  "Press",
-                  "Everyday",
-                ].map((tag) => (
-                  <div
-                    key={tag}
-                    className={`${selectedTag === tag ? "text-system-text" : "text-system-gray"} hover:text-system-text cursor-pointer transition-colors`}
-                    onClick={() => setSelectedTag(tag)}
+            {/* 검색, 연도 및 콘텐츠 영역 */}
+            <div className="flex-1 overflow-y-auto no-scrollbar relative" ref={containerRef}>
+              <div className="sticky top-0 bg-background/80 backdrop-blur-md z-50">
+                <div className="flex flex-wrap justify-start items-center px-2 py-1 gap-x-2 text-size-xl">
+                  {[
+                    "All Types",
+                    "Graphic",
+                    "Editorial",
+                    "Website",
+                    "Identity",
+                    "Space",
+                    "Practice",
+                    "Motion",
+                    "Press",
+                    "Everyday",
+                  ].map((tag) => (
+                    <div
+                      key={tag}
+                      className={`${selectedTag === tag ? "text-system-text" : "text-system-gray"} hover:text-system-text cursor-pointer transition-colors`}
+                      onClick={() => setSelectedTag(tag)}
+                    >
+                      {tag}
+                    </div>
+                  ))}
+                  <button
+                    className="ml-auto flex items-center gap-1 text-system-gray hover:text-system-text cursor-pointer transition-colors"
+                    onClick={() => setViewMode(viewMode === "img" ? "list" : "img")}
                   >
-                    {tag}
-                  </div>
-                ))}
-                <button
-                  className="ml-auto flex items-center gap-1 text-system-gray hover:text-system-text cursor-pointer transition-colors"
-                  onClick={() => setViewMode(viewMode === "img" ? "list" : "img")}
-                >
-                  <img src="/change.svg" alt="Change" className="w-4 h-4" />
-                  <span>{viewMode}</span>
-                </button>
+                    <img src="/change.svg" alt="Change" className="w-4 h-4" />
+                    <span>{viewMode}</span>
+                  </button>
+                </div>
               </div>
-            </div>
-            {/* 검색, 연도 */}
-            <div className="flex-1 overflow-y-auto no-scrollbar" ref={containerRef}>
               <div
-                className="grid px-2 items-end pt-1 pb-1 gap-x-3 pt-10"
+                className="grid px-2 items-end gap-x-3 pt-20 pb-10 "
                 style={{
                   gridTemplateColumns: `repeat(${viewMode === "list" ? 4 : cols}, minmax(0, 1fr))`,
                 }}
               >
                 <div
-                  className={`${viewMode === "list" ? "col-span-2" : `col-span-${Math.max(1, Math.floor(cols / 2))}`} pb-1`}
+                  className={`${viewMode === "list" ? "col-span-2" : `col-span-${Math.max(1, Math.floor(cols / 2))}`} flex items-end bg-system-dark-gray px-1 pb-2 border-b border-system-gray/50 relative`}
                 >
-                  <div className="flex items-center bg-white/10 px-1 relative border-b border-system-gray/50 ">
-                    {!searchTerm && (
-                      <span
-                        className={`absolute pointer-events-none text-size-md font-ep-sans text-system-text transition-all duration-100 ease-in-out flex items-center ${
-                          isSearchFocused ? "left-[calc(20%-5rem)]" : "left-1"
-                        }`}
-                      >
-                        {isSearchFocused && (
-                          <span className="mr-px w-px h-[1em] bg-system-text animate-blink" />
-                        )}
-                        Search
-                      </span>
-                    )}
-                    <input
-                      type="text"
-                      className={`w-full bg-transparent border-none outline-none text-size-md text-system-text font-ep-sans py-1 ${
-                        !searchTerm ? "caret-transparent" : ""
+                  {!searchTerm && (
+                    <span
+                      className={`absolute pointer-events-none text-size-md font-ep-sans text-system-text transition-all duration-100 ease-in-out flex items-center ${
+                        isSearchFocused ? "left-[calc(20%-5rem)]" : "left-1"
                       }`}
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      onFocus={() => setIsSearchFocused(true)}
-                      onBlur={() => setIsSearchFocused(false)}
-                    />
-                    <img
-                      src="/search.svg"
-                      alt="Search"
-                      className="w-4 h-4 shrink-0 opacity-70"
-                    />
-                  </div>
+                      style={{ bottom: "0.25rem" }}
+                    >
+                      {isSearchFocused && (
+                        <span className="mr-px w-px h-[1em] bg-system-text animate-blink" />
+                      )}
+                      Search
+                    </span>
+                  )}
+                  <input
+                    type="text"
+                    className={`w-full bg-transparent border-none outline-none text-size-md text-system-text font-ep-sans ${
+                      !searchTerm ? "caret-transparent" : ""
+                    }`}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onFocus={() => setIsSearchFocused(true)}
+                    onBlur={() => setIsSearchFocused(false)}
+                  />
+                  <img
+                    src="/search.svg"
+                    alt="Search"
+                    className="w-4 h-4 mb-[0.rem]"
+                  />
                 </div>
                 <div
-                  className="col-span-1 pb-1 border-b border-system-gray/50 relative"
+                  className="col-span-1 pb-1 border-b border-system-gray/50 relative flex items-end"
                   ref={yearDropdownRef}
                 >
                   <button
-                    className="w-full flex items-center justify-between bg-transparent text-size-md text-system-text font-ep-sans cursor-pointer"
+                    className="w-full flex items-center justify-between bg-transparent text-size-md text-system-text font-ep-sans cursor-pointer h-full"
                     onClick={() => setIsYearOpen(!isYearOpen)}
                   >
                     <span>{selectedYear}</span>
@@ -332,7 +331,7 @@ export default function MainContent({
                     />
                   </button>
                   <div
-                    className={`absolute top-full left-0 w-full bg-[#222222] backdrop-blur-xl border-t border-b border-system-gray/30 z-40 overflow-hidden transition-all duration-200 ease-in-out origin-top ${
+                    className={`absolute top-full left-0 w-full bg-system-dark-gray backdrop-blur-xl border-t border-b border-system-gray/30 z-40 overflow-hidden transition-all duration-200 ease-in-out origin-top ${
                       isYearOpen
                         ? "max-h-48 opacity-100 translate-y-0 overflow-y-auto no-scrollbar shadow-2xl"
                         : "max-h-0 opacity-0 -translate-y-1 pointer-events-none border-transparent"
@@ -356,7 +355,7 @@ export default function MainContent({
                     ))}
                   </div>
                 </div>
-                <div className="col-span-1 text-size-sm text-system-gray font-ep-sans text-left pb-1 border-b border-system-gray/50">
+                <div className="col-span-1 text-size-md text-system-gray font-ep-sans text-left pb-1 border-b border-system-gray/50 flex items-end">
                   {filteredPosts.length} results
                 </div>
               </div>
@@ -370,7 +369,7 @@ export default function MainContent({
                           <Link
                             key={post._id}
                             href={`/${post.slug.current}`}
-                            className="col-span-4 grid grid-cols-4 border-b border-system-gray min-h-10 hover:bg-[#222222] transition-colors items-start px-1 group py-2 gap-x-3"
+                            className="col-span-4 grid grid-cols-4 border-b border-system-gray min-h-10 hover:bg-system-dark-gray transition-colors items-start px-1 group py-2 gap-x-3"
                           >
                             <div className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-size-md text-system-text font-ep-sans">
                               <span>
@@ -398,75 +397,89 @@ export default function MainContent({
                             </div>
                           </Link>
                         );
-                      }
+                    }
                     },
                   )}
                 </div>
               ) : (
-                <div
-                  className="grid gap-2 px-2 py-1 items-start"
-                  style={{
-                    gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
-                  }}
-                >
-                  {filteredPosts.map((post) => (
-                    <Link
-                      key={post._id}
-                      href={`/${post.slug.current}`}
-                      className="group flex flex-col gap-2 pb-10"
-                    >
-                      <div className="relative overflow-hidden bg-[#1a1a1a] rounded-sm">
-                        {post.playbackId ? (
-                          <div className="w-full relative">
-                            <MuxPlayer
-                              playbackId={post.playbackId}
-                              metadataVideoTitle={
-                                language === "kr" ? post.title_kr : post.title_en
-                              }
-                              streamType="on-demand"
-                              autoPlay="muted"
-                              loop
-                              muted
-                              placeholder={post.imageUrl || undefined}
-                              className="w-full h-auto object-contain transition-transform duration-300 group-hover:brightness-80"
-                              style={
-                                {
-                                  "--controls": "none",
-                                } as any
-                              }
-                            />
-                          </div>
-                        ) : post.imageUrl ? (
-                          <img
-                            src={post.imageUrl}
-                            className="w-full h-auto object-contain"
-                          />
-                        ) : (
-                          <div className="w-full aspect-square flex items-center justify-center text-system-gray text-size-sm font-ep-sans">
-                            No Media
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-system-text text-size-sm font-ep-sans leading-tight">
-                          {language === "kr" ? post.title_kr : post.title_en}
-                        </p>
-                        <div className="flex flex-wrap gap-1">
-                          {post.tags?.map((tag: string) => (
-                            <span
-                              key={tag}
-                              className="px-[0.4rem] py-[0.2rem] rounded-[5px] text-[10px] leading-none font-medium font-ep-sans text-[#131313]"
+                <div className="flex flex-col px-2 py-1" style={{ gap: "2.5rem" }}>
+                  {Array.from({ length: Math.ceil(filteredPosts.length / cols) }).map((_, rowIndex) => {
+                    const rowItems = filteredPosts.slice(rowIndex * cols, (rowIndex + 1) * cols);
+                    
+                    return (
+                      <div key={rowIndex} className="flex w-full items-end" style={{ gap: "0.5rem" }}>
+                        {rowItems.map((post) => {
+                          const multipliers: Record<string, number> = { small: 0.5, medium: 0.75, large: 1.0 };
+                          const m = multipliers[post.thumbnail_size || "medium"] || 1.0;
+                          
+                          return (
+                            <Link
+                              key={post._id}
+                              href={`/${post.slug.current}`}
+                              className="group flex flex-col"
                               style={{
-                                backgroundColor: TAG_COLORS[tag] || "#787878",
+                                flex: `${m} 0 0%`,
+                                maxWidth: rowItems.length === 1 && cols > 1 ? "50%" : "100%",
                               }}
                             >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
+                              <div className="flex flex-col w-full pb-10 transition-all duration-200 group-hover:brightness-60">
+                                <div className="relative overflow-hidden bg-[#1a1a1a] w-full flex items-end justify-center">
+                                  {post.playbackId ? (
+                                    <div className="w-full relative">
+                                      <MuxPlayer
+                                        playbackId={post.playbackId}
+                                        metadataVideoTitle={
+                                          language === "kr" ? post.title_kr : post.title_en
+                                        }
+                                        streamType="on-demand"
+                                        autoPlay="muted"
+                                        loop
+                                        muted
+                                        placeholder={post.imageUrl || undefined}
+                                        className="w-full h-auto"
+                                        style={
+                                          {
+                                            "--controls": "none",
+                                          } as any
+                                        }
+                                      />
+                                    </div>
+                                  ) : post.imageUrl ? (
+                                    <img
+                                      src={post.imageUrl}
+                                      className="w-full h-auto object-contain"
+                                    />
+                                  ) : (
+                                    <div className="w-full aspect-square flex items-center justify-center text-system-gray text-size-sm font-ep-sans">
+                                      No Media
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="flex flex-col gap-2 pt-2 w-full min-h-[4.5rem]">
+                                  <p className="text-system-text text-size-md font-medium font-ep-sans leading-tight line-clamp-2">
+                                    {language === "kr" ? post.title_kr : post.title_en}
+                                  </p>
+                                  <div className="flex flex-wrap gap-1">
+                                    {post.tags?.map((tag: string) => (
+                                      <span
+                                        key={tag}
+                                        className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-[#131313]"
+                                        style={{
+                                          backgroundColor: TAG_COLORS[tag] || "#787878",
+                                        }}
+                                      >
+                                        {tag}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            </Link>
+                          );
+                        })}
                       </div>
-                    </Link>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

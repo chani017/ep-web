@@ -23,7 +23,7 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
     (e: MouseEvent) => {
       if (isResizing) {
         const newWidth = (e.clientX / window.innerWidth) * 100;
-        if (newWidth >= 20 && newWidth <= 80) {
+        if (newWidth >= 30 && newWidth <= 70) {
           setLeftWidth(newWidth);
         }
       }
@@ -50,7 +50,7 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
     <div
       className={`flex w-full h-screen overflow-hidden bg-background text-system-text font-ep-sans ${isResizing ? "select-none" : ""}`}
     >
-      {/* Left Pane */}
+      {/* 메인 콘텐츠 */}
       <div
         style={{ width: `${leftWidth}%` }}
         className="relative flex flex-col h-full overflow-y-auto no-scrollbar"
@@ -61,7 +61,7 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
         {left}
       </div>
 
-      {/* Resize Bar */}
+      {/* 리사이즈 바 */}
       <div
         onMouseDown={startResizing}
         className="relative flex items-center justify-center w-3 cursor-col-resize z-50 group shrink-0 bg-background hover:bg-[rgb(164,164,164)]"
@@ -73,7 +73,7 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
         </div>
       </div>
 
-      {/* Right Pane */}
+      {/* 사이드 패널 */}
       <div
         style={{ width: `${100 - leftWidth}%` }}
         className="relative flex flex-col h-full overflow-y-auto no-scrollbar"

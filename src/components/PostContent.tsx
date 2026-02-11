@@ -41,6 +41,14 @@ export default function PostContent({ post }: PostContentProps) {
   
   const description = language === "kr" ? post.description_kr : post.description_en;
   const media = post.media || [];
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  const [contentHeight, setContentHeight] = React.useState<number | string>(0);
+
+  React.useEffect(() => {
+    if (contentRef.current) {
+      setContentHeight(contentRef.current.scrollHeight);
+    }
+  }, [description, isExpanded, language]);
 
   return (
     <div className="flex flex-col h-full relative overflow-hidden">
@@ -79,7 +87,7 @@ export default function PostContent({ post }: PostContentProps) {
                       <img
                         src={imgUrl}
                         alt={item.caption || ""}
-                        className="w-full h-auto object-contain rounded-sm"
+                        className="w-full h-auto"
                       />
                     )}
                     {item.caption && (
@@ -148,15 +156,18 @@ export default function PostContent({ post }: PostContentProps) {
       {/* 설명글 패널 */}
       <div 
         className={`absolute bottom-0 left-0 w-full transition-all duration-500 ease-in-out bg-[#131313] z-40 flex flex-col ${
-          isFullContentMode ? 'h-full' : isExpanded ? 'h-[600px]' : 'h-[70px]'
+          isFullContentMode ? 'h-full' : ''
         }`}
+        style={{
+          height: isFullContentMode ? '100%' : isExpanded ? `${contentHeight}px` : '70px'
+        }}
       >
         <div 
           onClick={() => !isFullContentMode && setIsExpanded(!isExpanded)}
           className={`flex justify-between items-start px-2 pt-2 h-full relative overflow-hidden break-keep hover:bg-[#131313]/80 ${!isFullContentMode ? 'cursor-pointer' : ''}`}
         >
           <div className={`flex-1 pr-8 h-full ${isFullContentMode || isExpanded ? 'overflow-y-auto no-scrollbar' : 'overflow-hidden'}`}>
-            <div className="max-w-none text-size-md font-ep-sans text-system-text pb-10">
+            <div ref={contentRef} className="max-w-none text-size-md font-ep-sans text-system-text pb-10">
               {Array.isArray(description) && (
                 <PortableText 
                   value={description} 
