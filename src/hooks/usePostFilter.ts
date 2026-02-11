@@ -1,13 +1,10 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { type SanityDocument } from "next-sanity";
-
-const ITEMS_PER_PAGE = 20;
 
 export function usePostFilter(posts: SanityDocument[]) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedYear, setSelectedYear] = useState<string>("Year");
-  const [selectedTag, setSelectedTag] = useState<string>("All Types");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All Types");
 
   const uniqueYears = useMemo(() => {
     const years = posts
@@ -26,43 +23,32 @@ export function usePostFilter(posts: SanityDocument[]) {
         post.title_kr?.toLowerCase().includes(term) ||
         post.title_en?.toLowerCase().includes(term) ||
         post.client?.toLowerCase().includes(term) ||
-        post.tags?.some((tag: string) => tag.toLowerCase().includes(term));
+        post.category?.some((Category: string) =>
+          Category.toLowerCase().includes(term),
+        );
 
       const matchesYear =
         selectedYear === "Year" ||
         post.publishedAt?.toString() === selectedYear;
 
-      const matchesTag =
-        selectedTag === "All Types" ||
-        post.tags?.some((tag: string) => tag === selectedTag);
+      const matchesCategory =
+        selectedCategory === "All Types" ||
+        post.category?.some(
+          (Category: string) => Category === selectedCategory,
+        );
 
-      return matchesSearch && matchesYear && matchesTag;
+      return matchesSearch && matchesYear && matchesCategory;
     });
-  }, [posts, searchTerm, selectedYear, selectedTag]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, selectedYear, selectedTag]);
-
-  const totalPages = Math.ceil(filteredPosts.length / ITEMS_PER_PAGE);
-
-  const paginatedPosts = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredPosts.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredPosts, currentPage]);
+  }, [posts, searchTerm, selectedYear, selectedCategory]);
 
   return {
     searchTerm,
     setSearchTerm,
     selectedYear,
     setSelectedYear,
-    selectedTag,
-    setSelectedTag,
-    currentPage,
-    setCurrentPage,
+    selectedCategory,
+    setSelectedCategory,
     uniqueYears,
     filteredPosts,
-    paginatedPosts,
-    totalPages,
   };
 }

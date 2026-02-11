@@ -19,7 +19,7 @@ const POSTS_QUERY = `*[
   slug,
   publishedAt,
   client,
-  tags,
+  "category": coalesce(category, tags),
   "imageUrl": select(
     thumbnail.type == "image" => thumbnail.image.asset->url,
     thumbnail.type == "video" => thumbnail.video.asset->url, // Mux thumbnail image

@@ -69,12 +69,21 @@
   --text-size-lg: 1.1rem;
   --text-size-md: 1rem;
   --text-size-sm: 0.8rem;
+  --ep-margin: 0.625rem;
+  --ep-margin-s: 0.313rem;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: "EP Sans", "EP Gothic", sans-serif;
+}
+
+@layer base {
+  ::selection {
+    color: #004595;
+    background: #77ffe9;
+  }
 }
 
 @utility no-scrollbar {

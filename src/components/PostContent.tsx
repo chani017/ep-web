@@ -14,7 +14,7 @@ const urlFor = (source: SanityImageSource) =>
     ? imageUrlBuilder({ projectId, dataset }).image(source)
     : null;
 
-const TAG_COLORS: Record<string, string> = {
+const CATEGORY_COLORS: Record<string, string> = {
   Graphic: "#42ff00",
   Identity: "#FFEB23",
   Website: "#92FFF8",
@@ -28,7 +28,8 @@ interface PostContentProps {
 }
 
 export default function PostContent({ post }: PostContentProps) {
-  const { language, isFullContentMode, setIsFullContentMode, setCurrentPost } = useAppContext();
+  const { language, isFullContentMode, setIsFullContentMode, setCurrentPost } =
+    useAppContext();
   const [isExpanded, setIsExpanded] = React.useState(false);
 
   React.useEffect(() => {
@@ -38,8 +39,9 @@ export default function PostContent({ post }: PostContentProps) {
       setIsFullContentMode(false);
     };
   }, [post, setCurrentPost, setIsFullContentMode]);
-  
-  const description = language === "kr" ? post.description_kr : post.description_en;
+
+  const description =
+    language === "kr" ? post.description_kr : post.description_en;
   const media = post.media || [];
   const contentRef = React.useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = React.useState<number | string>(0);
@@ -53,7 +55,9 @@ export default function PostContent({ post }: PostContentProps) {
   return (
     <div className="flex flex-col h-full relative overflow-hidden">
       {!isFullContentMode && (
-        <div className={`p-2 flex flex-col h-full overflow-y-auto no-scrollbar gap-4 transition-all duration-300 ${isExpanded ? 'pointer-events-none' : 'opacity-100'}`}>
+        <div
+          className={`p-2 flex flex-col h-full overflow-y-auto no-scrollbar gap-4 transition-all duration-300 ${isExpanded ? "pointer-events-none" : "opacity-100"}`}
+        >
           <div className="flex justify-between items-start gap-4">
             <h1 className="text-2xl font-normal text-system-text font-ep-sans leading-tight max-w-[75%]">
               {language === "kr" ? post.title_kr : post.title_en}
@@ -63,15 +67,15 @@ export default function PostContent({ post }: PostContentProps) {
                 {post.publishedAt?.toString()}
               </span>
               <div className="flex flex-col items-end gap-1 mt-1">
-                {post.tags?.map((tag: string) => (
+                {post.category?.map((category: string) => (
                   <span
-                    key={tag}
+                    key={category}
                     className="px-[0.4rem] py-[0.2rem] rounded-[5px] text-[11px] leading-none font-medium font-ep-sans text-[#131313] whitespace-nowrap"
                     style={{
-                      backgroundColor: TAG_COLORS[tag] || "#787878",
+                      backgroundColor: CATEGORY_COLORS[category] || "#787878",
                     }}
                   >
-                    {tag}
+                    {category}
                   </span>
                 ))}
               </div>
@@ -146,31 +150,38 @@ export default function PostContent({ post }: PostContentProps) {
       )}
 
       {!isFullContentMode && (
-        <div 
+        <div
           className={`absolute bottom-0 left-0 w-full h-12 bg-linear-to-t from-[#131313] to-transparent z-50 pointer-events-none transition-opacity duration-500 ${
-            isExpanded ? 'opacity-0' : 'opacity-100'
-          }`} 
+            isExpanded ? "opacity-0" : "opacity-100"
+          }`}
         />
       )}
 
       {/* 설명글 패널 */}
-      <div 
+      <div
         className={`absolute bottom-0 left-0 w-full transition-all duration-500 ease-in-out bg-[#131313] z-40 flex flex-col ${
-          isFullContentMode ? 'h-full' : ''
+          isFullContentMode ? "h-full" : ""
         }`}
         style={{
-          height: isFullContentMode ? '100%' : isExpanded ? `${contentHeight}px` : '70px'
+          height: isFullContentMode
+            ? "100%"
+            : isExpanded
+              ? `${contentHeight}px`
+              : "70px",
         }}
       >
-        <div 
+        <div
           onClick={() => !isFullContentMode && setIsExpanded(!isExpanded)}
-          className={`flex justify-between items-start px-2 pt-2 h-full relative overflow-hidden break-keep hover:bg-[#131313]/80 ${!isFullContentMode ? 'cursor-pointer' : ''}`}
+          className={`flex justify-between items-start px-2 pt-2 h-full relative overflow-hidden break-keep hover:bg-[#131313]/80 ${!isFullContentMode ? "cursor-pointer" : ""}`}
         >
           <div className={`flex-1 pr-8 h-full overflow-hidden`}>
-            <div ref={contentRef} className="max-w-none text-size-md font-ep-sans text-system-text pb-5">
+            <div
+              ref={contentRef}
+              className="max-w-none text-size-md font-ep-sans text-system-text pb-5"
+            >
               {Array.isArray(description) && (
-                <PortableText 
-                  value={description} 
+                <PortableText
+                  value={description}
                   components={{
                     block: {
                       normal: ({ children }) => (
@@ -198,27 +209,31 @@ export default function PostContent({ post }: PostContentProps) {
                 />
               )}
               {post.additional_link && (
-              <div className="flex items-center hover:brightness-50 transition-all">
-                <a
-                  href={post.additional_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block text-size-md font-ep-sans text-system-text"
-                >
-                  <img src="/plus.svg" alt="Plus" className="inline mr-1 mb-0.5" />
-                  {post.additional_link}
-                </a>
-              </div>
+                <div className="flex items-center hover:brightness-50 transition-all">
+                  <a
+                    href={post.additional_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block text-size-md font-ep-sans text-system-text"
+                  >
+                    <img
+                      src="/plus.svg"
+                      alt="Plus"
+                      className="inline mr-1 mb-0.5"
+                    />
+                    {post.additional_link}
+                  </a>
+                </div>
               )}
             </div>
           </div>
-          
+
           {!isFullContentMode && (
             <div className="absolute top-2 right-2">
-              <img 
-                src="/arrow.svg" 
+              <img
+                src="/arrow.svg"
                 alt="Toggle Description"
-                className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? '-rotate-180' : ''}`}
+                className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? "-rotate-180" : ""}`}
               />
             </div>
           )}

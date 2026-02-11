@@ -56,9 +56,7 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
         style={{ width: `${leftWidth}%` }}
         className="relative flex flex-col h-full overflow-y-auto no-scrollbar"
       >
-        {isResizing && (
-          <div className="absolute inset-0 bg-black/10 z-100" />
-        )}
+        {isResizing && <div className="absolute inset-0 bg-black/10 z-100" />}
         {left}
       </div>
 
@@ -68,9 +66,9 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
         className="relative flex items-center justify-center w-3 cursor-col-resize z-50 group shrink-0 bg-background hover:bg-[rgb(164,164,164)]"
       >
         <div className="flex gap-1 items-center">
-          <div className="w-[1px] h-screen bg-system-gray" />
-          <div className="w-[1px] h-20 bg-system-gray group-hover:scale-y-[1.3]" />
-          <div className="w-[1px] h-screen bg-system-gray" />
+          <div className="w-px h-screen bg-system-gray" />
+          <div className="w-px h-20 bg-system-gray group-hover:scale-y-[1.3]" />
+          <div className="w-px h-screen bg-system-gray" />
         </div>
       </div>
 
@@ -79,9 +77,7 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
         style={{ width: `${100 - leftWidth}%` }}
         className="relative flex flex-col h-full overflow-y-auto no-scrollbar"
       >
-        {isResizing && (
-          <div className="absolute inset-0 bg-black/10 z-100" />
-        )}
+        {isResizing && <div className="absolute inset-0 bg-black/10 z-100" />}
         {right}
       </div>
     </div>

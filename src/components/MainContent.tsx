@@ -10,6 +10,7 @@ import { SanityImageSource } from "@sanity/image-url";
 import { client } from "@/sanity/client";
 import { useInView } from "@/hooks/useInView";
 import { usePostFilter } from "@/hooks/usePostFilter";
+import { usePage } from "@/hooks/usePage";
 import { useYearDropdown } from "@/hooks/useYearDropdown";
 import { useResponCols } from "@/hooks/useResponCols";
 
@@ -23,7 +24,7 @@ interface MainContentProps {
   posts: SanityDocument[];
 }
 
-const TAG_COLORS: Record<string, string> = {
+const CATEGORY_COLORS: Record<string, string> = {
   Graphic: "#42ff00",
   Identity: "#FFEB23",
   Website: "#92FFF8",
@@ -86,13 +87,15 @@ const PostCard = React.memo(
           <div className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-size-md text-system-text font-ep-sans">
             <span>{language === "kr" ? post.title_kr : post.title_en}</span>
             <div className="flex gap-1 shrink-0">
-              {post.tags?.map((tag: string) => (
+              {post.category?.map((category: string) => (
                 <span
-                  key={tag}
+                  key={category}
                   className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-[#131313]"
-                  style={{ backgroundColor: TAG_COLORS[tag] || "#787878" }}
+                  style={{
+                    backgroundColor: CATEGORY_COLORS[category] || "#787878",
+                  }}
                 >
-                  {tag}
+                  {category}
                 </span>
               ))}
             </div>
@@ -119,13 +122,10 @@ const PostCard = React.memo(
             : undefined
         }
       >
-        <div className="flex flex-col w-full transition-all duration-200 group-hover:brightness-60">
-          <div
-            ref={cardRef}
-            className="relative overflow-hidden bg-[#1a1a1a] w-full flex items-end justify-center"
-          >
+        <div className="flex flex-col w-full transition-all duration-150 group-hover:brightness-60">
+          <div ref={cardRef} className="w-full overflow-hidden">
             {post.playbackId ? (
-              <div className="w-full relative">
+              <div className="w-full relative overflow-hidden">
                 {shouldRenderVideo ? (
                   <MuxPlayer
                     playbackId={post.playbackId}
@@ -137,8 +137,8 @@ const PostCard = React.memo(
                     loop
                     muted
                     placeholder={muxThumbnail || post.imageUrl || undefined}
-                    className="w-full h-auto"
-                    style={{ "--controls": "none" } as any}
+                    className="w-full h-auto block"
+                    style={{ "--controls": "none", display: "block" } as any}
                     {...({ videoQuality: "basic" } as any)}
                   />
                 ) : (
@@ -166,13 +166,15 @@ const PostCard = React.memo(
               {language === "kr" ? post.title_kr : post.title_en}
             </p>
             <div className="flex flex-wrap gap-1">
-              {post.tags?.map((tag: string) => (
+              {post.category?.map((category: string) => (
                 <span
-                  key={tag}
+                  key={category}
                   className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-[#131313]"
-                  style={{ backgroundColor: TAG_COLORS[tag] || "#787878" }}
+                  style={{
+                    backgroundColor: CATEGORY_COLORS[category] || "#787878",
+                  }}
                 >
-                  {tag}
+                  {category}
                 </span>
               ))}
             </div>
@@ -196,15 +198,14 @@ export default function MainContent({ posts }: MainContentProps) {
     setSearchTerm,
     selectedYear,
     setSelectedYear,
-    selectedTag,
-    setSelectedTag,
-    currentPage,
-    setCurrentPage,
+    selectedCategory,
+    setSelectedCategory,
     uniqueYears,
     filteredPosts,
-    paginatedPosts,
-    totalPages,
   } = usePostFilter(posts);
+
+  const { currentPage, setCurrentPage, paginatedPosts, totalPages } =
+    usePage(filteredPosts);
 
   const { isYearOpen, setIsYearOpen, yearDropdownRef } = useYearDropdown();
   const [containerRef, cols] = useResponCols([isFullContentMode]);
@@ -214,11 +215,16 @@ export default function MainContent({ posts }: MainContentProps) {
       {/* 메인 헤더 */}
       <header className="flex justify-between items-center p-1 border-b border-system-gray submenu h-[2.5rem]">
         <div className="flex-1 px-1 h-full flex items-center overflow-hidden">
-          <div className="relative h-full flex items-center group cursor-pointer w-fit">
-            <div className="text-size-xl font-me text-system-text font-ep-sans uppercase transition-all duration-100 transform opacity-200 group-hover:opacity-0 whitespace-nowrap">
+          <div
+            onClick={() => {
+              window.location.href = "/";
+            }}
+            className="relative h-full flex items-center group cursor-pointer w-fit"
+          >
+            <div className="text-size-xl font-me text-system-text font-ep-sans uppercase transition-all duration-100 transform opacity-150 group-hover:opacity-0 whitespace-nowrap">
               Everyday Practice
             </div>
-            <div className="absolute inset-0 flex items-center text-size-xl font-medium text-system-text font-ep-sans transition-all duration-200 transform translate-x-2 group-hover:translate-x-0 opacity-0 group-hover:opacity-100 whitespace-nowrap">
+            <div className="absolute inset-0 flex items-center text-size-xl font-medium text-system-text font-ep-sans transition-all duration-150 transform translate-x-2 group-hover:translate-x-0 opacity-0 group-hover:opacity-100 whitespace-nowrap">
               일상의실천
             </div>
           </div>
@@ -266,21 +272,21 @@ export default function MainContent({ posts }: MainContentProps) {
                   {currentPost.publishedAt}
                 </span>
                 <div className="flex flex-col items-end gap-1 mt-1">
-                  {currentPost.tags?.map((tag: string) => (
+                  {currentPost.category?.map((category: string) => (
                     <span
-                      key={tag}
+                      key={category}
                       className="px-2 py-1 rounded-[6px] text-size-sm leading-none font-medium font-ep-sans text-[#131313] whitespace-nowrap"
                       style={{
-                        backgroundColor: TAG_COLORS[tag] || "#787878",
+                        backgroundColor: CATEGORY_COLORS[category] || "#787878",
                       }}
                     >
-                      {tag}
+                      {category}
                     </span>
                   ))}
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-12 pb-2 max-w-[1200px] mx-auto w-full">
+            <div>
               {(currentPost.media || []).map((item: any, index: number) => {
                 if (item._type === "image") {
                   const imgUrl = urlFor(item)?.url();
@@ -290,7 +296,7 @@ export default function MainContent({ posts }: MainContentProps) {
                         <img
                           src={imgUrl}
                           alt={item.caption || ""}
-                          className="w-full h-auto object-contain rounded-sm"
+                          className="w-full h-auto"
                         />
                       )}
                       {item.caption && (
@@ -367,13 +373,13 @@ export default function MainContent({ posts }: MainContentProps) {
                     "Motion",
                     "Press",
                     "Everyday",
-                  ].map((tag) => (
+                  ].map((category) => (
                     <div
-                      key={tag}
-                      className={`${selectedTag === tag ? "text-system-text" : "text-system-gray"} hover:text-system-text cursor-pointer transition-colors`}
-                      onClick={() => setSelectedTag(tag)}
+                      key={category}
+                      className={`${selectedCategory === category ? "text-system-text" : "text-system-gray"} hover:text-system-text cursor-pointer transition-colors`}
+                      onClick={() => setSelectedCategory(category)}
                     >
-                      {tag}
+                      {category}
                     </div>
                   ))}
                   <button
@@ -433,11 +439,11 @@ export default function MainContent({ posts }: MainContentProps) {
                     <img
                       src="/dropdown.svg"
                       alt="Dropdown"
-                      className={`w-3 h-3 transition-transform duration-200 ${isYearOpen ? "-rotate-180" : ""}`}
+                      className={`w-3 h-3 transition-transform duration-150 ${isYearOpen ? "-rotate-180" : ""}`}
                     />
                   </button>
                   <div
-                    className={`absolute top-full left-0 w-full bg-system-dark-gray backdrop-blur-xl border-t border-b border-system-gray/30 z-40 overflow-hidden transition-all duration-200 ease-in-out origin-top ${
+                    className={`absolute top-full left-0 w-full bg-system-dark-gray backdrop-blur-xl border-t border-b border-system-gray/30 z-40 overflow-hidden transition-all duration-150 ease-in-out origin-top ${
                       isYearOpen
                         ? "max-h-48 opacity-100 translate-y-0 overflow-y-auto no-scrollbar shadow-2xl"
                         : "max-h-0 opacity-0 -translate-y-1 pointer-events-none border-transparent"
@@ -462,8 +468,27 @@ export default function MainContent({ posts }: MainContentProps) {
                   </div>
                 </div>
                 {/* 프로젝트 갯수 */}
-                <div className="col-span-1 text-size-sm text-system-gray font-ep-sans text-left border-b border-system-gray flex items-center">
-                  {filteredPosts.length} results
+                <div className="col-span-1 text-size-sm text-system-gray font-ep-sans border-b border-system-gray flex items-center justify-between">
+                  <span>{filteredPosts.length} results</span>
+                  {(searchTerm ||
+                    selectedYear !== "Year" ||
+                    selectedCategory !== "All Types") && (
+                    <button
+                      className="flex items-center gap-1 text-system-text text-size-md hover:brightness-50 transition-all duration-150 ease-in-out cursor-pointer"
+                      onClick={() => {
+                        setSearchTerm("");
+                        setSelectedYear("Year");
+                        setSelectedCategory("All Types");
+                      }}
+                    >
+                      <span className="mr-1">Reset</span>
+                      <img
+                        src="/reset.svg"
+                        alt="Reset"
+                        className="w-3.5 h-3.5"
+                      />
+                    </button>
+                  )}
                 </div>
               </div>
               {viewMode === "list" ? (
@@ -491,15 +516,21 @@ export default function MainContent({ posts }: MainContentProps) {
                       paginatedPosts.length,
                     );
                     const rowSlice = paginatedPosts.slice(rowStart, rowEnd);
-                    const totalM = rowSlice.reduce(
+                    const rowItemCount = rowSlice.length;
+                    const actualTotalM = rowSlice.reduce(
                       (sum, p) =>
                         sum +
                         (SIZE_MULTIPLIERS[p.thumbnail_size || "medium"] || 1.0),
                       0,
                     );
+                    const isLastRowShort = rowItemCount < cols;
+                    const paddedTotalM = isLastRowShort
+                      ? actualTotalM +
+                        (cols - rowItemCount) * SIZE_MULTIPLIERS.medium
+                      : actualTotalM;
                     const m =
                       SIZE_MULTIPLIERS[post.thumbnail_size || "medium"] || 1.0;
-                    const widthPct = (m / totalM) * 100;
+                    const widthPct = (m / paddedTotalM) * 100;
 
                     return (
                       <PostCard
@@ -517,7 +548,18 @@ export default function MainContent({ posts }: MainContentProps) {
               )}
               {/* 페이지네이션 */}
               {totalPages >= 1 && (
-                <div className="px-2 pt-10 pb-20 flex justify-start items-center text-size-xl">
+                <div className="px-4 pt-2 pb-10 flex justify-start items-center text-size-md gap-1">
+                  {currentPage > 1 && (
+                    <button
+                      onClick={() => {
+                        setCurrentPage(currentPage - 1);
+                        containerRef.current?.scrollTo({ top: 0 });
+                      }}
+                      className="font-ep-sans text-system-text text-size-md hover:bg-system-dark-gray px-1.5 leading-5 rounded-md min-w-3 text-center"
+                    >
+                      〈
+                    </button>
+                  )}
                   {Array.from({ length: totalPages }).map((_, i) => (
                     <React.Fragment key={i + 1}>
                       <button
@@ -525,19 +567,27 @@ export default function MainContent({ posts }: MainContentProps) {
                           setCurrentPage(i + 1);
                           containerRef.current?.scrollTo({ top: 0 });
                         }}
-                        className={`font-ep-sans transition-colors cursor-pointer ${
+                        className={`font-ep-sans transition-colors cursor-pointer bg-[#464646] px-1.5 leading-5 rounded-md min-w-5 text-center ${
                           currentPage === i + 1
-                            ? "text-system-text"
-                            : "text-system-gray hover:text-system-text"
+                            ? "text-system-text bg-transparent hover:bg-system-dark-gray"
+                            : "text-system-text hover:bg-system-dark-gray"
                         }`}
                       >
                         {i + 1}
                       </button>
-                      {i < totalPages - 1 && (
-                        <span className="text-system-gray mx-1">/</span>
-                      )}
                     </React.Fragment>
                   ))}
+                  {currentPage < totalPages && (
+                    <button
+                      onClick={() => {
+                        setCurrentPage(currentPage + 1);
+                        containerRef.current?.scrollTo({ top: 0 });
+                      }}
+                      className="font-ep-gothic text-system-text text-size-md hover:bg-system-dark-gray px-1.5 leading-5 rounded-md min-w-3 text-center"
+                    >
+                      〉
+                    </button>
+                  )}
                 </div>
               )}
             </div>
