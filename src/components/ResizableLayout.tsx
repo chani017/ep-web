@@ -8,7 +8,7 @@ interface ResizableLayoutProps {
 }
 
 export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
-  const [leftWidth, setLeftWidth] = useState(73);
+  const [leftWidth, setLeftWidth] = useState(67);
   const [isResizing, setIsResizing] = useState(false);
 
   const startResizing = useCallback((e: React.PointerEvent) => {

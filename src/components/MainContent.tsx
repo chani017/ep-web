@@ -8,6 +8,10 @@ import { useAppContext } from "@/context/AppContext";
 import imageUrlBuilder from "@sanity/image-url";
 import { SanityImageSource } from "@sanity/image-url";
 import { client } from "@/sanity/client";
+import { useInView } from "@/hooks/useInView";
+import { usePostFilter } from "@/hooks/usePostFilter";
+import { useYearDropdown } from "@/hooks/useYearDropdown";
+import { useResponCols } from "@/hooks/useResponCols";
 
 const { projectId, dataset } = client.config();
 const urlFor = (source: SanityImageSource) =>
@@ -39,6 +43,12 @@ interface PostCardProps {
 const PostCard = React.memo(({ post, language, viewMode, cols, rowItemsCount }: PostCardProps) => {
   const multipliers: Record<string, number> = { small: 0.5, medium: 0.75, large: 1.0 };
   const m = multipliers[post.thumbnail_size || "medium"] || 1.0;
+
+  const [cardRef, inView] = useInView();
+
+  const muxThumbnail = post.playbackId
+    ? `https://image.mux.com/${post.playbackId}/thumbnail.webp?width=480&time=0`
+    : null;
 
   if (viewMode === "list") {
     return (
@@ -80,20 +90,30 @@ const PostCard = React.memo(({ post, language, viewMode, cols, rowItemsCount }: 
       }}
     >
       <div className="flex flex-col w-full pb-10 transition-all duration-200 group-hover:brightness-60">
-        <div className="relative overflow-hidden bg-[#1a1a1a] w-full flex items-end justify-center">
+        <div ref={cardRef} className="relative overflow-hidden bg-[#1a1a1a] w-full flex items-end justify-center">
           {post.playbackId ? (
             <div className="w-full relative">
-              <MuxPlayer
-                playbackId={post.playbackId}
-                metadataVideoTitle={language === "kr" ? post.title_kr : post.title_en}
-                streamType="on-demand"
-                autoPlay="muted"
-                loop
-                muted
-                placeholder={post.imageUrl || undefined}
-                className="w-full h-auto"
-                style={{ "--controls": "none" } as any}
-              />
+              {inView ? (
+                <MuxPlayer
+                  playbackId={post.playbackId}
+                  metadataVideoTitle={language === "kr" ? post.title_kr : post.title_en}
+                  streamType="on-demand"
+                  autoPlay="muted"
+                  loop
+                  muted
+                  placeholder={muxThumbnail || post.imageUrl || undefined}
+                  className="w-full h-auto"
+                  style={{ "--controls": "none" } as any}
+                  {...{ videoQuality: "basic" } as any}
+                />
+              ) : (
+                <img
+                  src={muxThumbnail || post.imageUrl}
+                  className="w-full h-auto object-contain"
+                  alt=""
+                  loading="lazy"
+                />
+              )}
             </div>
           ) : post.imageUrl ? (
             <img src={post.imageUrl} className="w-full h-auto object-contain" />
@@ -130,92 +150,19 @@ export default function MainContent({
   posts,
 }: MainContentProps) {
   const { language, setLanguage, isFullContentMode, currentPost } = useAppContext();
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [selectedYear, setSelectedYear] = React.useState<string>("Year");
-  const [selectedTag, setSelectedTag] = React.useState<string>("All Types");
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
-  const [isYearOpen, setIsYearOpen] = React.useState(false);
   const [viewMode, setViewMode] = React.useState<"img" | "list">("img");
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const ITEMS_PER_PAGE = 20;
-  const yearDropdownRef = React.useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        yearDropdownRef.current &&
-        !yearDropdownRef.current.contains(e.target as Node)
-      ) {
-        setIsYearOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const {
+    searchTerm, setSearchTerm,
+    selectedYear, setSelectedYear,
+    selectedTag, setSelectedTag,
+    currentPage, setCurrentPage,
+    uniqueYears, filteredPosts, paginatedPosts, totalPages,
+  } = usePostFilter(posts);
 
-  const uniqueYears = React.useMemo(() => {
-    const years = posts
-      .map((post) => post.publishedAt?.toString())
-      .filter((year): year is string => !!year);
-    return [
-      "Year",
-      ...Array.from(new Set(years)).sort((a, b) => b.localeCompare(a)),
-    ];
-  }, [posts]);
-
-  const filteredPosts = React.useMemo(() => {
-    return posts.filter((post) => {
-      const matchesSearch =
-        post.title_kr?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.title_en?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.client?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.tags?.some((tag: string) =>
-          tag.toLowerCase().includes(searchTerm.toLowerCase()),
-        );
-
-      const matchesYear =
-        selectedYear === "Year" ||
-        post.publishedAt?.toString() === selectedYear;
-
-      const matchesTag =
-        selectedTag === "All Types" ||
-        post.tags?.some((tag: string) => tag === selectedTag);
-
-      return matchesSearch && matchesYear && matchesTag;
-    });
-  }, [posts, searchTerm, selectedYear, selectedTag]);
-
-  React.useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, selectedYear, selectedTag]);
-
-  const totalPages = Math.ceil(filteredPosts.length / ITEMS_PER_PAGE);
-  const paginatedPosts = React.useMemo(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredPosts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-  }, [filteredPosts, currentPage]);
-
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const [cols, setCols] = React.useState(4);
-
-  React.useEffect(() => {
-    if (!containerRef.current) return;
-
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const width = entry.contentRect.width;
-        if (width < 380) setCols(1);
-        else if (width < 620) setCols(1);
-        else if (width < 900) setCols(2);
-        else if (width < 1200) setCols(3);
-        else if (width < 1550) setCols(5);
-        else setCols(6);
-      }
-    });
-
-    observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, [isFullContentMode]);
+  const { isYearOpen, setIsYearOpen, yearDropdownRef } = useYearDropdown();
+  const [containerRef, cols] = useResponCols([isFullContentMode]);
 
   return (
     <>
@@ -320,6 +267,7 @@ export default function MainContent({
                         loop
                         muted
                         style={{ width: "100%", aspectRatio: "16/9" }}
+                        {...{ videoQuality: "basic" } as any}
                       />
                     </div>
                   );
@@ -389,7 +337,7 @@ export default function MainContent({
               </div>
               {/* 검색창, 연도 선택, 콘텐츠 영역 */}
               <div
-                className="grid grid-cols-4 px-2 items-stretch gap-x-3 pt-20 pb-10"
+                className="grid grid-cols-4 px-2 items-stretch gap-x-3 pt-15 pb-10"
               >
                 {/* 검색창 */}
                 <div
