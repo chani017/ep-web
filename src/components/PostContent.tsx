@@ -29,12 +29,14 @@ interface PostContentProps {
 
 export default function PostContent({ post }: PostContentProps) {
   const { language } = useAppContext();
+  const [isExpanded, setIsExpanded] = React.useState(false);
+  
   const description = language === "kr" ? post.description_kr : post.description_en;
   const media = post.media || [];
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="p-2 flex flex-col h-full overflow-y-auto no-scrollbar gap-4">
+    <div className="flex flex-col h-full relative overflow-hidden">
+      <div className={`p-2 flex flex-col h-full overflow-y-auto no-scrollbar gap-4 transition-all duration-300 ${isExpanded ? 'pointer-events-none' : 'opacity-100'}`}>
         <div className="flex justify-between items-start gap-4">
           <h1 className="text-2xl font-normal text-system-text font-ep-sans leading-tight max-w-[75%]">
             {language === "kr" ? post.title_kr : post.title_en}
@@ -58,7 +60,7 @@ export default function PostContent({ post }: PostContentProps) {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-6 mt-4">
+        <div className="flex flex-col gap-4 pb-32">
           {media.map((item: any, index: number) => {
             if (item._type === "image") {
               const imgUrl = urlFor(item)?.url();
@@ -84,7 +86,7 @@ export default function PostContent({ post }: PostContentProps) {
               const playbackId = item.asset?.playbackId;
               if (!playbackId) return null;
               return (
-                <div key={item._key || index} className="w-full rounded-sm overflow-hidden border border-system-gray/30">
+                <div key={item._key || index} className="w-full">
                   <MuxPlayer
                     playbackId={playbackId}
                     streamType="on-demand"
@@ -123,10 +125,66 @@ export default function PostContent({ post }: PostContentProps) {
             return null;
           })}
         </div>
-        <div className="prose prose-invert max-w-none text-size-md font-ep-sans text-system-text">
-          {Array.isArray(description) && (
-            <PortableText value={description} />
-          )}
+      </div>
+
+      {/* 바닥 그라디언트 (패널 축소시에만 노출) */}
+      <div 
+        className={`absolute bottom-0 left-0 w-full h-12 bg-linear-to-t from-[#131313] to-transparent z-50 pointer-events-none transition-opacity duration-500 ${
+          isExpanded ? 'opacity-0' : 'opacity-100'
+        }`} 
+      />
+
+      {/* 설명글 패널 */}
+      <div 
+        className={`absolute bottom-0 left-0 w-full transition-all duration-500 ease-in-out bg-[#131313] z-40 flex flex-col ${
+          isExpanded ? 'h-[600px]' : 'h-[100px]'
+        }`}
+      >
+        <div 
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="flex justify-between items-start p-4 h-full relative overflow-hidden break-keep hover:bg-[#131313]/80 cursor-pointer"
+        >
+          <div className={`flex-1 pr-8 h-full ${isExpanded ? 'overflow-y-auto no-scrollbar' : 'overflow-hidden'}`}>
+            <div className={`max-w-none text-size-md font-ep-sans text-system-text`}>
+              {Array.isArray(description) && (
+                <PortableText 
+                  value={description} 
+                  components={{
+                    block: {
+                      normal: ({ children }) => (
+                        <p className="mb-2">
+                          {React.Children.map(children, (child) => {
+                            if (typeof child === "string") {
+                              return child.split("\n").map((line, i, arr) => (
+                                <span key={i}>
+                                  {line}
+                                  {i < arr.length - 1 && (
+                                    <>
+                                      <br />
+                                      <span className="block h-[0.3em]" />
+                                    </>
+                                  )}
+                                </span>
+                              ));
+                            }
+                            return child;
+                          })}
+                        </p>
+                      ),
+                    },
+                  }}
+                />
+              )}
+            </div>
+          </div>
+          
+          <div className="absolute top-4 right-4 p-1">
+            <img 
+              src="/arrow.svg" 
+              alt="Toggle Description"
+              className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? '-rotate-180' : ''}`}
+            />
+          </div>
         </div>
       </div>
     </div>
