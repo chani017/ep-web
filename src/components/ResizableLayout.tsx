@@ -11,8 +11,9 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
   const [leftWidth, setLeftWidth] = useState(73);
   const [isResizing, setIsResizing] = useState(false);
 
-  const startResizing = useCallback(() => {
+  const startResizing = useCallback((e: React.PointerEvent) => {
     setIsResizing(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
   }, []);
 
   const stopResizing = useCallback(() => {
@@ -20,7 +21,7 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
   }, []);
 
   const resize = useCallback(
-    (e: MouseEvent) => {
+    (e: PointerEvent) => {
       if (isResizing) {
         const newWidth = (e.clientX / window.innerWidth) * 100;
         if (newWidth >= 45 && newWidth <= 73) {
@@ -33,16 +34,16 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
 
   useEffect(() => {
     if (isResizing) {
-      window.addEventListener("mousemove", resize);
-      window.addEventListener("mouseup", stopResizing);
+      window.addEventListener("pointermove", resize);
+      window.addEventListener("pointerup", stopResizing);
     } else {
-      window.removeEventListener("mousemove", resize);
-      window.removeEventListener("mouseup", stopResizing);
+      window.removeEventListener("pointermove", resize);
+      window.removeEventListener("pointerup", stopResizing);
     }
 
     return () => {
-      window.removeEventListener("mousemove", resize);
-      window.removeEventListener("mouseup", stopResizing);
+      window.removeEventListener("pointermove", resize);
+      window.removeEventListener("pointerup", stopResizing);
     };
   }, [isResizing, resize, stopResizing]);
 
@@ -56,14 +57,14 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
         className="relative flex flex-col h-full overflow-y-auto no-scrollbar"
       >
         {isResizing && (
-          <div className="absolute inset-0 bg-black/30 pointer-events-none z-100" />
+          <div className="absolute inset-0 bg-black/10 z-100" />
         )}
         {left}
       </div>
 
       {/* 리사이즈 바 */}
       <div
-        onMouseDown={startResizing}
+        onPointerDown={startResizing}
         className="relative flex items-center justify-center w-3 cursor-col-resize z-50 group shrink-0 bg-background hover:bg-[rgb(164,164,164)]"
       >
         <div className="flex gap-1 items-center">
@@ -79,7 +80,7 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
         className="relative flex flex-col h-full overflow-y-auto no-scrollbar"
       >
         {isResizing && (
-          <div className="absolute inset-0 bg-black/30 pointer-events-none z-100" />
+          <div className="absolute inset-0 bg-black/10 z-100" />
         )}
         {right}
       </div>

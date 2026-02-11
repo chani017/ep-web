@@ -28,6 +28,104 @@ const TAG_COLORS: Record<string, string> = {
   Space: "#d089c0",
 };
 
+interface PostCardProps {
+  post: any;
+  language: string;
+  viewMode: "img" | "list";
+  cols: number;
+  rowItemsCount: number;
+}
+
+const PostCard = React.memo(({ post, language, viewMode, cols, rowItemsCount }: PostCardProps) => {
+  const multipliers: Record<string, number> = { small: 0.5, medium: 0.75, large: 1.0 };
+  const m = multipliers[post.thumbnail_size || "medium"] || 1.0;
+
+  if (viewMode === "list") {
+    return (
+      <Link
+        href={`/${post.slug.current}`}
+        className="col-span-4 grid grid-cols-4 border-b border-system-gray min-h-10 hover:bg-system-dark-gray transition-colors items-start px-1 group py-2 gap-x-3"
+      >
+        <div className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-size-md text-system-text font-ep-sans">
+          <span>{language === "kr" ? post.title_kr : post.title_en}</span>
+          <div className="flex gap-1 shrink-0">
+            {post.tags?.map((tag: string) => (
+              <span
+                key={tag}
+                className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-[#131313]"
+                style={{ backgroundColor: TAG_COLORS[tag] || "#787878" }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="col-span-1 text-size-md text-system-text font-ep-sans uppercase">
+          {post.publishedAt}
+        </div>
+        <div className="col-span-1 text-size-md text-system-text font-ep-sans uppercase text-left">
+          {post.client || ""}
+        </div>
+      </Link>
+    );
+  }
+
+  return (
+    <Link
+      href={`/${post.slug.current}`}
+      className="group flex flex-col"
+      style={{
+        flex: `${m} 0 0%`,
+        maxWidth: rowItemsCount === 1 && cols > 1 ? "50%" : "100%",
+      }}
+    >
+      <div className="flex flex-col w-full pb-10 transition-all duration-200 group-hover:brightness-60">
+        <div className="relative overflow-hidden bg-[#1a1a1a] w-full flex items-end justify-center">
+          {post.playbackId ? (
+            <div className="w-full relative">
+              <MuxPlayer
+                playbackId={post.playbackId}
+                metadataVideoTitle={language === "kr" ? post.title_kr : post.title_en}
+                streamType="on-demand"
+                autoPlay="muted"
+                loop
+                muted
+                placeholder={post.imageUrl || undefined}
+                className="w-full h-auto"
+                style={{ "--controls": "none" } as any}
+              />
+            </div>
+          ) : post.imageUrl ? (
+            <img src={post.imageUrl} className="w-full h-auto object-contain" />
+          ) : (
+            <div className="w-full aspect-square flex items-center justify-center text-system-gray text-size-sm font-ep-sans">
+              No Media
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 pt-2 w-full min-h-18">
+          <p className="text-system-text text-size-md font-medium font-ep-sans leading-tight line-clamp-2">
+            {language === "kr" ? post.title_kr : post.title_en}
+          </p>
+          <div className="flex flex-wrap gap-1">
+            {post.tags?.map((tag: string) => (
+              <span
+                key={tag}
+                className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-[#131313]"
+                style={{ backgroundColor: TAG_COLORS[tag] || "#787878" }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+});
+
+PostCard.displayName = "PostCard";
+
 export default function MainContent({
   posts,
 }: MainContentProps) {
@@ -289,9 +387,11 @@ export default function MainContent({
                   </button>
                 </div>
               </div>
+              {/* 검색창, 연도 선택, 콘텐츠 영역 */}
               <div
                 className="grid grid-cols-4 px-2 items-stretch gap-x-3 pt-20 pb-10"
               >
+                {/* 검색창 */}
                 <div
                   className="col-span-2 flex items-end bg-system-dark-gray px-1 pb-2 border-b border-system-gray relative"
                 >
@@ -324,6 +424,7 @@ export default function MainContent({
                     className="w-4 h-4 mb-[0.rem]"
                   />
                 </div>
+                {/* 연도 선택 */}
                 <div
                   className="col-span-1 pb-1 border-b border-system-gray relative flex items-end"
                   ref={yearDropdownRef}
@@ -364,128 +465,50 @@ export default function MainContent({
                     ))}
                   </div>
                 </div>
+                {/* 프로젝트 갯수 */}
                 <div className="col-span-1 text-size-sm text-system-gray font-ep-sans text-left border-b border-system-gray flex items-center">
                   {filteredPosts.length} results
                 </div>
               </div>
               {viewMode === "list" ? (
                 <div className="grid grid-cols-4 px-2">
-                  {paginatedPosts.map(
-                    (post) => {
-                      if (post) {
-                        return (
-                          <Link
-                            key={post._id}
-                            href={`/${post.slug.current}`}
-                            className="col-span-4 grid grid-cols-4 border-b border-system-gray min-h-10 hover:bg-system-dark-gray transition-colors items-start px-1 group py-2 gap-x-3"
-                          >
-                            <div className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-size-md text-system-text font-ep-sans">
-                              <span>
-                                {language === "kr" ? post.title_kr : post.title_en}
-                              </span>
-                              <div className="flex gap-1 shrink-0">
-                                {post.tags?.map((tag: string) => (
-                                  <span
-                                    key={tag}
-                                    className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-[#131313]"
-                                    style={{
-                                      backgroundColor: TAG_COLORS[tag] || "#787878",
-                                    }}
-                                  >
-                                    {tag}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                            <div className="col-span-1 text-size-md text-system-text font-ep-sans uppercase">
-                              {post.publishedAt}
-                            </div>
-                            <div className="col-span-1 text-size-md text-system-text font-ep-sans uppercase text-left">
-                              {post.client || ""}
-                            </div>
-                          </Link>
-                        );
-                      }
-                      return null;
-                    }
-                  )}
+                  {paginatedPosts.map((post) => (
+                    <PostCard
+                      key={post._id}
+                      post={post}
+                      language={language}
+                      viewMode={viewMode}
+                      cols={cols}
+                      rowItemsCount={0}
+                    />
+                  ))}
                 </div>
               ) : (
                 <div className="flex flex-col px-2 py-1" style={{ gap: "2.5rem" }}>
-                  {Array.from({ length: Math.ceil(paginatedPosts.length / cols) }).map((_, rowIndex) => {
-                    const rowItems = paginatedPosts.slice(rowIndex * cols, (rowIndex + 1) * cols);
-                    
+                  {Array.from({
+                    length: Math.ceil(paginatedPosts.length / cols),
+                  }).map((_, rowIndex) => {
+                    const rowItems = paginatedPosts.slice(
+                      rowIndex * cols,
+                      (rowIndex + 1) * cols,
+                    );
+
                     return (
-                      <div key={rowIndex} className="flex w-full items-end" style={{ gap: "0.5rem" }}>
-                        {rowItems.map((post) => {
-                          const multipliers: Record<string, number> = { small: 0.5, medium: 0.75, large: 1.0 };
-                          const m = multipliers[post.thumbnail_size || "medium"] || 1.0;
-                          
-                          return (
-                            <Link
-                              key={post._id}
-                              href={`/${post.slug.current}`}
-                              className="group flex flex-col"
-                              style={{
-                                flex: `${m} 0 0%`,
-                                maxWidth: rowItems.length === 1 && cols > 1 ? "50%" : "100%",
-                              }}
-                            >
-                              <div className="flex flex-col w-full pb-10 transition-all duration-200 group-hover:brightness-60">
-                                <div className="relative overflow-hidden bg-[#1a1a1a] w-full flex items-end justify-center">
-                                  {post.playbackId ? (
-                                    <div className="w-full relative">
-                                      <MuxPlayer
-                                        playbackId={post.playbackId}
-                                        metadataVideoTitle={
-                                          language === "kr" ? post.title_kr : post.title_en
-                                        }
-                                        streamType="on-demand"
-                                        autoPlay="muted"
-                                        loop
-                                        muted
-                                        placeholder={post.imageUrl || undefined}
-                                        className="w-full h-auto"
-                                        style={
-                                          {
-                                            "--controls": "none",
-                                          } as any
-                                        }
-                                      />
-                                    </div>
-                                  ) : post.imageUrl ? (
-                                    <img
-                                      src={post.imageUrl}
-                                      className="w-full h-auto object-contain"
-                                    />
-                                  ) : (
-                                    <div className="w-full aspect-square flex items-center justify-center text-system-gray text-size-sm font-ep-sans">
-                                      No Media
-                                    </div>
-                                  )}
-                                </div>
-                                <div className="flex flex-col gap-2 pt-2 w-full min-h-[4.5rem]">
-                                  <p className="text-system-text text-size-md font-medium font-ep-sans leading-tight line-clamp-2">
-                                    {language === "kr" ? post.title_kr : post.title_en}
-                                  </p>
-                                  <div className="flex flex-wrap gap-1">
-                                    {post.tags?.map((tag: string) => (
-                                      <span
-                                        key={tag}
-                                        className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-[#131313]"
-                                        style={{
-                                          backgroundColor: TAG_COLORS[tag] || "#787878",
-                                        }}
-                                      >
-                                        {tag}
-                                      </span>
-                                    ))}
-                                  </div>
-                                </div>
-                              </div>
-                            </Link>
-                          );
-                        })}
+                      <div
+                        key={rowIndex}
+                        className="flex w-full items-end"
+                        style={{ gap: "0.5rem" }}
+                      >
+                        {rowItems.map((post) => (
+                          <PostCard
+                            key={post._id}
+                            post={post}
+                            language={language}
+                            viewMode={viewMode}
+                            cols={cols}
+                            rowItemsCount={rowItems.length}
+                          />
+                        ))}
                       </div>
                     );
                   })}
