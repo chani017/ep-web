@@ -86,7 +86,7 @@ const PostCard = React.memo(({ post, language, viewMode, cols, rowItemsCount }: 
       className="group flex flex-col"
       style={{
         flex: `${m} 0 0%`,
-        maxWidth: rowItemsCount === 1 && cols > 1 ? "50%" : "100%",
+        maxWidth: rowItemsCount < cols ? `${100 / cols}%` : "100%",
       }}
     >
       <div className="flex flex-col w-full pb-10 transition-all duration-200 group-hover:brightness-60">
