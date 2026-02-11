@@ -166,8 +166,8 @@ export default function PostContent({ post }: PostContentProps) {
           onClick={() => !isFullContentMode && setIsExpanded(!isExpanded)}
           className={`flex justify-between items-start px-2 pt-2 h-full relative overflow-hidden break-keep hover:bg-[#131313]/80 ${!isFullContentMode ? 'cursor-pointer' : ''}`}
         >
-          <div className={`flex-1 pr-8 h-full ${isFullContentMode || isExpanded ? 'overflow-y-auto no-scrollbar' : 'overflow-hidden'}`}>
-            <div ref={contentRef} className="max-w-none text-size-md font-ep-sans text-system-text pb-10">
+          <div className={`flex-1 pr-8 h-full overflow-hidden`}>
+            <div ref={contentRef} className="max-w-none text-size-md font-ep-sans text-system-text pb-5">
               {Array.isArray(description) && (
                 <PortableText 
                   value={description} 
@@ -196,6 +196,19 @@ export default function PostContent({ post }: PostContentProps) {
                     },
                   }}
                 />
+              )}
+              {post.additional_link && (
+              <div className="flex items-center hover:brightness-50 transition-all">
+                <a
+                  href={post.additional_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block text-size-md font-ep-sans text-system-text"
+                >
+                  <img src="/plus.svg" alt="Plus" className="inline mr-1 mb-0.5" />
+                  {post.additional_link}
+                </a>
+              </div>
               )}
             </div>
           </div>
