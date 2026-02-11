@@ -38,127 +38,172 @@ interface PostCardProps {
   viewMode: "img" | "list";
   cols: number;
   rowItemsCount: number;
+  widthPct?: number;
 }
 
-const PostCard = React.memo(({ post, language, viewMode, cols, rowItemsCount }: PostCardProps) => {
-  const multipliers: Record<string, number> = { small: 0.5, medium: 0.75, large: 1.0 };
-  const m = multipliers[post.thumbnail_size || "medium"] || 1.0;
+const loadedVideos = new Set<string>();
 
-  const [cardRef, inView] = useInView();
+const SIZE_MULTIPLIERS: Record<string, number> = {
+  small: 0.65,
+  medium: 0.8,
+  large: 1.0,
+};
 
-  const muxThumbnail = post.playbackId
-    ? `https://image.mux.com/${post.playbackId}/thumbnail.webp?width=480&time=0`
-    : null;
+const PostCard = React.memo(
+  ({
+    post,
+    language,
+    viewMode,
+    cols,
+    rowItemsCount,
+    widthPct,
+  }: PostCardProps) => {
+    const multipliers = SIZE_MULTIPLIERS;
+    const m = multipliers[post.thumbnail_size || "medium"] || 1.0;
 
-  if (viewMode === "list") {
+    const alreadyLoaded = post.playbackId
+      ? loadedVideos.has(post.playbackId)
+      : false;
+    const [cardRef, inView] = useInView();
+    const shouldRenderVideo = alreadyLoaded || inView;
+
+    React.useEffect(() => {
+      if (inView && post.playbackId) {
+        loadedVideos.add(post.playbackId);
+      }
+    }, [inView, post.playbackId]);
+
+    const muxThumbnail = post.playbackId
+      ? `https://image.mux.com/${post.playbackId}/thumbnail.webp?width=480&time=0`
+      : null;
+
+    if (viewMode === "list") {
+      return (
+        <Link
+          href={`/${post.slug.current}`}
+          className="col-span-4 grid grid-cols-4 border-b border-system-gray min-h-10 hover:bg-system-dark-gray transition-colors items-start px-1 group py-2 gap-x-3"
+        >
+          <div className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-size-md text-system-text font-ep-sans">
+            <span>{language === "kr" ? post.title_kr : post.title_en}</span>
+            <div className="flex gap-1 shrink-0">
+              {post.tags?.map((tag: string) => (
+                <span
+                  key={tag}
+                  className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-[#131313]"
+                  style={{ backgroundColor: TAG_COLORS[tag] || "#787878" }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="col-span-1 text-size-md text-system-text font-ep-sans uppercase">
+            {post.publishedAt}
+          </div>
+          <div className="col-span-1 text-size-md text-system-text font-ep-sans uppercase text-left">
+            {post.client || ""}
+          </div>
+        </Link>
+      );
+    }
+
     return (
       <Link
         href={`/${post.slug.current}`}
-        className="col-span-4 grid grid-cols-4 border-b border-system-gray min-h-10 hover:bg-system-dark-gray transition-colors items-start px-1 group py-2 gap-x-3"
+        className="group flex flex-col"
+        style={
+          widthPct
+            ? {
+                flex: `0 0 calc(${widthPct}% - ${(widthPct * (rowItemsCount - 1) * 0.5) / 100}rem)`,
+              }
+            : undefined
+        }
       >
-        <div className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-size-md text-system-text font-ep-sans">
-          <span>{language === "kr" ? post.title_kr : post.title_en}</span>
-          <div className="flex gap-1 shrink-0">
-            {post.tags?.map((tag: string) => (
-              <span
-                key={tag}
-                className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-[#131313]"
-                style={{ backgroundColor: TAG_COLORS[tag] || "#787878" }}
-              >
-                {tag}
-              </span>
-            ))}
+        <div className="flex flex-col w-full transition-all duration-200 group-hover:brightness-60">
+          <div
+            ref={cardRef}
+            className="relative overflow-hidden bg-[#1a1a1a] w-full flex items-end justify-center"
+          >
+            {post.playbackId ? (
+              <div className="w-full relative">
+                {shouldRenderVideo ? (
+                  <MuxPlayer
+                    playbackId={post.playbackId}
+                    metadataVideoTitle={
+                      language === "kr" ? post.title_kr : post.title_en
+                    }
+                    streamType="on-demand"
+                    autoPlay="muted"
+                    loop
+                    muted
+                    placeholder={muxThumbnail || post.imageUrl || undefined}
+                    className="w-full h-auto"
+                    style={{ "--controls": "none" } as any}
+                    {...({ videoQuality: "basic" } as any)}
+                  />
+                ) : (
+                  <img
+                    src={muxThumbnail || post.imageUrl}
+                    className="w-full h-auto object-contain"
+                    alt=""
+                    loading="lazy"
+                  />
+                )}
+              </div>
+            ) : post.imageUrl ? (
+              <img
+                src={post.imageUrl}
+                className="w-full h-auto object-contain"
+              />
+            ) : (
+              <div className="w-full aspect-square flex items-center justify-center text-system-gray text-size-sm font-ep-sans">
+                No Media
+              </div>
+            )}
           </div>
-        </div>
-        <div className="col-span-1 text-size-md text-system-text font-ep-sans uppercase">
-          {post.publishedAt}
-        </div>
-        <div className="col-span-1 text-size-md text-system-text font-ep-sans uppercase text-left">
-          {post.client || ""}
+          <div className="flex flex-col gap-2 pt-2 w-full min-h-18">
+            <p className="text-system-text text-size-md font-medium font-ep-sans leading-tight line-clamp-2">
+              {language === "kr" ? post.title_kr : post.title_en}
+            </p>
+            <div className="flex flex-wrap gap-1">
+              {post.tags?.map((tag: string) => (
+                <span
+                  key={tag}
+                  className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-[#131313]"
+                  style={{ backgroundColor: TAG_COLORS[tag] || "#787878" }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </Link>
     );
-  }
-
-  return (
-    <Link
-      href={`/${post.slug.current}`}
-      className="group flex flex-col"
-      style={{
-        flex: `${m} 0 0%`,
-        maxWidth: rowItemsCount < cols ? `${100 / cols}%` : "100%",
-      }}
-    >
-      <div className="flex flex-col w-full pb-10 transition-all duration-200 group-hover:brightness-60">
-        <div ref={cardRef} className="relative overflow-hidden bg-[#1a1a1a] w-full flex items-end justify-center">
-          {post.playbackId ? (
-            <div className="w-full relative">
-              {inView ? (
-                <MuxPlayer
-                  playbackId={post.playbackId}
-                  metadataVideoTitle={language === "kr" ? post.title_kr : post.title_en}
-                  streamType="on-demand"
-                  autoPlay="muted"
-                  loop
-                  muted
-                  placeholder={muxThumbnail || post.imageUrl || undefined}
-                  className="w-full h-auto"
-                  style={{ "--controls": "none" } as any}
-                  {...{ videoQuality: "basic" } as any}
-                />
-              ) : (
-                <img
-                  src={muxThumbnail || post.imageUrl}
-                  className="w-full h-auto object-contain"
-                  alt=""
-                  loading="lazy"
-                />
-              )}
-            </div>
-          ) : post.imageUrl ? (
-            <img src={post.imageUrl} className="w-full h-auto object-contain" />
-          ) : (
-            <div className="w-full aspect-square flex items-center justify-center text-system-gray text-size-sm font-ep-sans">
-              No Media
-            </div>
-          )}
-        </div>
-        <div className="flex flex-col gap-2 pt-2 w-full min-h-18">
-          <p className="text-system-text text-size-md font-medium font-ep-sans leading-tight line-clamp-2">
-            {language === "kr" ? post.title_kr : post.title_en}
-          </p>
-          <div className="flex flex-wrap gap-1">
-            {post.tags?.map((tag: string) => (
-              <span
-                key={tag}
-                className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-[#131313]"
-                style={{ backgroundColor: TAG_COLORS[tag] || "#787878" }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
-});
+  },
+);
 
 PostCard.displayName = "PostCard";
 
-export default function MainContent({
-  posts,
-}: MainContentProps) {
-  const { language, setLanguage, isFullContentMode, currentPost } = useAppContext();
+export default function MainContent({ posts }: MainContentProps) {
+  const { language, setLanguage, isFullContentMode, currentPost } =
+    useAppContext();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
   const [viewMode, setViewMode] = React.useState<"img" | "list">("img");
 
   const {
-    searchTerm, setSearchTerm,
-    selectedYear, setSelectedYear,
-    selectedTag, setSelectedTag,
-    currentPage, setCurrentPage,
-    uniqueYears, filteredPosts, paginatedPosts, totalPages,
+    searchTerm,
+    setSearchTerm,
+    selectedYear,
+    setSelectedYear,
+    selectedTag,
+    setSelectedTag,
+    currentPage,
+    setCurrentPage,
+    uniqueYears,
+    filteredPosts,
+    paginatedPosts,
+    totalPages,
   } = usePostFilter(posts);
 
   const { isYearOpen, setIsYearOpen, yearDropdownRef } = useYearDropdown();
@@ -166,7 +211,7 @@ export default function MainContent({
 
   return (
     <>
-    {/* 메인 헤더 */}
+      {/* 메인 헤더 */}
       <header className="flex justify-between items-center p-1 border-b border-system-gray submenu h-[2.5rem]">
         <div className="flex-1 px-1 h-full flex items-center overflow-hidden">
           <div className="relative h-full flex items-center group cursor-pointer w-fit">
@@ -212,7 +257,9 @@ export default function MainContent({
           <div className="flex-1 overflow-y-auto no-scrollbar p-2 flex flex-col gap-6">
             <div className="flex justify-between items-start gap-4">
               <h1 className="text-2xl font-normal text-system-text font-ep-sans leading-tight max-w-[80%] break-keep">
-                {language === "kr" ? currentPost.title_kr : currentPost.title_en}
+                {language === "kr"
+                  ? currentPost.title_kr
+                  : currentPost.title_en}
               </h1>
               <div className="flex items-start gap-2 shrink-0">
                 <span className="text-xl text-system-text font-ep-sans">
@@ -267,7 +314,7 @@ export default function MainContent({
                         loop
                         muted
                         style={{ width: "100%", aspectRatio: "16/9" }}
-                        {...{ videoQuality: "basic" } as any}
+                        {...({ videoQuality: "basic" } as any)}
                       />
                     </div>
                   );
@@ -303,7 +350,10 @@ export default function MainContent({
         ) : (
           <>
             {/* 검색, 연도 및 콘텐츠 영역 */}
-            <div className="flex-1 overflow-y-auto no-scrollbar relative" ref={containerRef}>
+            <div
+              className="flex-1 overflow-y-auto no-scrollbar relative"
+              ref={containerRef}
+            >
               <div className="sticky top-0 bg-background/80 backdrop-blur-md z-50">
                 <div className="relative flex flex-wrap justify-start items-center px-2 py-1 pr-16 gap-x-2 text-size-xl">
                   {[
@@ -328,7 +378,9 @@ export default function MainContent({
                   ))}
                   <button
                     className="absolute right-2 top-1 flex items-center gap-1 text-system-gray hover:text-system-text cursor-pointer transition-colors"
-                    onClick={() => setViewMode(viewMode === "img" ? "list" : "img")}
+                    onClick={() =>
+                      setViewMode(viewMode === "img" ? "list" : "img")
+                    }
                   >
                     <img src="/change.svg" alt="Change" className="w-4 h-4" />
                     <span>{viewMode}</span>
@@ -336,13 +388,9 @@ export default function MainContent({
                 </div>
               </div>
               {/* 검색창, 연도 선택, 콘텐츠 영역 */}
-              <div
-                className="grid grid-cols-4 px-2 items-stretch gap-x-3 pt-15 pb-10"
-              >
+              <div className="grid grid-cols-4 px-2 items-stretch gap-x-3 pt-15 pb-10">
                 {/* 검색창 */}
-                <div
-                  className="col-span-2 flex items-end bg-system-dark-gray px-1 pb-2 border-b border-system-gray relative"
-                >
+                <div className="col-span-2 flex items-end bg-system-dark-gray px-1 pb-2 border-b border-system-gray relative">
                   {!searchTerm && (
                     <span
                       className={`absolute pointer-events-none text-size-md font-ep-sans text-system-text transition-all duration-100 ease-in-out flex items-center ${
@@ -432,32 +480,37 @@ export default function MainContent({
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-col px-2 py-1" style={{ gap: "2.5rem" }}>
-                  {Array.from({
-                    length: Math.ceil(paginatedPosts.length / cols),
-                  }).map((_, rowIndex) => {
-                    const rowItems = paginatedPosts.slice(
-                      rowIndex * cols,
-                      (rowIndex + 1) * cols,
+                <div
+                  className="flex flex-wrap px-2 py-1 items-end"
+                  style={{ columnGap: "0.5rem", rowGap: "2.5rem" }}
+                >
+                  {paginatedPosts.map((post, index) => {
+                    const rowStart = Math.floor(index / cols) * cols;
+                    const rowEnd = Math.min(
+                      rowStart + cols,
+                      paginatedPosts.length,
                     );
+                    const rowSlice = paginatedPosts.slice(rowStart, rowEnd);
+                    const totalM = rowSlice.reduce(
+                      (sum, p) =>
+                        sum +
+                        (SIZE_MULTIPLIERS[p.thumbnail_size || "medium"] || 1.0),
+                      0,
+                    );
+                    const m =
+                      SIZE_MULTIPLIERS[post.thumbnail_size || "medium"] || 1.0;
+                    const widthPct = (m / totalM) * 100;
 
                     return (
-                      <div
-                        key={rowIndex}
-                        className="flex w-full items-end"
-                        style={{ gap: "0.5rem" }}
-                      >
-                        {rowItems.map((post) => (
-                          <PostCard
-                            key={post._id}
-                            post={post}
-                            language={language}
-                            viewMode={viewMode}
-                            cols={cols}
-                            rowItemsCount={rowItems.length}
-                          />
-                        ))}
-                      </div>
+                      <PostCard
+                        key={post._id}
+                        post={post}
+                        language={language}
+                        viewMode={viewMode}
+                        cols={cols}
+                        rowItemsCount={rowSlice.length}
+                        widthPct={widthPct}
+                      />
                     );
                   })}
                 </div>
