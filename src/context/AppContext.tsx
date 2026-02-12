@@ -24,6 +24,19 @@ const CATEGORY_COLORS: Record<string, string> = {
   Space: "#d089c0",
 };
 
+const CATEGORIES = [
+  "All Types",
+  "Graphic",
+  "Editorial",
+  "Website",
+  "Identity",
+  "Space",
+  "Practice",
+  "Motion",
+  "Press",
+  "Everyday",
+];
+
 interface AppContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
@@ -38,6 +51,7 @@ interface AppContextType {
   isMobileSidebarOpen: boolean;
   setIsMobileSidebarOpen: (open: boolean) => void;
   categoryColors: Record<string, string>;
+  categories: string[];
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -79,6 +93,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         isMobileSidebarOpen,
         setIsMobileSidebarOpen,
         categoryColors: CATEGORY_COLORS,
+        categories: CATEGORIES,
       }}
     >
       {children}

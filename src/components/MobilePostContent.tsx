@@ -32,7 +32,7 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
     <div className="h-full w-full overflow-y-auto bg-background no-scrollbar">
       <div className="flex min-h-screen flex-col bg-background pb-5 text-system-white">
         <div className="px-2 pb-2 flex justify-between items-start">
-          <h1 className="mt-2 font-ep-sans font-normal leading-none text-size-md">
+          <h1 className="mt-2 font-ep-sans font-normal leading-none text-size-xl">
             {language === "kr" ? post.title_kr : post.title_en}
           </h1>
           <div className="flex items-start gap-x-2 mt-2">

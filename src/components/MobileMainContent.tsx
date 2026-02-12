@@ -142,28 +142,26 @@ const MobilePostCard = React.memo(
           )}
         </div>
 
-        {/* 콘텐츠 블럭 */}
         <div
-          className={`${
+          className={`flex ${
             isGrid
-              ? "flex flex-col gap-2 py-2 w-full"
-              : "flex justify-between items-start gap-4"
+              ? "flex-col gap-2 py-2 w-full"
+              : "justify-between items-start gap-4"
           }`}
         >
           <div
-            className={`${isGrid ? "" : "flex-1 flex flex-wrap items-center gap-2"}`}
+            className={
+              !isGrid ? "flex-1 flex flex-wrap items-center gap-2" : undefined
+            }
           >
-            <p
-              className={`mb-2 font-ep-sans leading-tight text-system-white ${
-                isGrid ? "font-medium text-size-md" : "font-medium text-size-md"
-              }`}
-            >
+            <p className="font-ep-sans leading-tight text-system-white font-medium text-size-md">
               {language === "kr" ? post.title_kr : post.title_en}
             </p>
-            <div className="flex flex-wrap gap-1">
-              {post.category?.map((category: string) => (
+
+            <div className={`flex flex-wrap gap-1 ${isGrid ? "mt-2" : ""}`}>
+              {post.category?.map((category: string, index: number) => (
                 <span
-                  key={category}
+                  key={`${category}-${index}`}
                   className="rounded-[4px] px-[0.35rem] py-[0.15rem] font-ep-sans font-medium leading-none text-[11px] text-system-dark"
                   style={{
                     backgroundColor: categoryColors[category] || "#787878",
@@ -175,7 +173,6 @@ const MobilePostCard = React.memo(
             </div>
           </div>
 
-          {/* 메타데이터 블럭 */}
           {!isGrid && (
             <div className="text-right text-[11px] text-system-gray font-ep-sans whitespace-nowrap pt-0.5">
               {post.publishedAt}
@@ -211,7 +208,7 @@ export default function MobileMainContent({
       <div
         className={`mt-3 ${
           viewMode === "grid"
-            ? "flex flex-wrap gap-x-3 gap-y-8 px-2"
+            ? "flex flex-wrap gap-x-3 gap-y-6 px-2"
             : "flex flex-col border-t border-system-gray"
         }`}
       >
