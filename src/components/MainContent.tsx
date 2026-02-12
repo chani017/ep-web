@@ -214,7 +214,7 @@ export default function MainContent({ posts }: MainContentProps) {
     <>
       {/* 메인 헤더 */}
       <header className="flex justify-between items-center p-1 border-b border-system-gray submenu h-[2.5rem]">
-        <div className="flex-1 px-1 h-full flex items-center overflow-hidden">
+        <div className="shrink-0 px-1 h-full flex items-center">
           <div
             onClick={() => {
               window.location.href = "/";
@@ -229,7 +229,7 @@ export default function MainContent({ posts }: MainContentProps) {
             </div>
           </div>
         </div>
-        <div className="flex items-center text-center text-size-xl font-normal font-ep-sans px-2">
+        <div className="shrink-0 flex items-center text-size-xl font-normal font-ep-sans">
           <span
             className={`${
               language === "kr" ? "text-system-text" : "text-system-gray"
@@ -248,10 +248,10 @@ export default function MainContent({ posts }: MainContentProps) {
             Eng
           </span>
         </div>
-        <div className="flex-1 px-1 h-full flex justify-end items-center overflow-hidden">
+        <div className="shrink-0 h-full flex items-center">
           <Link
             href="mailto:hello@everyday-practice.com"
-            className="text-size-xl font-normal text-system-gray font-ep-sans hover:text-system-text transition-colors cursor-pointer w-fit"
+            className="text-size-xl font-normal text-system-gray font-ep-sans hover:text-system-text transition-colors cursor-pointer whitespace-nowrap"
           >
             hello@everyday-practice.com
           </Link>

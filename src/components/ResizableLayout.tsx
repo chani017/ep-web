@@ -8,6 +8,9 @@ interface ResizableLayoutProps {
 }
 
 export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
+  const MIN_SIDE_PX = 300;
+  const MIN_MAIN_PX = 600;
+
   const [leftWidth, setLeftWidth] = useState(67);
   const [isResizing, setIsResizing] = useState(false);
 
@@ -23,8 +26,11 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
   const resize = useCallback(
     (e: PointerEvent) => {
       if (isResizing) {
-        const newWidth = (e.clientX / window.innerWidth) * 100;
-        if (newWidth >= 45 && newWidth <= 73) {
+        const vw = window.innerWidth;
+        const minLeft = (MIN_MAIN_PX / vw) * 100;
+        const maxLeft = ((vw - MIN_SIDE_PX) / vw) * 100;
+        const newWidth = (e.clientX / vw) * 100;
+        if (newWidth >= minLeft && newWidth <= maxLeft) {
           setLeftWidth(newWidth);
         }
       }
@@ -56,18 +62,22 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
         style={{ width: `${leftWidth}%` }}
         className="relative flex flex-col h-full overflow-y-auto no-scrollbar"
       >
-        {isResizing && <div className="absolute inset-0 bg-black/10 z-100" />}
+        <div
+          className={`absolute inset-0 bg-black z-100 transition-opacity duration-150 pointer-events-none ${isResizing ? "opacity-30" : "opacity-0"}`}
+        />
         {left}
       </div>
 
       {/* 리사이즈 바 */}
       <div
         onPointerDown={startResizing}
-        className="relative flex items-center justify-center w-3 cursor-col-resize z-50 group shrink-0 bg-background hover:bg-[rgb(164,164,164)]"
+        className="relative flex items-center justify-center cursor-col-resize z-50 group shrink-0"
       >
-        <div className="flex gap-1 items-center">
+        <div
+          className={`flex gap-1 items-center ${isResizing ? "bg-[#e2e2e2] scale-y-[1.3]" : "bg-background hover:bg-[#a4a4a4]"}`}
+        >
           <div className="w-px h-screen bg-system-gray" />
-          <div className="w-px h-20 bg-system-gray group-hover:scale-y-[1.3]" />
+          <div className="w-px h-20 bg-system-gray" />
           <div className="w-px h-screen bg-system-gray" />
         </div>
       </div>
@@ -77,7 +87,9 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
         style={{ width: `${100 - leftWidth}%` }}
         className="relative flex flex-col h-full overflow-y-auto no-scrollbar"
       >
-        {isResizing && <div className="absolute inset-0 bg-black/10 z-100" />}
+        <div
+          className={`absolute inset-0 bg-black z-100 transition-opacity duration-150 pointer-events-none ${isResizing ? "opacity-30" : "opacity-0"}`}
+        />
         {right}
       </div>
     </div>
