@@ -15,6 +15,15 @@ export type Tab = "Contact" | "CV" | "Client";
 
 const MOBILE_BREAKPOINT = 1194;
 
+const CATEGORY_COLORS: Record<string, string> = {
+  Graphic: "#42ff00",
+  Identity: "#FFEB23",
+  Website: "#92FFF8",
+  Editorial: "#D8BAFF",
+  Motion: "#7572d5",
+  Space: "#d089c0",
+};
+
 interface AppContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
@@ -28,6 +37,7 @@ interface AppContextType {
   isMounted: boolean;
   isMobileSidebarOpen: boolean;
   setIsMobileSidebarOpen: (open: boolean) => void;
+  categoryColors: Record<string, string>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -68,6 +78,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         isMounted,
         isMobileSidebarOpen,
         setIsMobileSidebarOpen,
+        categoryColors: CATEGORY_COLORS,
       }}
     >
       {children}

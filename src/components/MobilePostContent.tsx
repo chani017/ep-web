@@ -15,21 +15,12 @@ const urlFor = (source: SanityImageSource) =>
     ? imageUrlBuilder({ projectId, dataset }).image(source)
     : null;
 
-const CATEGORY_COLORS: Record<string, string> = {
-  Graphic: "#42ff00",
-  Identity: "#FFEB23",
-  Website: "#92FFF8",
-  Editorial: "#D8BAFF",
-  Motion: "#7572d5",
-  Space: "#d089c0",
-};
-
 interface MobilePostContentProps {
   post: SanityDocument;
 }
 
 export default function MobilePostContent({ post }: MobilePostContentProps) {
-  const { language } = useAppContext();
+  const { language, categoryColors } = useAppContext();
   const pathname = usePathname();
   const isPostPage = pathname !== "/";
 
@@ -38,10 +29,10 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
   const media = post.media || [];
 
   return (
-    <div className="w-full h-full bg-background overflow-y-auto no-scrollbar">
-      <div className="flex flex-col min-h-screen bg-background text-system-white pb-5">
+    <div className="h-full w-full overflow-y-auto bg-background no-scrollbar">
+      <div className="flex min-h-screen flex-col bg-background pb-5 text-system-white">
         <div className="px-2 pb-2 flex justify-between items-start">
-          <h1 className="text-size-md font-normal font-ep-sans leading-none mt-2">
+          <h1 className="mt-2 font-ep-sans font-normal leading-none text-size-md">
             {language === "kr" ? post.title_kr : post.title_en}
           </h1>
           <div className="flex items-start gap-x-2 mt-2">
@@ -54,7 +45,7 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
                   key={category}
                   className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
                   style={{
-                    backgroundColor: CATEGORY_COLORS[category] || "#787878",
+                    backgroundColor: categoryColors[category] || "#787878",
                   }}
                 >
                   {category}
@@ -130,7 +121,7 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
             return null;
           })}
         </div>
-        <div className="text-[0.875rem] font-ep-sans leading-relaxed text-system-white mx-2 break-keep font-medium">
+        <div className="mx-2 break-keep font-ep-sans font-medium leading-relaxed text-[0.875rem] text-system-white">
           {Array.isArray(description) && (
             <PortableText
               value={description}

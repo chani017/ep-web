@@ -12,19 +12,6 @@ import { useInView } from "@/hooks/useInView";
 import { usePage } from "@/hooks/usePage";
 
 const { projectId, dataset } = client.config();
-const urlFor = (source: SanityImageSource) =>
-  projectId && dataset
-    ? imageUrlBuilder({ projectId, dataset }).image(source)
-    : null;
-
-const CATEGORY_COLORS: Record<string, string> = {
-  Graphic: "#42ff00",
-  Identity: "#FFEB23",
-  Website: "#92FFF8",
-  Editorial: "#D8BAFF",
-  Motion: "#7572d5",
-  Space: "#d089c0",
-};
 
 interface MobileMainContentProps {
   posts: SanityDocument[];
@@ -43,12 +30,19 @@ interface PostCardProps {
   language: string;
   widthPercent?: number;
   viewMode: "grid" | "list";
+  categoryColors: Record<string, string>;
 }
 
 const loadedVideos = new Set<string>();
 
 const MobilePostCard = React.memo(
-  ({ post, language, widthPercent, viewMode }: PostCardProps) => {
+  ({
+    post,
+    language,
+    widthPercent,
+    viewMode,
+    categoryColors,
+  }: PostCardProps) => {
     const [cardRef, inView] = useInView();
 
     const alreadyLoaded = post.playbackId
@@ -71,10 +65,10 @@ const MobilePostCard = React.memo(
     return (
       <Link
         href={`/${post.slug.current}`}
-        className={`group flex ${
+        className={`flex group ${
           isGrid
             ? "flex-col group-active:brightness-75"
-            : "flex-col py-2 px-2 border-b border-system-gray active:bg-system-dark-gray/20 transition-colors"
+            : "flex-col border-b border-system-gray px-2 py-2 transition-colors active:bg-system-dark-gray/20"
         }`}
         style={
           isGrid && widthPercent
@@ -142,7 +136,7 @@ const MobilePostCard = React.memo(
               style={{ display: isGrid ? "block" : "none" }}
             />
           ) : (
-            <div className="w-full aspect-square flex items-center justify-center text-system-gray text-size-md font-ep-sans bg-system-dark-gray/20">
+            <div className="flex aspect-square w-full items-center justify-center bg-system-dark-gray/20 font-ep-sans text-size-md text-system-gray">
               No Media
             </div>
           )}
@@ -160,8 +154,8 @@ const MobilePostCard = React.memo(
             className={`${isGrid ? "" : "flex-1 flex flex-wrap items-center gap-2"}`}
           >
             <p
-              className={`text-system-white font-ep-sans leading-tight mb-2 ${
-                isGrid ? "text-size-md font-medium" : "text-size-md font-medium"
+              className={`mb-2 font-ep-sans leading-tight text-system-white ${
+                isGrid ? "font-medium text-size-md" : "font-medium text-size-md"
               }`}
             >
               {language === "kr" ? post.title_kr : post.title_en}
@@ -170,9 +164,9 @@ const MobilePostCard = React.memo(
               {post.category?.map((category: string) => (
                 <span
                   key={category}
-                  className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
+                  className="rounded-[4px] px-[0.35rem] py-[0.15rem] font-ep-sans font-medium leading-none text-[11px] text-system-dark"
                   style={{
-                    backgroundColor: CATEGORY_COLORS[category] || "#787878",
+                    backgroundColor: categoryColors[category] || "#787878",
                   }}
                 >
                   {category}
@@ -200,7 +194,7 @@ export default function MobileMainContent({
   filterState,
   viewMode = "grid",
 }: MobileMainContentProps) {
-  const { language } = useAppContext();
+  const { language, categoryColors } = useAppContext();
 
   const { filteredPosts } = filterState || {};
 
@@ -253,6 +247,7 @@ export default function MobileMainContent({
               language={language}
               widthPercent={rawWidthPercent}
               viewMode={viewMode}
+              categoryColors={categoryColors}
             />
           );
         })}

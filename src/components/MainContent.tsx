@@ -9,7 +9,6 @@ import imageUrlBuilder from "@sanity/image-url";
 import { SanityImageSource } from "@sanity/image-url";
 import { client } from "@/sanity/client";
 import { useInView } from "@/hooks/useInView";
-// import { usePostFilter } from "@/hooks/usePostFilter"; // Moved to ClientLayout
 import { usePage } from "@/hooks/usePage";
 import { useYearDropdown } from "@/hooks/useYearDropdown";
 import { useResponCols } from "@/hooks/useResponCols";
@@ -25,15 +24,6 @@ interface MainContentProps {
   filterState?: any; // Passed from parent
 }
 
-const CATEGORY_COLORS: Record<string, string> = {
-  Graphic: "#42ff00",
-  Identity: "#FFEB23",
-  Website: "#92FFF8",
-  Editorial: "#D8BAFF",
-  Motion: "#7572d5",
-  Space: "#d089c0",
-};
-
 interface PostCardProps {
   post: any;
   language: string;
@@ -41,6 +31,7 @@ interface PostCardProps {
   cols: number;
   rowItemsCount: number;
   widthPct?: number;
+  categoryColors: Record<string, string>;
 }
 
 const loadedVideos = new Set<string>();
@@ -59,6 +50,7 @@ const PostCard = React.memo(
     cols,
     rowItemsCount,
     widthPct,
+    categoryColors,
   }: PostCardProps) => {
     const multipliers = SIZE_MULTIPLIERS;
     const m = multipliers[post.thumbnail_size || "medium"] || 1.0;
@@ -93,7 +85,7 @@ const PostCard = React.memo(
                   key={category}
                   className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
                   style={{
-                    backgroundColor: CATEGORY_COLORS[category] || "#787878",
+                    backgroundColor: categoryColors[category] || "#787878",
                   }}
                 >
                   {category}
@@ -172,7 +164,7 @@ const PostCard = React.memo(
                   key={category}
                   className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
                   style={{
-                    backgroundColor: CATEGORY_COLORS[category] || "#787878",
+                    backgroundColor: categoryColors[category] || "#787878",
                   }}
                 >
                   {category}
@@ -202,8 +194,14 @@ const CATEGORIES = [
 ];
 
 export default function MainContent({ posts, filterState }: MainContentProps) {
-  const { language, setLanguage, isFullContentMode, currentPost, isMobile } =
-    useAppContext();
+  const {
+    language,
+    setLanguage,
+    isFullContentMode,
+    currentPost,
+    isMobile,
+    categoryColors,
+  } = useAppContext();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
   const [viewMode, setViewMode] = React.useState<"img" | "list">("img");
   const [isCategoryOpen, setIsCategoryOpen] = React.useState(false);
@@ -307,7 +305,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                       key={category}
                       className="px-2 py-1 rounded-[6px] text-size-sm leading-none font-medium font-ep-sans text-system-dark whitespace-nowrap"
                       style={{
-                        backgroundColor: CATEGORY_COLORS[category] || "#787878",
+                        backgroundColor: categoryColors[category] || "#787878",
                       }}
                     >
                       {category}
@@ -391,7 +389,6 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
               ref={containerRef}
             >
               <div className="sticky top-0 bg-background/80 backdrop-blur-md z-50">
-                {/* PC: 카테고리 가로 나열 */}
                 <div className="relative flex flex-wrap justify-start items-center px-2 py-1 pr-16 gap-x-2 text-size-xl leading-tight">
                   {CATEGORIES.map((category) => (
                     <div
@@ -520,6 +517,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                       viewMode={viewMode}
                       cols={cols}
                       rowItemsCount={0}
+                      categoryColors={categoryColors}
                     />
                   ))}
                 </div>
@@ -563,6 +561,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                         cols={cols}
                         rowItemsCount={rowSlice.length}
                         widthPct={widthPct}
+                        categoryColors={categoryColors}
                       />
                     );
                   })}

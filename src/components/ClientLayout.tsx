@@ -44,7 +44,7 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
 
   if (isMobile) {
     return (
-      <div className="flex flex-col h-screen overflow-hidden bg-background text-system-white font-ep-sans">
+      <div className="flex h-screen flex-col overflow-hidden bg-background font-ep-sans text-system-white">
         <div className="flex-1 overflow-y-auto no-scrollbar">
           <MobileHeader
             filterState={filterState}
@@ -62,7 +62,7 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
         {!isPostPage && <MobileSidebar>{children}</MobileSidebar>}
 
         <div
-          className={`fixed inset-x-0 bottom-0 top-10 bg-background z-80 transition-transform duration-200 ease-in-out ${
+          className={`fixed inset-x-0 bottom-0 top-10 z-80 bg-background transition-transform duration-200 ease-in-out ${
             isPostPage ? "translate-y-0" : "translate-y-full"
           }`}
           onTransitionEnd={() => {
@@ -81,7 +81,7 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
     <ResizableLayout
       left={<MainContent posts={posts} filterState={filterState} />}
       right={
-        <div className="flex flex-col h-full overflow-hidden">
+        <div className="flex h-full flex-col overflow-hidden">
           <SidePanelHeader />
           <div className="flex-1 overflow-y-auto no-scrollbar">{children}</div>
         </div>

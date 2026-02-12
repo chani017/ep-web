@@ -18,8 +18,13 @@ export default function MobileHeader({
   setViewMode,
   isPostPage,
 }: MobileHeaderProps) {
-  const { language, setLanguage, isMobileSidebarOpen, setIsMobileSidebarOpen } =
-    useAppContext();
+  const {
+    language,
+    setLanguage,
+    isMobileSidebarOpen,
+    setIsMobileSidebarOpen,
+    categoryColors,
+  } = useAppContext();
   const router = useRouter();
 
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
@@ -51,15 +56,6 @@ export default function MobileHeader({
     "Everyday",
   ];
 
-  const CATEGORY_COLORS: Record<string, string> = {
-    Graphic: "#42ff00",
-    Identity: "#FFEB23",
-    Website: "#92FFF8",
-    Editorial: "#D8BAFF",
-    Motion: "#7572d5",
-    Space: "#d089c0",
-  };
-
   React.useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (
@@ -74,8 +70,8 @@ export default function MobileHeader({
   }, []);
 
   return (
-    <main className="px-1.5 sticky top-0 z-50">
-      <header className="flex justify-between items-center h-10 border-b border-system-gray bg-background">
+    <main className="sticky top-0 z-50 px-1.5">
+      <header className="flex h-10 items-center justify-between border-b border-system-gray bg-background">
         <div
           onClick={() => {
             router.push("/");
@@ -110,7 +106,7 @@ export default function MobileHeader({
       </header>
 
       {filterState && (
-        <div className="flex flex-col bg-background/80 backdrop-blur-[2px] z-50">
+        <div className="z-50 flex flex-col bg-background/80 backdrop-blur-[2px]">
           <div className="flex items-center border-b border-system-gray">
             {/* 검색창 */}
             <div className="flex-1 flex items-center py-2 relative">
