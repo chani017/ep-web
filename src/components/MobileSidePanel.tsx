@@ -43,7 +43,7 @@ export default function MobileSidebar({ children }: MobileSidebarProps) {
 
       {/* 사이드패널 */}
       <div
-        className={`fixed top-0 left-0 h-full w-[90%] border-r border-system-gray bg-background z-500 transition-transform duration-300 ease-in-out flex flex-col ${
+        className={`fixed top-0 left-0 h-full w-[calc(100%-40px)] border-r border-system-gray bg-background z-500 transition-transform duration-300 ease-in-out flex flex-col ${
           isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
