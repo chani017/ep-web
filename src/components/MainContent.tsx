@@ -9,7 +9,7 @@ import imageUrlBuilder from "@sanity/image-url";
 import { SanityImageSource } from "@sanity/image-url";
 import { client } from "@/sanity/client";
 import { useInView } from "@/hooks/useInView";
-import { usePostFilter } from "@/hooks/usePostFilter";
+// import { usePostFilter } from "@/hooks/usePostFilter"; // Moved to ClientLayout
 import { usePage } from "@/hooks/usePage";
 import { useYearDropdown } from "@/hooks/useYearDropdown";
 import { useResponCols } from "@/hooks/useResponCols";
@@ -22,6 +22,7 @@ const urlFor = (source: SanityImageSource) =>
 
 interface MainContentProps {
   posts: SanityDocument[];
+  filterState?: any; // Passed from parent
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -187,12 +188,28 @@ const PostCard = React.memo(
 
 PostCard.displayName = "PostCard";
 
-export default function MainContent({ posts }: MainContentProps) {
-  const { language, setLanguage, isFullContentMode, currentPost } =
+const CATEGORIES = [
+  "All Types",
+  "Graphic",
+  "Editorial",
+  "Website",
+  "Identity",
+  "Space",
+  "Practice",
+  "Motion",
+  "Press",
+  "Everyday",
+];
+
+export default function MainContent({ posts, filterState }: MainContentProps) {
+  const { language, setLanguage, isFullContentMode, currentPost, isMobile } =
     useAppContext();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
   const [viewMode, setViewMode] = React.useState<"img" | "list">("img");
+  const [isCategoryOpen, setIsCategoryOpen] = React.useState(false);
+  const categoryDropdownRef = React.useRef<HTMLDivElement>(null);
 
+  // Use passed filterState instead of local hook
   const {
     searchTerm,
     setSearchTerm,
@@ -202,18 +219,31 @@ export default function MainContent({ posts }: MainContentProps) {
     setSelectedCategory,
     uniqueYears,
     filteredPosts,
-  } = usePostFilter(posts);
+  } = filterState || {}; // Fallback for safety, though it should be passed
 
   const { currentPage, setCurrentPage, paginatedPosts, totalPages } =
     usePage(filteredPosts);
 
   const { isYearOpen, setIsYearOpen, yearDropdownRef } = useYearDropdown();
-  const [containerRef, cols] = useResponCols([isFullContentMode]);
+  const [containerRef, cols] = useResponCols([isFullContentMode, isMobile]);
+
+  // 카테고리 드롭다운 외부 클릭 닫기
+  React.useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (
+        categoryDropdownRef.current &&
+        !categoryDropdownRef.current.contains(e.target as Node)
+      ) {
+        setIsCategoryOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   return (
     <>
-      {/* 메인 헤더 */}
-      <header className="flex justify-between items-center p-1 border-b border-system-gray submenu h-[2.5rem]">
+      <header className="flex justify-between items-center p-1 border-b border-system-gray submenu h-10">
         <div className="shrink-0 px-1 h-full flex items-center">
           <div
             onClick={() => {
@@ -361,19 +391,9 @@ export default function MainContent({ posts }: MainContentProps) {
               ref={containerRef}
             >
               <div className="sticky top-0 bg-background/80 backdrop-blur-md z-50">
+                {/* PC: 카테고리 가로 나열 */}
                 <div className="relative flex flex-wrap justify-start items-center px-2 py-1 pr-16 gap-x-2 text-size-xl leading-tight">
-                  {[
-                    "All Types",
-                    "Graphic",
-                    "Editorial",
-                    "Website",
-                    "Identity",
-                    "Space",
-                    "Practice",
-                    "Motion",
-                    "Press",
-                    "Everyday",
-                  ].map((category) => (
+                  {CATEGORIES.map((category) => (
                     <div
                       key={category}
                       className={`${selectedCategory === category ? "text-system-text" : "text-system-gray"} hover:text-system-text cursor-pointer transition-colors`}
@@ -393,7 +413,6 @@ export default function MainContent({ posts }: MainContentProps) {
                   </button>
                 </div>
               </div>
-              {/* 검색창, 연도 선택, 콘텐츠 영역 */}
               <div className="grid grid-cols-4 px-2 items-stretch gap-x-3 mt-12">
                 {/* 검색창 */}
                 <div className="col-span-2 flex items-end bg-system-dark-gray px-1 pb-2 border-b border-system-gray relative">
@@ -449,7 +468,7 @@ export default function MainContent({ posts }: MainContentProps) {
                         : "max-h-0 opacity-0 -translate-y-1 pointer-events-none border-transparent"
                     }`}
                   >
-                    {uniqueYears.map((year) => (
+                    {uniqueYears.map((year: string) => (
                       <div
                         key={year}
                         className={`px-1.5 py-0.5 text-size-md font-ep-sans cursor-pointer transition-colors ${
@@ -506,8 +525,11 @@ export default function MainContent({ posts }: MainContentProps) {
                 </div>
               ) : (
                 <div
-                  className="flex flex-wrap px-2 py-1 items-end mt-10"
-                  style={{ columnGap: "0.5rem", rowGap: "2.5rem" }}
+                  className={`flex flex-wrap px-2 py-1 items-end mt-10`}
+                  style={{
+                    columnGap: "0.5rem",
+                    rowGap: "2.5rem",
+                  }}
                 >
                   {paginatedPosts.map((post, index) => {
                     const rowStart = Math.floor(index / cols) * cols;

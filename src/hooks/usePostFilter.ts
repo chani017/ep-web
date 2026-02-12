@@ -47,7 +47,7 @@ export function usePostFilter(posts: SanityDocument[]) {
 
   const uniqueYears = useMemo(() => {
     const years = posts
-      .map((post) => post.publishedAt?.toString())
+      .map((post) => post.year?.toString())
       .filter((year): year is string => !!year);
     return [
       "Year",
@@ -67,8 +67,7 @@ export function usePostFilter(posts: SanityDocument[]) {
         );
 
       const matchesYear =
-        selectedYear === "Year" ||
-        post.publishedAt?.toString() === selectedYear;
+        selectedYear === "Year" || post.year?.toString() === selectedYear;
 
       const matchesCategory =
         selectedCategory === "All Types" ||

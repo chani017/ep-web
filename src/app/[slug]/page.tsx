@@ -1,35 +1,27 @@
 import { client } from "@/sanity/client";
 import { type SanityDocument } from "next-sanity";
-import PostDetail from "@/components/PostContent";
+import ProjectContent from "@/components/PostContent";
+import { notFound } from "next/navigation";
 
-const POST_QUERY = `*[_type == "post" && slug.current == $slug][0] {
-  ...,
-  media[] {
-    ...,
-    _type == "mux.video" => {
-      asset-> {
-        playbackId
-      }
-    }
-  }
-}`;
+const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]`;
 
 const options = { next: { revalidate: 30 } };
 
-export default async function PostPage({
-  params,
-}: {
+interface PageProps {
   params: Promise<{ slug: string }>;
-}) {
-  const post = await client.fetch<SanityDocument>(POST_QUERY, await params, options);
+}
+
+export default async function ProjectPage({ params }: PageProps) {
+  const { slug } = await params;
+  const post = await client.fetch<SanityDocument>(
+    POST_QUERY,
+    { slug },
+    options,
+  );
 
   if (!post) {
-    return (
-      <div className="p-4 text-system-gray font-ep-sans">
-        Post not found.
-      </div>
-    );
+    notFound();
   }
 
-  return <PostDetail post={post} />;
+  return <ProjectContent post={post} />;
 }

@@ -13,11 +13,7 @@ interface SideBarProps {
 
 type Tab = "Contact" | "CV" | "Client";
 
-export default function SideBar({
-  selExhs,
-  award,
-  clients,
-}: SideBarProps) {
+export default function SideBar({ selExhs, award, clients }: SideBarProps) {
   const { activeTab, language } = useAppContext();
 
   const allCvs = [...(selExhs || []), ...(award || [])];
@@ -35,8 +31,9 @@ export default function SideBar({
                   <br />
                   일상의실천은 오늘날 우리가 살아가는 현실에서 디자인이 어떤
                   역할을 해야 하며, 또한 무엇을 할 수 있는가를 고민하는 소규모
-                  공동체입니다. 그래픽디자인을 기반으로 하고 있지만, 평면 작업에만 머무르지
-                  않는 다양한 디자인의 방법론을 탐구하고 있습니다.
+                  공동체입니다. 그래픽디자인을 기반으로 하고 있지만, 평면
+                  작업에만 머무르지 않는 다양한 디자인의 방법론을 탐구하고
+                  있습니다.
                 </>
               ) : (
                 <>
@@ -45,23 +42,24 @@ export default function SideBar({
                   <br />
                   Everyday Practice is a small community that contemplates what
                   role design should play in the reality we live in today and
-                  what it can do. While based on graphic design, we explore various design
-                  methodologies that go beyond two-dimensional work.
+                  what it can do. While based on graphic design, we explore
+                  various design methodologies that go beyond two-dimensional
+                  work.
                 </>
               )}
             </h3>
             <table className="mt-3 text-size-md font-medium text-system-text font-ep-sans w-full">
               <tbody>
-                <tr className="h-[1.5rem]">
-                  <td className="w-[6.25rem] align-top">address.</td>
+                <tr className="h-6">
+                  <td className="w-25 align-top">address.</td>
                   <td className="align-top">
                     {language === "kr"
                       ? "서울시 마포구 포은로 127 망원제일빌딩 3층"
                       : "3F, 127, Poeun-ro, Mapo-gu, Seoul, Republic of Korea"}
                   </td>
                 </tr>
-                <tr className="h-[1.5rem]">
-                  <td className="w-[6.25rem] align-top">email.</td>
+                <tr className="h-6">
+                  <td className="w-25 align-top">email.</td>
                   <td className="align-top">
                     <Link
                       href="mailto:hello@everyday-practice.com"
@@ -71,12 +69,12 @@ export default function SideBar({
                     </Link>
                   </td>
                 </tr>
-                <tr className="h-[1.5rem]">
-                  <td className="w-[6.25rem] align-top">tel.</td>
+                <tr className="h-6">
+                  <td className="w-25 align-top">tel.</td>
                   <td className="align-top">02.6352.7407</td>
                 </tr>
-                <tr className="h-[1.5rem]">
-                  <td className="w-[6.25rem] align-top">instagram.</td>
+                <tr className="h-6">
+                  <td className="w-25 align-top">instagram.</td>
                   <td className="align-top">
                     <button>
                       <Link
@@ -104,7 +102,7 @@ export default function SideBar({
         const finalCategories = [...categories, ...otherCategories];
 
         return (
-          <div className="text-[0.9rem] font-normal text-system-text font-ep-sans space-y-10">
+          <div className="text-[0.9rem] font-medium text-system-text font-ep-sans space-y-10">
             {finalCategories.map((category) => {
               const categoryCvs = allCvs.filter(
                 (cv: SanityDocument) => cv.category === category,
@@ -136,6 +134,17 @@ export default function SideBar({
                         <div className="space-y-0">
                           {categoryCvs
                             .filter((cv: SanityDocument) => cv.type === type)
+                            .sort((a, b) => {
+                              const parseDate = (dateStr: any) => {
+                                if (!dateStr) return 0;
+                                const str = String(dateStr);
+                                const parts = str.split(".");
+                                const year = parseInt(parts[0]) || 0;
+                                const month = parseInt(parts[1]) || 0;
+                                return year * 100 + month;
+                              };
+                              return parseDate(a.date) - parseDate(b.date);
+                            })
                             .map((cv: SanityDocument) => (
                               <div key={cv._id} className="group">
                                 <div className="flex items-baseline gap-x-4">
@@ -158,7 +167,7 @@ export default function SideBar({
       }
       case "Client":
         return (
-          <div className="text-[0.9rem] font-normal text-system-text font-ep-sans space-y-4">
+          <div className="text-[0.9rem] font-medium text-system-text font-ep-sans space-y-4">
             <h3 className="underline underline-offset-6 decoration-1 uppercase font-medium">
               <p>Clients</p>
             </h3>

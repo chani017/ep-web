@@ -1,11 +1,19 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 import { type SanityDocument } from "next-sanity";
 
 type Language = "kr" | "en";
 export type Tab = "Contact" | "CV" | "Client";
+
+const MOBILE_BREAKPOINT = 1024;
 
 interface AppContextType {
   language: Language;
@@ -16,6 +24,9 @@ interface AppContextType {
   setIsFullContentMode: (mode: boolean) => void;
   currentPost: SanityDocument | null;
   setCurrentPost: (post: SanityDocument | null) => void;
+  isMobile: boolean;
+  isMobileSidebarOpen: boolean;
+  setIsMobileSidebarOpen: (open: boolean) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -25,6 +36,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [activeTab, setActiveTab] = useState<Tab>("Contact");
   const [isFullContentMode, setIsFullContentMode] = useState(false);
   const [currentPost, setCurrentPost] = useState<SanityDocument | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile) setIsMobileSidebarOpen(false);
+  }, [isMobile]);
 
   return (
     <AppContext.Provider
@@ -37,6 +61,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setIsFullContentMode,
         currentPost,
         setCurrentPost,
+        isMobile,
+        isMobileSidebarOpen,
+        setIsMobileSidebarOpen,
       }}
     >
       {children}
