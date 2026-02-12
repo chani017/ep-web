@@ -3,20 +3,24 @@
 import React from "react";
 import { useAppContext } from "@/context/AppContext";
 import { useYearDropdown } from "@/hooks/useYearDropdown";
+import { useRouter } from "next/navigation";
 
 interface MobileHeaderProps {
   filterState?: any;
   viewMode?: "grid" | "list";
   setViewMode?: (mode: "grid" | "list") => void;
+  isPostPage?: boolean;
 }
 
 export default function MobileHeader({
   filterState,
   viewMode,
   setViewMode,
+  isPostPage,
 }: MobileHeaderProps) {
   const { language, setLanguage, isMobileSidebarOpen, setIsMobileSidebarOpen } =
     useAppContext();
+  const router = useRouter();
 
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = React.useState(false);
@@ -76,51 +80,54 @@ export default function MobileHeader({
           onClick={() => {
             window.location.href = "/";
           }}
-          className="text-size-xl font-light text-system-text font-ep-sans uppercase cursor-pointer"
+          className="text-size-xl font-light text-system-text font-ep-sans uppercase cursor-pointer whitespace-nowrap"
         >
           Everyday Practice
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* 한영 전환 */}
-          <div className="flex items-center text-size-xl font-normal font-ep-sans">
-            <span
-              className={`${
-                language === "kr" ? "text-system-text" : "text-system-gray"
-              } cursor-pointer hover:text-system-text transition-colors`}
-              onClick={() => setLanguage("kr")}
-            >
-              Kor
-            </span>
-            <span className="text-system-gray mx-1">/</span>
-            <span
-              className={`${
-                language === "en" ? "text-system-text" : "text-system-gray"
-              } cursor-pointer hover:text-system-text transition-colors`}
-              onClick={() => setLanguage("en")}
-            >
-              Eng
-            </span>
-          </div>
-
-          {/* 햄버거 메뉴 버튼 */}
-          <button
-            onClick={() => setIsMobileSidebarOpen(true)}
-            className="flex flex-col justify-center items-center w-8 h-8 cursor-pointer"
-            aria-label="메뉴 열기"
+        {/* 한영 전환 */}
+        <div className="flex items-center text-size-xl font-normal font-ep-sans">
+          <span
+            className={`${
+              language === "kr" ? "text-system-text" : "text-system-gray"
+            } cursor-pointer hover:text-system-text transition-colors`}
+            onClick={() => setLanguage("kr")}
           >
-            <img
-              src="/plus.svg"
-              alt="Menu"
-              className={`w-5 h-5 transition-transform duration-300 ${isMobileSidebarOpen ? "rotate-135" : ""}`}
-              style={{ display: "block" }}
-            />
-          </button>
+            Kor
+          </span>
+          <span className="text-system-gray mx-1.5">/</span>
+          <span
+            className={`${
+              language === "en" ? "text-system-text" : "text-system-gray"
+            } cursor-pointer hover:text-system-text transition-colors`}
+            onClick={() => setLanguage("en")}
+          >
+            Eng
+          </span>
         </div>
+
+        <button
+          onClick={() => {
+            if (isPostPage) {
+              router.push("/");
+            } else {
+              setIsMobileSidebarOpen(true);
+            }
+          }}
+          className="flex flex-col justify-center items-center w-8 h-8 cursor-pointer"
+          aria-label={isPostPage ? "패널 닫기" : "메뉴 열기"}
+        >
+          <img
+            src="/plus.svg"
+            alt="Menu"
+            className={`w-5 h-5 transition-transform duration-200 ${isPostPage || isMobileSidebarOpen ? "rotate-135" : ""}`}
+            style={{ display: "block" }}
+          />
+        </button>
       </header>
 
       {filterState && (
-        <div className="flex flex-col gap-2 bg-background/80 backdrop-blur-sm">
+        <div className="flex flex-col gap-2 bg-background/80 backdrop-blur-sm z-50">
           <div className="flex items-center border-b border-system-gray">
             {/* 검색창 */}
             <div className="flex-1 flex items-center px-1 py-2 relative">
@@ -148,6 +155,22 @@ export default function MobileHeader({
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
               />
+            </div>
+            <div className="flex items-center gap-2">
+              {(searchTerm !== "" ||
+                selectedCategory !== "All Types" ||
+                selectedYear !== "Year") && (
+                <button
+                  onClick={() => {
+                    setSearchTerm("");
+                    setSelectedCategory("All Types");
+                    setSelectedYear("Year");
+                  }}
+                  className="transition-opacity active:opacity-50"
+                >
+                  <img src="/reset.svg" alt="Reset" className="w-5 h-5" />
+                </button>
+              )}
             </div>
 
             <div className="flex items-center pl-2 pr-1 gap-2">

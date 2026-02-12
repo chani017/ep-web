@@ -10,6 +10,7 @@ import MainContent from "./MainContent";
 import SidePanelHeader from "./SidePanelHeader";
 import MobileHeader from "./MobileHeader";
 import MobileSidebar from "./MobileSidePanel";
+import { usePathname } from "next/navigation";
 
 interface ClientLayoutProps {
   posts: SanityDocument[];
@@ -19,11 +20,14 @@ interface ClientLayoutProps {
 export default function ClientLayout({ posts, children }: ClientLayoutProps) {
   const { isMobile } = useAppContext();
   const filterState = usePostFilter(posts);
+  const pathname = usePathname();
   const [mobileViewMode, setMobileViewMode] = React.useState<"grid" | "list">(
     "grid",
   );
 
   if (isMobile) {
+    const isPostPage = pathname !== "/";
+
     return (
       <div className="flex flex-col h-screen overflow-hidden bg-background text-system-text font-ep-sans">
         <div className="flex-1 overflow-y-auto no-scrollbar">
@@ -31,6 +35,7 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
             filterState={filterState}
             viewMode={mobileViewMode}
             setViewMode={setMobileViewMode}
+            isPostPage={isPostPage}
           />
           <MobileMainContent
             posts={posts}
@@ -38,7 +43,10 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
             viewMode={mobileViewMode}
           />
         </div>
-        <MobileSidebar>{children}</MobileSidebar>
+
+        <MobileSidebar>{!isPostPage && children}</MobileSidebar>
+
+        {isPostPage && children}
       </div>
     );
   }
