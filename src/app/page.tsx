@@ -2,32 +2,26 @@ import { client } from "@/sanity/client";
 import { type SanityDocument } from "next-sanity";
 import SidePanel from "@/components/SidePanel";
 
-const CV_QUERY = `*[
-  _type in ["selExhs", "award", "awards", "client"]
-] | order(date asc) {
-  _id,
-  _type,
-  "category": select(
-    _type == "selExhs" => "Selected Exhibitions",
-    _type in ["award", "awards"] => "Award",
-    _type == "client" => "Clients"
-  ),
-  type,
-  date,
-  title,
-  client
+const CV_QUERY = `{
+  "selExhs": *[_type == "selExhs"] | order(date desc),
+  "awards": *[_type in ["award", "awards"]] | order(date desc),
+  "clients": array::unique(*[_type == "post" && defined(client)].client) | order(@ asc)
 }`;
 
 const options = { next: { revalidate: 30 } };
 
 export default async function IndexPage() {
-  const cvItems = await client.fetch<SanityDocument[]>(CV_QUERY, {}, options);
+  const data = await client.fetch<{
+    selExhs: SanityDocument[];
+    awards: SanityDocument[];
+    clients: string[];
+  }>(CV_QUERY, {}, options);
 
-  const selExhs = cvItems.filter((item) => ["selExhs"].includes(item._type));
-  const award = cvItems.filter((item) =>
-    ["award", "awards"].includes(item._type),
+  return (
+    <SidePanel
+      selExhs={data.selExhs}
+      award={data.awards}
+      clients={data.clients}
+    />
   );
-  const clients = cvItems.filter((item) => ["client"].includes(item._type));
-
-  return <SidePanel selExhs={selExhs} award={award} clients={clients} />;
 }

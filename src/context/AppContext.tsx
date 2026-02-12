@@ -18,10 +18,13 @@ const MOBILE_BREAKPOINT = 1194;
 const CATEGORY_COLORS: Record<string, string> = {
   Graphic: "#42ff00",
   Identity: "#FFEB23",
-  Website: "#92FFF8",
+  Website: "#7CEEFF",
   Editorial: "#D8BAFF",
-  Motion: "#7572d5",
-  Space: "#d089c0",
+  Motion: "#8683FF",
+  Space: "#FF99E2",
+  Practice: "#FF590C",
+  Press: "#6A6A6A",
+  Everyday: "#FF9999",
 };
 
 const CATEGORIES = [

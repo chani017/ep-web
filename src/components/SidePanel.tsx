@@ -8,7 +8,7 @@ import { useAppContext } from "@/context/AppContext";
 interface SideBarProps {
   selExhs: SanityDocument[];
   award: SanityDocument[];
-  clients: SanityDocument[];
+  clients: string[];
 }
 
 type Tab = "Contact" | "CV" | "Client";
@@ -172,9 +172,12 @@ export default function SideBar({ selExhs, award, clients }: SideBarProps) {
               <p>Clients</p>
             </h3>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-              {clients.map((client: SanityDocument) => (
-                <p key={client._id} className="text-system-white break-keep">
-                  {client.client}
+              {clients.map((client: string) => (
+                <p
+                  key={client}
+                  className="text-system-white break-keep text-[0.875rem] md:text-[0.9rem]"
+                >
+                  {client}
                 </p>
               ))}
             </div>
