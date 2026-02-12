@@ -257,16 +257,16 @@ export default function MobileMainContent({
           );
         })}
       </div>
-      {/* 페이지네이션 (PC와 동일한 디자인) */}
+      {/* 페이지네이션 */}
       {totalPages >= 1 && (
-        <div className="px-3 pt-4 pb-10 flex justify-start items-center text-size-md gap-1">
+        <div className="px-3 pt-10 pb-20 flex justify-start items-center text-size-md gap-1">
           {currentPage > 1 && (
             <button
               onClick={() => {
                 setCurrentPage(currentPage - 1);
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="font-ep-sans text-system-white text-size-md hover:bg-system-dark-gray px-1.5 leading-5 rounded-md min-w-3 text-center"
+              className="font-ep-sans text-system-white text-size-md hover:bg-system-dark-gray rounded-md min-w-3 text-center"
             >
               〈
             </button>
