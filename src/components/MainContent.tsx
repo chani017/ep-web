@@ -361,7 +361,7 @@ export default function MainContent({ posts }: MainContentProps) {
               ref={containerRef}
             >
               <div className="sticky top-0 bg-background/80 backdrop-blur-md z-50">
-                <div className="relative flex flex-wrap justify-start items-center px-2 py-1 pr-16 gap-x-2 text-size-xl">
+                <div className="relative flex flex-wrap justify-start items-center px-2 py-1 pr-16 gap-x-2 text-size-xl leading-tight">
                   {[
                     "All Types",
                     "Graphic",
