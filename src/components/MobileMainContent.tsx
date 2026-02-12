@@ -208,7 +208,7 @@ export default function MobileMainContent({
       <div
         className={`mt-3 ${
           viewMode === "grid"
-            ? "flex flex-wrap gap-x-3 gap-y-6 px-2"
+            ? "flex flex-wrap gap-x-3 gap-y-6"
             : "flex flex-col border-t border-system-gray"
         }`}
       >
