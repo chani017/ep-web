@@ -34,19 +34,19 @@ interface MobileMainContentProps {
 const SIZE_MULTIPLIERS: Record<string, number> = {
   small: 0.5,
   medium: 0.7,
-  large: 1.0,
+  large: 0.9,
 };
 
 interface PostCardProps {
   post: any;
   language: string;
-  widthPct?: number;
+  widthPercent?: number;
 }
 
 const loadedVideos = new Set<string>();
 
 const MobilePostCard = React.memo(
-  ({ post, language, widthPct }: PostCardProps) => {
+  ({ post, language, widthPercent }: PostCardProps) => {
     const [cardRef, inView] = useInView();
 
     const alreadyLoaded = post.playbackId
@@ -68,7 +68,14 @@ const MobilePostCard = React.memo(
       <Link
         href={`/${post.slug.current}`}
         className="group flex flex-col"
-        style={widthPct ? { flex: `0 0 ${widthPct}%` } : undefined}
+        style={
+          widthPercent
+            ? {
+                flex: `0 0 calc(${widthPercent}% - 0.375rem)`,
+                maxWidth: `calc(${widthPercent}% - 0.375rem)`,
+              }
+            : undefined
+        }
       >
         <div className="flex flex-col w-full transition-all duration-150 group-active:brightness-75">
           <div ref={cardRef} className="w-full overflow-hidden">
@@ -155,14 +162,41 @@ export default function MobileMainContent({
         <span>{filteredPosts?.length || 0} results</span>
       </div>
       <div className="flex flex-wrap gap-x-3 gap-y-8 px-2 mt-3">
-        {paginatedPosts.map((post: any) => (
-          <MobilePostCard
-            key={post._id}
-            post={post}
-            language={language}
-            // Remove widthPct since we use grid
-          />
-        ))}
+        {paginatedPosts.map((post: any, index: number) => {
+          const cols = 2;
+          const rowStart = Math.floor(index / cols) * cols;
+          const rowEnd = rowStart + cols;
+          const rowSlice = paginatedPosts.slice(rowStart, rowEnd);
+          const rowItemCount = rowSlice.length;
+
+          const actualTotalM = rowSlice.reduce(
+            (sum: number, p: any) =>
+              sum + (SIZE_MULTIPLIERS[p.thumbnail_size || "medium"] || 1.0),
+            0,
+          );
+
+          const isLastRowShort = rowItemCount < cols;
+          // Pad the last row so items don't stretch effectively,
+          // or do we want them to stretch?
+          // If we want "2 per line", and we have 1 item left, it should take its half.
+          // By adding dummy M, we ensure the single item takes its proportional width (e.g. 50%).
+          const paddedTotalM = isLastRowShort
+            ? actualTotalM +
+              (cols - rowItemCount) * (SIZE_MULTIPLIERS.medium || 0.8)
+            : actualTotalM;
+
+          const m = SIZE_MULTIPLIERS[post.thumbnail_size || "medium"] || 1.0;
+          const rawWidthPercent = (m / paddedTotalM) * 100;
+
+          return (
+            <MobilePostCard
+              key={post._id}
+              post={post}
+              language={language}
+              widthPercent={rawWidthPercent}
+            />
+          );
+        })}
       </div>
       {/* Pagination */}
       {totalPages >= 1 && (
