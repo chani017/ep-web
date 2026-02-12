@@ -1,10 +1,49 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { type SanityDocument } from "next-sanity";
+
+const CATEGORIES = [
+  "All Types",
+  "Graphic",
+  "Editorial",
+  "Website",
+  "Identity",
+  "Space",
+  "Practice",
+  "Motion",
+  "Press",
+  "Everyday",
+];
+
+function getInitialCategory(): string {
+  if (typeof window === "undefined") return "All Types";
+  const params = new URLSearchParams(window.location.search);
+  const raw = params.get("_categories");
+  if (!raw) return "All Types";
+  return (
+    CATEGORIES.find((c) => c.toLowerCase() === raw.toLowerCase()) || "All Types"
+  );
+}
+
+function updateCategoryUrl(category: string) {
+  const url = new URL(window.location.href);
+  if (category === "All Types") {
+    url.searchParams.delete("_categories");
+  } else {
+    url.searchParams.set("_categories", category.toLowerCase());
+  }
+  window.history.replaceState(null, "", url.toString());
+}
 
 export function usePostFilter(posts: SanityDocument[]) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedYear, setSelectedYear] = useState<string>("Year");
-  const [selectedCategory, setSelectedCategory] = useState<string>("All Types");
+  const [selectedCategory, setSelectedCategoryState] =
+    useState<string>(getInitialCategory);
+
+  const setSelectedCategory = useCallback((category: string) => {
+    setSelectedCategoryState(category);
+    updateCategoryUrl(category);
+  }, []);
 
   const uniqueYears = useMemo(() => {
     const years = posts

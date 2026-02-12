@@ -394,7 +394,7 @@ export default function MainContent({ posts }: MainContentProps) {
                 </div>
               </div>
               {/* 검색창, 연도 선택, 콘텐츠 영역 */}
-              <div className="grid grid-cols-4 px-2 items-stretch gap-x-3 pt-15 pb-10">
+              <div className="grid grid-cols-4 px-2 items-stretch gap-x-3 mt-12">
                 {/* 검색창 */}
                 <div className="col-span-2 flex items-end bg-system-dark-gray px-1 pb-2 border-b border-system-gray relative">
                   {!searchTerm && (
@@ -506,7 +506,7 @@ export default function MainContent({ posts }: MainContentProps) {
                 </div>
               ) : (
                 <div
-                  className="flex flex-wrap px-2 py-1 items-end"
+                  className="flex flex-wrap px-2 py-1 items-end mt-10"
                   style={{ columnGap: "0.5rem", rowGap: "2.5rem" }}
                 >
                   {paginatedPosts.map((post, index) => {

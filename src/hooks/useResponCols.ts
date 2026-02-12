@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, RefObject } from "react";
 
-const MIN_COL_WIDTH = 360;
+const MIN_COL_WIDTH = 300;
 const MAX_COLS = 6;
 
 export function useResponCols(
