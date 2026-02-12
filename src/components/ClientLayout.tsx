@@ -19,13 +19,24 @@ interface ClientLayoutProps {
 export default function ClientLayout({ posts, children }: ClientLayoutProps) {
   const { isMobile } = useAppContext();
   const filterState = usePostFilter(posts);
+  const [mobileViewMode, setMobileViewMode] = React.useState<"grid" | "list">(
+    "grid",
+  );
 
   if (isMobile) {
     return (
       <div className="flex flex-col h-screen overflow-hidden bg-background text-system-text font-ep-sans">
         <div className="flex-1 overflow-y-auto no-scrollbar">
-          <MobileHeader filterState={filterState} />
-          <MobileMainContent posts={posts} filterState={filterState} />
+          <MobileHeader
+            filterState={filterState}
+            viewMode={mobileViewMode}
+            setViewMode={setMobileViewMode}
+          />
+          <MobileMainContent
+            posts={posts}
+            filterState={filterState}
+            viewMode={mobileViewMode}
+          />
         </div>
         <MobileSidebar>{children}</MobileSidebar>
       </div>

@@ -29,6 +29,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 interface MobileMainContentProps {
   posts: SanityDocument[];
   filterState?: any;
+  viewMode?: "grid" | "list";
 }
 
 const SIZE_MULTIPLIERS: Record<string, number> = {
@@ -147,6 +148,7 @@ MobilePostCard.displayName = "MobilePostCard";
 export default function MobileMainContent({
   posts,
   filterState,
+  viewMode = "grid",
 }: MobileMainContentProps) {
   const { language } = useAppContext();
 
@@ -157,47 +159,81 @@ export default function MobileMainContent({
   );
 
   return (
-    <main className="wrapper-content">
-      <div className="pt-3 flex items-center justify-end text-size-sm text-system-gray font-ep-sans">
+    <main className="px-1.5 wrapper-content ">
+      <div className="pt-2 flex items-center justify-end text-size-sm text-system-gray font-ep-sans">
         <span>{filteredPosts?.length || 0} results</span>
       </div>
-      <div className="flex flex-wrap gap-x-3 gap-y-8 px-2 mt-3">
-        {paginatedPosts.map((post: any, index: number) => {
-          const cols = 2;
-          const rowStart = Math.floor(index / cols) * cols;
-          const rowEnd = rowStart + cols;
-          const rowSlice = paginatedPosts.slice(rowStart, rowEnd);
-          const rowItemCount = rowSlice.length;
 
-          const actualTotalM = rowSlice.reduce(
-            (sum: number, p: any) =>
-              sum + (SIZE_MULTIPLIERS[p.thumbnail_size || "medium"] || 1.0),
-            0,
-          );
+      {viewMode === "grid" ? (
+        <div className="flex flex-wrap gap-x-3 gap-y-8 px-2 mt-3">
+          {paginatedPosts.map((post: any, index: number) => {
+            const cols = 2;
+            const rowStart = Math.floor(index / cols) * cols;
+            const rowEnd = rowStart + cols;
+            const rowSlice = paginatedPosts.slice(rowStart, rowEnd);
+            const rowItemCount = rowSlice.length;
 
-          const isLastRowShort = rowItemCount < cols;
-          // Pad the last row so items don't stretch effectively,
-          // or do we want them to stretch?
-          // If we want "2 per line", and we have 1 item left, it should take its half.
-          // By adding dummy M, we ensure the single item takes its proportional width (e.g. 50%).
-          const paddedTotalM = isLastRowShort
-            ? actualTotalM +
-              (cols - rowItemCount) * (SIZE_MULTIPLIERS.medium || 0.8)
-            : actualTotalM;
+            const actualTotalM = rowSlice.reduce(
+              (sum: number, p: any) =>
+                sum + (SIZE_MULTIPLIERS[p.thumbnail_size || "medium"] || 1.0),
+              0,
+            );
 
-          const m = SIZE_MULTIPLIERS[post.thumbnail_size || "medium"] || 1.0;
-          const rawWidthPercent = (m / paddedTotalM) * 100;
+            const isLastRowShort = rowItemCount < cols;
+            const paddedTotalM = isLastRowShort
+              ? actualTotalM +
+                (cols - rowItemCount) * (SIZE_MULTIPLIERS.medium || 0.8)
+              : actualTotalM;
 
-          return (
-            <MobilePostCard
+            const m = SIZE_MULTIPLIERS[post.thumbnail_size || "medium"] || 1.0;
+            const rawWidthPercent = (m / paddedTotalM) * 100;
+
+            return (
+              <MobilePostCard
+                key={post._id}
+                post={post}
+                language={language}
+                widthPercent={rawWidthPercent}
+              />
+            );
+          })}
+        </div>
+      ) : (
+        <div className="flex flex-col border-t border-system-gray mt-4">
+          {paginatedPosts.map((post: any) => (
+            <Link
               key={post._id}
-              post={post}
-              language={language}
-              widthPercent={rawWidthPercent}
-            />
-          );
-        })}
-      </div>
+              href={`/${post.slug.current}`}
+              className="flex flex-col py-2 px-2 border-b border-system-gray active:bg-system-dark-gray/20 transition-colors"
+            >
+              <div className="flex justify-between items-start gap-4">
+                <div className="flex-1 flex flex-wrap items-center gap-2">
+                  <span className="text-[0.85rem] font-medium text-system-text font-ep-sans leading-tight">
+                    {language === "kr" ? post.title_kr : post.title_en}
+                  </span>
+                  <div className="flex gap-1">
+                    {post.category?.map((category: string) => (
+                      <span
+                        key={category}
+                        className="px-[0.35rem] py-[0.11rem] rounded-[4px] text-[10px] font-medium font-ep-sans text-[#131313]"
+                        style={{
+                          backgroundColor:
+                            CATEGORY_COLORS[category] || "#787878",
+                        }}
+                      >
+                        {category}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="text-right text-[11px] text-system-gray font-ep-sans whitespace-nowrap pt-0.5">
+                  {post.publishedAt}
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
       {/* Pagination */}
       {totalPages >= 1 && (
         <div className="px-3 pt-4 pb-10 flex justify-center items-center gap-2">

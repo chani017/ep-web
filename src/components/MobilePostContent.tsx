@@ -9,7 +9,6 @@ import { SanityImageSource } from "@sanity/image-url";
 import { client } from "@/sanity/client";
 
 const { projectId, dataset } = client.config();
-/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 const urlFor = (source: SanityImageSource) =>
   projectId && dataset
     ? imageUrlBuilder({ projectId, dataset }).image(source)
@@ -31,16 +30,12 @@ interface MobilePostContentProps {
 export default function MobilePostContent({ post }: MobilePostContentProps) {
   const { language } = useAppContext();
 
-  // Mobile layout: Simple vertical scroll page. No expandable sheet logic.
-  // Just show Title, Category, Date, Imagery, Description.
-
   const description =
     language === "kr" ? post.description_kr : post.description_en;
   const media = post.media || [];
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-system-text pb-20">
-      {/* Header Info */}
       <div className="px-4 py-6 border-b border-system-gray">
         <h1 className="text-[1.8rem] font-medium font-ep-sans leading-tight mb-3">
           {language === "kr" ? post.title_kr : post.title_en}
@@ -63,7 +58,6 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
           ))}
         </div>
 
-        {/* Description */}
         <div className="text-size-md font-ep-sans leading-relaxed text-system-text/90">
           {Array.isArray(description) && (
             <PortableText
@@ -95,7 +89,6 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
         </div>
       </div>
 
-      {/* Media List */}
       <div className="flex flex-col gap-4 p-4">
         {media.map((item: any, index: number) => {
           if (item._type === "image") {

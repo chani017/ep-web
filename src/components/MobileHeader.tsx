@@ -2,12 +2,19 @@
 
 import React from "react";
 import { useAppContext } from "@/context/AppContext";
+import { useYearDropdown } from "@/hooks/useYearDropdown";
 
 interface MobileHeaderProps {
   filterState?: any;
+  viewMode?: "grid" | "list";
+  setViewMode?: (mode: "grid" | "list") => void;
 }
 
-export default function MobileHeader({ filterState }: MobileHeaderProps) {
+export default function MobileHeader({
+  filterState,
+  viewMode,
+  setViewMode,
+}: MobileHeaderProps) {
   const { language, setLanguage, isMobileSidebarOpen, setIsMobileSidebarOpen } =
     useAppContext();
 
@@ -63,8 +70,8 @@ export default function MobileHeader({ filterState }: MobileHeaderProps) {
   }, []);
 
   return (
-    <main className="px-2 sticky top-0 z-50">
-      <header className="flex justify-between items-center h-12 border-b border-system-gray bg-background">
+    <main className="px-1.5 sticky top-0 z-50">
+      <header className="flex justify-between items-center h-10 border-b border-system-gray bg-background">
         <div
           onClick={() => {
             window.location.href = "/";
@@ -105,7 +112,7 @@ export default function MobileHeader({ filterState }: MobileHeaderProps) {
             <img
               src="/plus.svg"
               alt="Menu"
-              className={`w-5 h-5 transition-transform duration-300 ${isMobileSidebarOpen ? "rotate-90" : ""}`}
+              className={`w-5 h-5 transition-transform duration-300 ${isMobileSidebarOpen ? "rotate-135" : ""}`}
               style={{ display: "block" }}
             />
           </button>
@@ -114,32 +121,49 @@ export default function MobileHeader({ filterState }: MobileHeaderProps) {
 
       {filterState && (
         <div className="flex flex-col gap-2 bg-background/80 backdrop-blur-sm">
-          {/* 검색창 — 전체 너비 */}
-          <div className="flex items-center px-1 py-2 border-b border-system-gray relative">
-            <img src="/search.svg" alt="Search" className="w-4 h-4" />
-            {!searchTerm && (
-              <span
-                className={`absolute pointer-events-none text-[1.2rem] font-ep-sans text-system-gray transition-all duration-100 ease-in-out flex items-center pl-5 ${
-                  isSearchFocused ? "left-[calc(20%-3rem)]" : "left-2"
+          <div className="flex items-center border-b border-system-gray">
+            {/* 검색창 */}
+            <div className="flex-1 flex items-center px-1 py-2 relative">
+              <img src="/search.svg" alt="Search" className="w-4 h-4" />
+              {!searchTerm && (
+                <span
+                  className={`absolute pointer-events-none text-[1.2rem] font-ep-sans text-system-gray transition-all duration-100 ease-in-out flex items-center pl-5 ${
+                    isSearchFocused ? "left-[calc(20%-3rem)]" : "left-2"
+                  }`}
+                  style={{ bottom: "0.25rem" }}
+                >
+                  {isSearchFocused && (
+                    <span className="mr-px w-px h-[1em] bg-system-text animate-blink" />
+                  )}
+                  Search
+                </span>
+              )}
+              <input
+                type="text"
+                className={`w-full bg-transparent border-none outline-none text-size-md text-system-text font-ep-sans ${
+                  !searchTerm ? "caret-transparent" : ""
                 }`}
-                style={{ bottom: "0.25rem" }}
+                value={searchTerm}
+                onChange={(e: any) => setSearchTerm(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setIsSearchFocused(false)}
+              />
+            </div>
+
+            <div className="flex items-center pl-2 pr-1 gap-2">
+              <button
+                onClick={() => setViewMode && setViewMode("grid")}
+                className={`transition-all duration-150 ${viewMode === "grid" ? "opacity-100" : "opacity-30"}`}
               >
-                {isSearchFocused && (
-                  <span className="mr-px w-px h-[1em] bg-system-text animate-blink" />
-                )}
-                Search
-              </span>
-            )}
-            <input
-              type="text"
-              className={`w-full bg-transparent border-none outline-none text-size-md text-system-text font-ep-sans ${
-                !searchTerm ? "caret-transparent" : ""
-              }`}
-              value={searchTerm}
-              onChange={(e: any) => setSearchTerm(e.target.value)}
-              onFocus={() => setIsSearchFocused(true)}
-              onBlur={() => setIsSearchFocused(false)}
-            />
+                <img src="/gridview.svg" alt="Grid View" className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => setViewMode && setViewMode("list")}
+                className={`transition-all duration-150 ${viewMode === "list" ? "opacity-100" : "opacity-30"}`}
+              >
+                <img src="/listview.svg" alt="List View" className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           <div className="flex gap-2">
@@ -232,4 +256,3 @@ export default function MobileHeader({ filterState }: MobileHeaderProps) {
     </main>
   );
 }
-import { useYearDropdown } from "@/hooks/useYearDropdown";
