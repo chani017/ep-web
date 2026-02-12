@@ -13,7 +13,7 @@ import { type SanityDocument } from "next-sanity";
 type Language = "kr" | "en";
 export type Tab = "Contact" | "CV" | "Client";
 
-const MOBILE_BREAKPOINT = 1024;
+const MOBILE_BREAKPOINT = 1194;
 
 interface AppContextType {
   language: Language;

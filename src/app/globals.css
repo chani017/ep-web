@@ -52,7 +52,8 @@
 :root {
   --background: #131313;
   --foreground: #131313;
-  --system-text: #e2e2e2;
+  --system-dark: #131313;
+  --system-white: #e2e2e2;
   --system-gray: #787878;
   --system-dark-gray: #222222;
 }
@@ -62,7 +63,8 @@
   --color-foreground: var(--foreground);
   --font-ep-sans: "EP Sans", sans-serif;
   --font-ep-gothic: "EP Gothic", sans-serif;
-  --color-system-text: var(--system-text);
+  --color-system-white: var(--system-white);
+  --color-system-dark: var(--system-dark);
   --color-system-gray: var(--system-gray);
   --color-system-dark-gray: var(--system-dark-gray);
   --text-size-xl: 1.3rem;

@@ -10,6 +10,7 @@ import MainContent from "./MainContent";
 import SidePanelHeader from "./SidePanelHeader";
 import MobileHeader from "./MobileHeader";
 import MobileSidebar from "./MobileSidePanel";
+import MobileTrigger from "./MobileTrigger";
 import { usePathname } from "next/navigation";
 
 interface ClientLayoutProps {
@@ -29,7 +30,7 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
     const isPostPage = pathname !== "/";
 
     return (
-      <div className="flex flex-col h-screen overflow-hidden bg-background text-system-text font-ep-sans">
+      <div className="flex flex-col h-screen overflow-hidden bg-background text-system-white font-ep-sans">
         <div className="flex-1 overflow-y-auto no-scrollbar">
           <MobileHeader
             filterState={filterState}
@@ -47,6 +48,8 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
         <MobileSidebar>{!isPostPage && children}</MobileSidebar>
 
         {isPostPage && children}
+
+        <MobileTrigger />
       </div>
     );
   }

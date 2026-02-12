@@ -43,20 +43,20 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
         isPostPage ? "translate-y-0" : "translate-y-full"
       }`}
     >
-      <div className="flex flex-col min-h-screen bg-background text-system-text pb-5">
+      <div className="flex flex-col min-h-screen bg-background text-system-white pb-5">
         <div className="px-2 pb-2 flex justify-between items-start">
           <h1 className="text-size-md font-normal font-ep-sans leading-none mt-2">
             {language === "kr" ? post.title_kr : post.title_en}
           </h1>
           <div className="flex items-start gap-x-2 mt-2">
-            <span className="text-[0.875rem] text-system-text font-normal font-ep-sans leading-none">
+            <span className="text-[0.875rem] text-system-white font-normal font-ep-sans leading-none">
               {post.publishedAt}
             </span>
             <div className="flex flex-col gap-0.5 items-end">
               {post.category?.map((category: string) => (
                 <span
                   key={category}
-                  className="px-1 rounded-[4px] text-[12px] font-medium font-ep-sans text-[#131313]"
+                  className="px-1 rounded-[4px] text-[12px] font-medium font-ep-sans text-system-dark"
                   style={{
                     backgroundColor: CATEGORY_COLORS[category] || "#787878",
                   }}
@@ -134,7 +134,7 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
             return null;
           })}
         </div>
-        <div className="text-[0.875rem] font-ep-sans leading-relaxed text-system-text mx-2 break-keep font-medium">
+        <div className="text-[0.875rem] font-ep-sans leading-relaxed text-system-white mx-2 break-keep font-medium">
           {Array.isArray(description) && (
             <PortableText
               value={description}
@@ -151,7 +151,7 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
                 href={post.additional_link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-system-text hover:opacity-70 transition-opacity"
+                className="flex items-center gap-1 text-system-white hover:opacity-70 transition-opacity"
               >
                 <img src="/plus.svg" alt="" className="w-3 h-3" />
                 <span className="underline underline-offset-2">

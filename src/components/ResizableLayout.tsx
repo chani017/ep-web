@@ -52,7 +52,7 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
 
   return (
     <div
-      className={`flex w-full h-screen overflow-hidden bg-background text-system-text font-ep-sans ${isResizing ? "select-none" : ""}`}
+      className={`flex w-full h-screen overflow-hidden bg-background text-system-white font-ep-sans ${isResizing ? "select-none" : ""}`}
     >
       {/* 메인 콘텐츠 */}
       <div
@@ -71,7 +71,7 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
         className="relative flex items-center justify-center cursor-col-resize z-50 group shrink-0"
       >
         <div
-          className={`flex gap-1 items-center ${isResizing ? "bg-[#e2e2e2] scale-y-[1.3]" : "bg-background hover:bg-[#a4a4a4]"}`}
+          className={`flex gap-1 items-center ${isResizing ? "bg-system-white scale-y-[1.3]" : "bg-background hover:bg-[#a4a4a4]"}`}
         >
           <div className="w-px h-screen bg-system-gray" />
           <div className="w-px h-20 bg-system-gray" />

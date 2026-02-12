@@ -23,7 +23,7 @@ export default function SideBar({ selExhs, award, clients }: SideBarProps) {
       case "Contact":
         return (
           <>
-            <h3 className="text-size-md md:text-size-lg leading-[1.4] font-semibold text-system-text font-ep-gothic break-keep">
+            <h3 className="text-size-md md:text-size-lg leading-[1.4] font-semibold text-system-white font-ep-gothic break-keep">
               {language === "kr" ? (
                 <>
                   일상의실천은 권준호, 김경철, 김어진이 운영하는 그래픽디자인
@@ -48,7 +48,7 @@ export default function SideBar({ selExhs, award, clients }: SideBarProps) {
                 </>
               )}
             </h3>
-            <table className="mt-3 text-[0.875rem] md:text-size-md font-medium text-system-text font-ep-sans w-full">
+            <table className="mt-3 text-[0.875rem] md:text-size-md font-medium text-system-white font-ep-sans w-full">
               <tbody>
                 <tr className="h-6">
                   <td className="w-25 align-top">address.</td>
@@ -63,7 +63,7 @@ export default function SideBar({ selExhs, award, clients }: SideBarProps) {
                   <td className="align-top">
                     <Link
                       href="mailto:hello@everyday-practice.com"
-                      className="hover:text-system-text transition-colors"
+                      className="hover:text-system-white transition-colors"
                     >
                       hello@everyday-practice.com
                     </Link>
@@ -102,7 +102,7 @@ export default function SideBar({ selExhs, award, clients }: SideBarProps) {
         const finalCategories = [...categories, ...otherCategories];
 
         return (
-          <div className="text-[0.875rem] md:text-[0.9rem] font-medium text-system-text font-ep-sans space-y-10">
+          <div className="text-[0.875rem] md:text-[0.9rem] font-medium text-system-white font-ep-sans space-y-10">
             {finalCategories.map((category) => {
               const categoryCvs = allCvs.filter(
                 (cv: SanityDocument) => cv.category === category,
@@ -167,13 +167,13 @@ export default function SideBar({ selExhs, award, clients }: SideBarProps) {
       }
       case "Client":
         return (
-          <div className="text-[0.875rem] md:text-[0.9rem] font-medium text-system-text font-ep-sans space-y-4">
+          <div className="text-[0.875rem] md:text-[0.9rem] font-medium text-system-white font-ep-sans space-y-4">
             <h3 className="underline underline-offset-6 decoration-1 uppercase font-medium">
               <p>Clients</p>
             </h3>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1">
               {clients.map((client: SanityDocument) => (
-                <p key={client._id} className="text-system-text break-keep">
+                <p key={client._id} className="text-system-white break-keep">
                   {client.client}
                 </p>
               ))}

@@ -5,7 +5,8 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAppContext, type Tab } from "@/context/AppContext";
 
 export default function SidebarHeader() {
-  const { activeTab, setActiveTab, isFullContentMode, setIsFullContentMode } = useAppContext();
+  const { activeTab, setActiveTab, isFullContentMode, setIsFullContentMode } =
+    useAppContext();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -26,7 +27,11 @@ export default function SidebarHeader() {
           className="absolute left-2"
         >
           <img
-            src={isFullContentMode ? "/full-button_contract.svg" : "/full-button_expand.svg"}
+            src={
+              isFullContentMode
+                ? "/full-button_contract.svg"
+                : "/full-button_expand.svg"
+            }
             alt="Toggle Full Mode"
             className="w-6 h-6"
           />
@@ -38,8 +43,8 @@ export default function SidebarHeader() {
           onClick={() => handleTabClick(tab)}
           className={`text-size-xl font-light transition-colors cursor-pointer font-ep-sans ${
             activeTab === tab && pathname === "/"
-              ? "text-system-text"
-              : "text-system-gray hover:text-system-text"
+              ? "text-system-white"
+              : "text-system-gray hover:text-system-white"
           }`}
         >
           {tab}
@@ -47,4 +52,4 @@ export default function SidebarHeader() {
       ))}
     </header>
   );
-}                       
+}

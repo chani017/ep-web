@@ -80,7 +80,7 @@ export default function MobileHeader({
           onClick={() => {
             window.location.href = "/";
           }}
-          className="text-size-xl font-light text-system-text font-ep-sans uppercase cursor-pointer whitespace-nowrap"
+          className="text-size-xl font-light text-system-white font-ep-sans uppercase cursor-pointer whitespace-nowrap"
         >
           Everyday Practice
         </div>
@@ -89,8 +89,8 @@ export default function MobileHeader({
         <div className="flex items-center text-size-xl font-normal font-ep-sans">
           <span
             className={`${
-              language === "kr" ? "text-system-text" : "text-system-gray"
-            } cursor-pointer hover:text-system-text transition-colors`}
+              language === "kr" ? "text-system-white" : "text-system-gray"
+            } cursor-pointer hover:text-system-white transition-colors`}
             onClick={() => setLanguage("kr")}
           >
             Kor
@@ -98,32 +98,16 @@ export default function MobileHeader({
           <span className="text-system-gray mx-1.5">/</span>
           <span
             className={`${
-              language === "en" ? "text-system-text" : "text-system-gray"
-            } cursor-pointer hover:text-system-text transition-colors`}
+              language === "en" ? "text-system-white" : "text-system-gray"
+            } cursor-pointer hover:text-system-white transition-colors`}
             onClick={() => setLanguage("en")}
           >
             Eng
           </span>
         </div>
 
-        <button
-          onClick={() => {
-            if (isPostPage) {
-              router.push("/");
-            } else {
-              setIsMobileSidebarOpen(true);
-            }
-          }}
-          className="flex flex-col justify-center items-center w-8 h-8 cursor-pointer"
-          aria-label={isPostPage ? "패널 닫기" : "메뉴 열기"}
-        >
-          <img
-            src="/plus.svg"
-            alt="Menu"
-            className={`w-5 h-5 transition-transform duration-200 ${isPostPage || isMobileSidebarOpen ? "rotate-135" : ""}`}
-            style={{ display: "block" }}
-          />
-        </button>
+        {/* MobileTrigger placeholder to maintain layout balance */}
+        <div className="w-8 h-8" />
       </header>
 
       {filterState && (
@@ -135,19 +119,19 @@ export default function MobileHeader({
               {!searchTerm && (
                 <span
                   className={`absolute pointer-events-none text-[1.2rem] font-ep-sans text-system-gray transition-all duration-100 ease-in-out flex items-center pl-5 ${
-                    isSearchFocused ? "left-[calc(20%-3rem)]" : "left-2"
+                    isSearchFocused ? "left-10" : "left-2"
                   }`}
                   style={{ bottom: "0.25rem" }}
                 >
                   {isSearchFocused && (
-                    <span className="mr-px w-px h-[1em] bg-system-text animate-blink" />
+                    <span className="mr-px w-px h-[1em] bg-system-white animate-blink" />
                   )}
                   Search
                 </span>
               )}
               <input
                 type="text"
-                className={`w-full bg-transparent border-none outline-none text-size-md text-system-text font-ep-sans ${
+                className={`w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans ${
                   !searchTerm ? "caret-transparent" : ""
                 }`}
                 value={searchTerm}
@@ -218,8 +202,8 @@ export default function MobileHeader({
                     key={category}
                     className={`py-1 text-[1.2rem] font-ep-sans cursor-pointer transition-colors ${
                       selectedCategory === category
-                        ? "text-system-text bg-white/10"
-                        : "text-system-text hover:bg-white/10"
+                        ? "text-system-white bg-white/10"
+                        : "text-system-white hover:bg-white/10"
                     }`}
                     onClick={() => {
                       setSelectedCategory(category);
@@ -260,8 +244,8 @@ export default function MobileHeader({
                     key={year}
                     className={`py-1 text-[1.2rem] font-ep-sans cursor-pointer transition-colors ${
                       selectedYear === year
-                        ? "text-system-text hover:bg-white/10"
-                        : "text-system-text hover:bg-white/10"
+                        ? "text-system-white hover:bg-white/10"
+                        : "text-system-white hover:bg-white/10"
                     }`}
                     onClick={() => {
                       setSelectedYear(year);

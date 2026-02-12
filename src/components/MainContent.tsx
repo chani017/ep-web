@@ -85,13 +85,13 @@ const PostCard = React.memo(
           href={`/${post.slug.current}`}
           className="col-span-4 grid grid-cols-4 border-b border-system-gray min-h-10 hover:bg-system-dark-gray transition-colors items-start px-1 group py-2 gap-x-3"
         >
-          <div className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-size-md text-system-text font-ep-sans">
+          <div className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-size-md text-system-white font-ep-sans">
             <span>{language === "kr" ? post.title_kr : post.title_en}</span>
             <div className="flex gap-1 shrink-0">
               {post.category?.map((category: string) => (
                 <span
                   key={category}
-                  className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-[#131313]"
+                  className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
                   style={{
                     backgroundColor: CATEGORY_COLORS[category] || "#787878",
                   }}
@@ -101,10 +101,10 @@ const PostCard = React.memo(
               ))}
             </div>
           </div>
-          <div className="col-span-1 text-size-md text-system-text font-ep-sans uppercase">
+          <div className="col-span-1 text-size-md text-system-white font-ep-sans uppercase">
             {post.publishedAt}
           </div>
-          <div className="col-span-1 text-size-md text-system-text font-ep-sans uppercase text-left">
+          <div className="col-span-1 text-size-md text-system-white font-ep-sans uppercase text-left">
             {post.client || ""}
           </div>
         </Link>
@@ -163,14 +163,14 @@ const PostCard = React.memo(
             )}
           </div>
           <div className="flex flex-col gap-2 pt-2 w-full min-h-18">
-            <p className="text-system-text text-size-md font-medium font-ep-sans leading-tight line-clamp-2">
+            <p className="text-system-white text-size-md font-medium font-ep-sans leading-tight line-clamp-2">
               {language === "kr" ? post.title_kr : post.title_en}
             </p>
             <div className="flex flex-wrap gap-1">
               {post.category?.map((category: string) => (
                 <span
                   key={category}
-                  className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-[#131313]"
+                  className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
                   style={{
                     backgroundColor: CATEGORY_COLORS[category] || "#787878",
                   }}
@@ -251,10 +251,10 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
             }}
             className="relative h-full flex items-center group cursor-pointer w-fit"
           >
-            <div className="text-size-xl font-me text-system-text font-ep-sans uppercase transition-all duration-100 transform opacity-150 group-hover:opacity-0 whitespace-nowrap">
+            <div className="text-size-xl font-me text-system-white font-ep-sans uppercase transition-all duration-100 transform opacity-150 group-hover:opacity-0 whitespace-nowrap">
               Everyday Practice
             </div>
-            <div className="absolute inset-0 flex items-center text-size-xl font-medium text-system-text font-ep-sans transition-all duration-150 transform translate-x-2 group-hover:translate-x-0 opacity-0 group-hover:opacity-100 whitespace-nowrap">
+            <div className="absolute inset-0 flex items-center text-size-xl font-medium text-system-white font-ep-sans transition-all duration-150 transform translate-x-2 group-hover:translate-x-0 opacity-0 group-hover:opacity-100 whitespace-nowrap">
               일상의실천
             </div>
           </div>
@@ -262,8 +262,8 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
         <div className="shrink-0 flex items-center text-size-xl font-normal font-ep-sans">
           <span
             className={`${
-              language === "kr" ? "text-system-text" : "text-system-gray"
-            } cursor-pointer hover:text-system-text transition-colors`}
+              language === "kr" ? "text-system-white" : "text-system-gray"
+            } cursor-pointer hover:text-system-white transition-colors`}
             onClick={() => setLanguage("kr")}
           >
             Kor
@@ -271,8 +271,8 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
           <span className="text-system-gray mx-1">/</span>
           <span
             className={`${
-              language === "en" ? "text-system-text" : "text-system-gray"
-            } cursor-pointer hover:text-system-text transition-colors`}
+              language === "en" ? "text-system-white" : "text-system-gray"
+            } cursor-pointer hover:text-system-white transition-colors`}
             onClick={() => setLanguage("en")}
           >
             Eng
@@ -281,7 +281,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
         <div className="shrink-0 h-full flex items-center">
           <Link
             href="mailto:hello@everyday-practice.com"
-            className="text-size-xl font-normal text-system-gray font-ep-sans hover:text-system-text transition-colors cursor-pointer whitespace-nowrap"
+            className="text-size-xl font-normal text-system-gray font-ep-sans hover:text-system-white transition-colors cursor-pointer whitespace-nowrap"
           >
             hello@everyday-practice.com
           </Link>
@@ -292,20 +292,20 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
         {isFullContentMode && currentPost ? (
           <div className="flex-1 overflow-y-auto no-scrollbar p-2 flex flex-col gap-6">
             <div className="flex justify-between items-start gap-4">
-              <h1 className="text-2xl font-normal text-system-text font-ep-sans leading-tight max-w-[80%] break-keep">
+              <h1 className="text-2xl font-normal text-system-white font-ep-sans leading-tight max-w-[80%] break-keep">
                 {language === "kr"
                   ? currentPost.title_kr
                   : currentPost.title_en}
               </h1>
               <div className="flex items-start gap-2 shrink-0">
-                <span className="text-xl text-system-text font-ep-sans">
+                <span className="text-xl text-system-white font-ep-sans">
                   {currentPost.publishedAt}
                 </span>
                 <div className="flex flex-col items-end gap-1 mt-1">
                   {currentPost.category?.map((category: string) => (
                     <span
                       key={category}
-                      className="px-2 py-1 rounded-[6px] text-size-sm leading-none font-medium font-ep-sans text-[#131313] whitespace-nowrap"
+                      className="px-2 py-1 rounded-[6px] text-size-sm leading-none font-medium font-ep-sans text-system-dark whitespace-nowrap"
                       style={{
                         backgroundColor: CATEGORY_COLORS[category] || "#787878",
                       }}
@@ -396,14 +396,14 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                   {CATEGORIES.map((category) => (
                     <div
                       key={category}
-                      className={`${selectedCategory === category ? "text-system-text" : "text-system-gray"} hover:text-system-text cursor-pointer transition-colors`}
+                      className={`${selectedCategory === category ? "text-system-white" : "text-system-gray"} hover:text-system-white cursor-pointer transition-colors`}
                       onClick={() => setSelectedCategory(category)}
                     >
                       {category}
                     </div>
                   ))}
                   <button
-                    className="absolute right-2 top-1 flex items-center gap-1 text-system-gray hover:text-system-text cursor-pointer transition-colors"
+                    className="absolute right-2 top-1 flex items-center gap-1 text-system-gray hover:text-system-white cursor-pointer transition-colors"
                     onClick={() =>
                       setViewMode(viewMode === "img" ? "list" : "img")
                     }
@@ -418,20 +418,20 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                 <div className="col-span-2 flex items-end bg-system-dark-gray px-1 pb-2 border-b border-system-gray relative">
                   {!searchTerm && (
                     <span
-                      className={`absolute pointer-events-none text-size-md font-ep-sans text-system-text transition-all duration-100 ease-in-out flex items-center ${
+                      className={`absolute pointer-events-none text-size-md font-ep-sans text-system-white transition-all duration-100 ease-in-out flex items-center ${
                         isSearchFocused ? "left-[calc(20%-5rem)]" : "left-1"
                       }`}
                       style={{ bottom: "0.25rem" }}
                     >
                       {isSearchFocused && (
-                        <span className="mr-px w-px h-[1em] bg-system-text animate-blink" />
+                        <span className="mr-px w-px h-[1em] bg-system-whitetext-system-white animate-blink" />
                       )}
                       Search
                     </span>
                   )}
                   <input
                     type="text"
-                    className={`w-full bg-transparent border-none outline-none text-size-md text-system-text font-ep-sans ${
+                    className={`w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans ${
                       !searchTerm ? "caret-transparent" : ""
                     }`}
                     value={searchTerm}
@@ -451,7 +451,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                   ref={yearDropdownRef}
                 >
                   <button
-                    className="w-full flex items-center justify-between bg-transparent text-size-md text-system-text font-ep-sans cursor-pointer h-full"
+                    className="w-full flex items-center justify-between bg-transparent text-size-md text-system-white font-ep-sans cursor-pointer h-full"
                     onClick={() => setIsYearOpen(!isYearOpen)}
                   >
                     <span>{selectedYear}</span>
@@ -473,8 +473,8 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                         key={year}
                         className={`px-1.5 py-0.5 text-size-md font-ep-sans cursor-pointer transition-colors ${
                           selectedYear === year
-                            ? "text-system-text hover:bg-white/10"
-                            : "text-system-text hover:bg-white/10"
+                            ? "text-system-white hover:bg-white/10"
+                            : "text-system-white hover:bg-white/10"
                         }`}
                         onClick={() => {
                           setSelectedYear(year);
@@ -493,7 +493,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                     selectedYear !== "Year" ||
                     selectedCategory !== "All Types") && (
                     <button
-                      className="flex items-center gap-1 text-system-text text-size-md hover:brightness-50 transition-all duration-150 ease-in-out cursor-pointer"
+                      className="flex items-center gap-1 text-system-white text-size-md hover:brightness-50 transition-all duration-150 ease-in-out cursor-pointer"
                       onClick={() => {
                         setSearchTerm("");
                         setSelectedYear("Year");
@@ -577,7 +577,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                         setCurrentPage(currentPage - 1);
                         containerRef.current?.scrollTo({ top: 0 });
                       }}
-                      className="font-ep-sans text-system-text text-size-md hover:bg-system-dark-gray px-1.5 leading-5 rounded-md min-w-3 text-center"
+                      className="font-ep-sans text-system-white text-size-md hover:bg-system-dark-gray px-1.5 leading-5 rounded-md min-w-3 text-center"
                     >
                       〈
                     </button>
@@ -591,8 +591,8 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                         }}
                         className={`font-ep-sans transition-colors cursor-pointer bg-[#464646] px-1.5 leading-5 rounded-md min-w-5 text-center ${
                           currentPage === i + 1
-                            ? "text-system-text bg-transparent hover:bg-system-dark-gray"
-                            : "text-system-text hover:bg-system-dark-gray"
+                            ? "text-system-white bg-transparent hover:bg-system-dark-gray"
+                            : "text-system-white hover:bg-system-dark-gray"
                         }`}
                       >
                         {i + 1}
@@ -605,7 +605,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                         setCurrentPage(currentPage + 1);
                         containerRef.current?.scrollTo({ top: 0 });
                       }}
-                      className="font-ep-gothic text-system-text text-size-md hover:bg-system-dark-gray px-1.5 leading-5 rounded-md min-w-3 text-center"
+                      className="font-ep-gothic text-system-white text-size-md hover:bg-system-dark-gray px-1.5 leading-5 rounded-md min-w-3 text-center"
                     >
                       〉
                     </button>

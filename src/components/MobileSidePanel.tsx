@@ -34,9 +34,16 @@ export default function MobileSidebar({ children }: MobileSidebarProps) {
         onClick={() => setIsMobileSidebarOpen(false)}
       />
 
+      {/* 사이드패널 상단 보더 연장선 (전체 너비) */}
+      <div
+        className={`fixed top-[39px] left-0 w-full border-b border-system-gray z-500 transition-transform duration-300 ease-in-out ${
+          isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      />
+
       {/* 사이드패널 */}
       <div
-        className={`fixed top-0 left-0 h-full w-[90vw] border-r border-system-gray bg-background z-999 transition-transform duration-200 ease-in-out flex flex-col ${
+        className={`fixed top-0 left-0 h-full w-[90%] border-r border-system-gray bg-background z-500 transition-transform duration-300 ease-in-out flex flex-col ${
           isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -50,8 +57,8 @@ export default function MobileSidebar({ children }: MobileSidebarProps) {
                 onClick={() => handleTabClick(tab)}
                 className={`text-size-xl font-light cursor-pointer font-ep-sans transition-colors ${
                   activeTab === tab
-                    ? "text-system-text"
-                    : "text-system-gray hover:text-system-text"
+                    ? "text-system-white"
+                    : "text-system-gray hover:text-system-white"
                 }`}
               >
                 {tab}

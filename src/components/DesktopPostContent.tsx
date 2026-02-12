@@ -59,18 +59,18 @@ export default function DesktopPostContent({ post }: PostContentProps) {
           className={`p-2 flex flex-col h-full overflow-y-auto no-scrollbar gap-4 transition-all duration-300 ${isExpanded ? "pointer-events-none" : "opacity-100"}`}
         >
           <div className="flex justify-between items-start gap-4">
-            <h1 className="text-2xl font-normal text-system-text font-ep-sans leading-tight max-w-[75%]">
+            <h1 className="text-2xl font-normal text-system-white font-ep-sans leading-tight max-w-[75%]">
               {language === "kr" ? post.title_kr : post.title_en}
             </h1>
             <div className="flex items-start gap-1.5 shrink-0">
-              <span className="text-size-md text-system-text font-ep-sans">
+              <span className="text-size-md text-system-white font-ep-sans">
                 {post.publishedAt?.toString()}
               </span>
               <div className="flex flex-col items-end gap-1 mt-1">
                 {post.category?.map((category: string) => (
                   <span
                     key={category}
-                    className="px-[0.4rem] py-[0.2rem] rounded-[5px] text-[11px] leading-none font-medium font-ep-sans text-[#131313] whitespace-nowrap"
+                    className="px-[0.4rem] py-[0.2rem] rounded-[5px] text-[11px] leading-none font-medium font-ep-sans text-system-dark whitespace-nowrap"
                     style={{
                       backgroundColor: CATEGORY_COLORS[category] || "#787878",
                     }}
@@ -151,7 +151,7 @@ export default function DesktopPostContent({ post }: PostContentProps) {
 
       {!isFullContentMode && (
         <div
-          className={`absolute bottom-0 left-0 w-full h-12 bg-linear-to-t from-[#131313] to-transparent z-50 pointer-events-none transition-opacity duration-500 ${
+          className={`absolute bottom-0 left-0 w-full h-12 bg-linear-to-t from-system-dark to-transparent z-50 pointer-events-none transition-opacity duration-500 ${
             isExpanded ? "opacity-0" : "opacity-100"
           }`}
         />
@@ -159,7 +159,7 @@ export default function DesktopPostContent({ post }: PostContentProps) {
 
       {/* 설명글 패널 */}
       <div
-        className={`absolute bottom-0 left-0 w-full transition-all duration-500 ease-in-out bg-[#131313] z-40 flex flex-col ${
+        className={`absolute bottom-0 left-0 w-full transition-all duration-500 ease-in-out bg-system-dark z-40 flex flex-col ${
           isFullContentMode ? "h-full" : ""
         }`}
         style={{
@@ -172,12 +172,12 @@ export default function DesktopPostContent({ post }: PostContentProps) {
       >
         <div
           onClick={() => !isFullContentMode && setIsExpanded(!isExpanded)}
-          className={`flex justify-between items-start px-2 pt-2 h-full relative overflow-hidden break-keep hover:bg-[#131313]/80 ${!isFullContentMode ? "cursor-pointer" : ""}`}
+          className={`flex justify-between items-start px-2 pt-2 h-full relative overflow-hidden break-keep hover:bg-system-dark/80 ${!isFullContentMode ? "cursor-pointer" : ""}`}
         >
           <div className={`flex-1 pr-8 h-full overflow-hidden`}>
             <div
               ref={contentRef}
-              className="max-w-none text-size-md font-ep-sans text-system-text pb-5"
+              className="max-w-none text-size-md font-ep-sans text-system-white pb-5"
             >
               {Array.isArray(description) && (
                 <PortableText
@@ -214,7 +214,7 @@ export default function DesktopPostContent({ post }: PostContentProps) {
                     href={post.additional_link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-block text-size-md font-ep-sans text-system-text"
+                    className="inline-block text-size-md font-ep-sans text-system-white"
                   >
                     <img
                       src="/plus.svg"

@@ -120,14 +120,14 @@ const MobilePostCard = React.memo(
           </div>
 
           <div className="flex flex-col gap-2 py-2 w-full">
-            <p className="text-system-text text-size-md font-medium font-ep-sans leading-tight line-clamp-2">
+            <p className="text-system-white text-size-md font-medium font-ep-sans leading-tight line-clamp-2">
               {language === "kr" ? post.title_kr : post.title_en}
             </p>
             <div className="flex flex-wrap gap-1">
               {post.category?.map((category: string) => (
                 <span
                   key={category}
-                  className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-[#131313]"
+                  className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
                   style={{
                     backgroundColor: CATEGORY_COLORS[category] || "#787878",
                   }}
@@ -208,14 +208,14 @@ export default function MobileMainContent({
             >
               <div className="flex justify-between items-start gap-4">
                 <div className="flex-1 flex flex-wrap items-center gap-2">
-                  <span className="text-[0.85rem] font-medium text-system-text font-ep-sans leading-tight">
+                  <span className="text-[0.85rem] font-medium text-system-white font-ep-sans leading-tight">
                     {language === "kr" ? post.title_kr : post.title_en}
                   </span>
                   <div className="flex gap-1">
                     {post.category?.map((category: string) => (
                       <span
                         key={category}
-                        className="px-[0.35rem] py-[0.11rem] rounded-[4px] text-[10px] font-medium font-ep-sans text-[#131313]"
+                        className="px-[0.35rem] py-[0.11rem] rounded-[4px] text-[10px] font-medium font-ep-sans text-system-dark"
                         style={{
                           backgroundColor:
                             CATEGORY_COLORS[category] || "#787878",
@@ -243,7 +243,7 @@ export default function MobileMainContent({
                 setCurrentPage(currentPage - 1);
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="font-ep-sans text-system-text text-size-md p-2"
+              className="font-ep-sans text-system-white text-size-md p-2"
             >
               Prev
             </button>
@@ -257,7 +257,7 @@ export default function MobileMainContent({
                 setCurrentPage(currentPage + 1);
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="font-ep-sans text-system-text text-size-md p-2"
+              className="font-ep-sans text-system-white text-size-md p-2"
             >
               Next
             </button>
