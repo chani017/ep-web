@@ -415,23 +415,21 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
               </div>
               <div className="grid grid-cols-4 px-2 items-stretch gap-x-3 mt-12">
                 {/* 검색창 */}
-                <div className="col-span-2 flex items-end bg-system-dark-gray px-1 pb-2 border-b border-system-gray relative">
+                <div className="col-span-2 flex items-end bg-system-dark-gray border-b border-system-gray relative">
                   {!searchTerm && (
-                    <span
-                      className={`absolute pointer-events-none text-size-md font-ep-sans text-system-white transition-all duration-100 ease-in-out flex items-center ${
-                        isSearchFocused ? "left-[calc(20%-5rem)]" : "left-1"
-                      }`}
-                      style={{ bottom: "0.25rem" }}
-                    >
-                      {isSearchFocused && (
-                        <span className="mr-px w-px h-[1em] bg-system-whitetext-system-white animate-blink" />
-                      )}
-                      Search
-                    </span>
+                    <div className="absolute inset-0 pointer-events-none text-size-md font-ep-sans text-system-white flex items-center justify-between pr-1 py-2">
+                      <div className="flex items-center">
+                        {isSearchFocused && (
+                          <span className="w-px h-[1em] bg-system-white animate-blink" />
+                        )}
+                        Search
+                      </div>
+                      <img src="/search.svg" alt="Search" className="w-4 h-4" />
+                    </div>
                   )}
                   <input
                     type="text"
-                    className={`w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans ${
+                    className={`w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans h-full ${
                       !searchTerm ? "caret-transparent" : ""
                     }`}
                     value={searchTerm}
@@ -439,15 +437,17 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                     onFocus={() => setIsSearchFocused(true)}
                     onBlur={() => setIsSearchFocused(false)}
                   />
-                  <img
-                    src="/search.svg"
-                    alt="Search"
-                    className="w-4 h-4 mb-[0.rem]"
-                  />
+                  {searchTerm && (
+                    <img
+                      src="/search.svg"
+                      alt="Search"
+                      className="w-4 h-4 absolute right-1 bottom-1 pointer-events-none"
+                    />
+                  )}
                 </div>
                 {/* 연도 선택 */}
                 <div
-                  className="col-span-1 pb-1 border-b border-system-gray relative flex items-end"
+                  className="col-span-1 py-1.5 border-b border-system-gray relative flex items-end"
                   ref={yearDropdownRef}
                 >
                   <button

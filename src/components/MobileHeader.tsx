@@ -78,7 +78,7 @@ export default function MobileHeader({
       <header className="flex justify-between items-center h-10 border-b border-system-gray bg-background">
         <div
           onClick={() => {
-            window.location.href = "/";
+            router.push("/");
           }}
           className="text-size-xl font-light text-system-white font-ep-sans uppercase cursor-pointer whitespace-nowrap"
         >
@@ -106,34 +106,30 @@ export default function MobileHeader({
           </span>
         </div>
 
-        {/* MobileTrigger placeholder to maintain layout balance */}
         <div className="w-8 h-8" />
       </header>
 
       {filterState && (
-        <div className="flex flex-col gap-2 bg-background/80 backdrop-blur-sm z-50">
+        <div className="flex flex-col bg-background/80 backdrop-blur-[2px] z-50">
           <div className="flex items-center border-b border-system-gray">
             {/* 검색창 */}
-            <div className="flex-1 flex items-center px-1 py-2 relative">
+            <div className="flex-1 flex items-center py-2 relative">
               <img src="/search.svg" alt="Search" className="w-4 h-4" />
               {!searchTerm && (
                 <span
-                  className={`absolute pointer-events-none text-[1.2rem] font-ep-sans text-system-gray transition-all duration-100 ease-in-out flex items-center pl-5 ${
-                    isSearchFocused ? "left-10" : "left-2"
+                  className={`absolute inset-y-0 left-0 pointer-events-none text-size-lg font-ep-sans text-system-gray transition-all duration-100 ease-in-out flex items-center pl-5.5 ${
+                    isSearchFocused ? "translate-x-4" : "translate-x-0"
                   }`}
-                  style={{ bottom: "0.25rem" }}
                 >
                   {isSearchFocused && (
-                    <span className="mr-px w-px h-[1em] bg-system-white animate-blink" />
+                    <span className="mr-px w-px h-[1.2em] bg-system-white animate-blink" />
                   )}
-                  Search
+                  <span className="leading-none">Search</span>
                 </span>
               )}
               <input
                 type="text"
-                className={`w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans ${
-                  !searchTerm ? "caret-transparent" : ""
-                }`}
+                className="w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans caret-transparent"
                 value={searchTerm}
                 onChange={(e: any) => setSearchTerm(e.target.value)}
                 onFocus={() => setIsSearchFocused(true)}
@@ -157,7 +153,7 @@ export default function MobileHeader({
               )}
             </div>
 
-            <div className="flex items-center pl-2 pr-1 gap-2">
+            <div className="flex items-center gap-2 ml-5">
               <button
                 onClick={() => setViewMode && setViewMode("grid")}
                 className={`transition-all duration-150 ${viewMode === "grid" ? "opacity-100" : "opacity-30"}`}
@@ -174,13 +170,13 @@ export default function MobileHeader({
           </div>
 
           <div className="flex gap-2">
-            {/* Category */}
+            {/* 카테고리 */}
             <div
-              className="flex-1 pb-1 border-b border-system-gray relative flex items-end"
+              className="flex-1 py-2 border-b border-system-gray relative flex items-end"
               ref={categoryDropdownRef}
             >
               <button
-                className="w-full flex items-center justify-between bg-transparent text-[1.2rem] text-system-gray font-ep-sans cursor-pointer h-full"
+                className="w-full flex items-center justify-between bg-transparent text-size-lg text-system-gray font-ep-sans cursor-pointer h-full"
                 onClick={() => setIsCategoryOpen(!isCategoryOpen)}
               >
                 <span>{selectedCategory}</span>
@@ -191,16 +187,16 @@ export default function MobileHeader({
                 />
               </button>
               <div
-                className={`absolute top-full left-0 w-full bg-system-dark-gray backdrop-blur-xl border-t border-b border-system-gray z-40 transition-all duration-200 ease-in-out origin-top ${
+                className={`absolute top-full left-0 w-full bg-system-dark-gray border-t border-b border-system-gray z-40 transition-all duration-200 ease-in-out origin-top ${
                   isCategoryOpen
-                    ? "max-h-60 opacity-100 translate-y-0 overflow-y-auto no-scrollbar shadow-2xl"
-                    : "max-h-0 opacity-0 -translate-y-1 pointer-events-none border-transparent"
+                    ? "max-h-60 opacity-100 translate-y-0 overflow-y-auto no-scrollbar"
+                    : "max-h-0 opacity-0 -translate-y-1 pointer-events-none"
                 }`}
               >
                 {CATEGORIES.map((category) => (
                   <div
                     key={category}
-                    className={`py-1 text-[1.2rem] font-ep-sans cursor-pointer transition-colors ${
+                    className={`py-1 text-size-lg font-ep-sans cursor-pointer transition-colors ${
                       selectedCategory === category
                         ? "text-system-white bg-white/10"
                         : "text-system-white hover:bg-white/10"
@@ -216,13 +212,13 @@ export default function MobileHeader({
               </div>
             </div>
 
-            {/* Year */}
+            {/* 연도 */}
             <div
-              className="flex-1 pb-1 border-b border-system-gray relative flex items-end"
+              className="flex-1 py-2 border-b border-system-gray relative flex items-end"
               ref={yearDropdownRef}
             >
               <button
-                className="w-full flex items-center justify-between bg-transparent text-[1.2rem] text-system-gray font-ep-sans cursor-pointer h-full"
+                className="w-full flex items-center justify-between bg-transparent text-size-lg text-system-gray font-ep-sans cursor-pointer h-full"
                 onClick={() => setIsYearOpen(!isYearOpen)}
               >
                 <span>{selectedYear}</span>
@@ -233,18 +229,18 @@ export default function MobileHeader({
                 />
               </button>
               <div
-                className={`absolute top-full left-0 w-full bg-system-dark-gray backdrop-blur-xl border-t border-b border-system-gray z-40 transition-all duration-200 ease-in-out origin-top ${
+                className={`absolute top-full left-0 w-full bg-system-dark-gray border-t border-b border-system-gray z-40 transition-all duration-200 ease-in-out origin-top ${
                   isYearOpen
-                    ? "max-h-48 opacity-100 translate-y-0 overflow-y-auto no-scrollbar shadow-2xl"
-                    : "max-h-0 opacity-0 -translate-y-1 pointer-events-none border-transparent"
+                    ? "max-h-48 opacity-100 translate-y-0 overflow-y-auto no-scrollbar"
+                    : "max-h-0 opacity-0 -translate-y-1 pointer-events-none"
                 }`}
               >
                 {uniqueYears.map((year: any) => (
                   <div
                     key={year}
-                    className={`py-1 text-[1.2rem] font-ep-sans cursor-pointer transition-colors ${
+                    className={`py-1 text-size-lg font-ep-sans cursor-pointer transition-colors ${
                       selectedYear === year
-                        ? "text-system-white hover:bg-white/10"
+                        ? "text-system-white bg-white/10"
                         : "text-system-white hover:bg-white/10"
                     }`}
                     onClick={() => {

@@ -38,11 +38,7 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
   const media = post.media || [];
 
   return (
-    <div
-      className={`fixed inset-x-0 bottom-0 top-10 bg-background z-80 transition-transform duration-300 ease-in-out overflow-y-auto no-scrollbar ${
-        isPostPage ? "translate-y-0" : "translate-y-full"
-      }`}
-    >
+    <div className="w-full h-full bg-background overflow-y-auto no-scrollbar">
       <div className="flex flex-col min-h-screen bg-background text-system-white pb-5">
         <div className="px-2 pb-2 flex justify-between items-start">
           <h1 className="text-size-md font-normal font-ep-sans leading-none mt-2">
@@ -56,7 +52,7 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
               {post.category?.map((category: string) => (
                 <span
                   key={category}
-                  className="px-1 rounded-[4px] text-[12px] font-medium font-ep-sans text-system-dark"
+                  className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
                   style={{
                     backgroundColor: CATEGORY_COLORS[category] || "#787878",
                   }}
@@ -146,7 +142,7 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
             />
           )}
           {post.additional_link && (
-            <div className="mx-2 mt-2">
+            <div className="mt-2">
               <a
                 href={post.additional_link}
                 target="_blank"
@@ -154,9 +150,7 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
                 className="flex items-center gap-1 text-system-white hover:opacity-70 transition-opacity"
               >
                 <img src="/plus.svg" alt="" className="w-3 h-3" />
-                <span className="underline underline-offset-2">
-                  {post.additional_link}
-                </span>
+                <span>{post.additional_link}</span>
               </a>
             </div>
           )}

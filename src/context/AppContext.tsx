@@ -25,6 +25,7 @@ interface AppContextType {
   currentPost: SanityDocument | null;
   setCurrentPost: (post: SanityDocument | null) => void;
   isMobile: boolean;
+  isMounted: boolean;
   isMobileSidebarOpen: boolean;
   setIsMobileSidebarOpen: (open: boolean) => void;
 }
@@ -37,9 +38,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [isFullContentMode, setIsFullContentMode] = useState(false);
   const [currentPost, setCurrentPost] = useState<SanityDocument | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     const check = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
     check();
     window.addEventListener("resize", check);
@@ -62,6 +65,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         currentPost,
         setCurrentPost,
         isMobile,
+        isMounted,
         isMobileSidebarOpen,
         setIsMobileSidebarOpen,
       }}

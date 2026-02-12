@@ -19,16 +19,30 @@ interface ClientLayoutProps {
 }
 
 export default function ClientLayout({ posts, children }: ClientLayoutProps) {
-  const { isMobile } = useAppContext();
+  const { isMobile, isMounted } = useAppContext();
   const filterState = usePostFilter(posts);
   const pathname = usePathname();
   const [mobileViewMode, setMobileViewMode] = React.useState<"grid" | "list">(
     "grid",
   );
 
-  if (isMobile) {
-    const isPostPage = pathname !== "/";
+  const [activePostContent, setActivePostContent] =
+    React.useState<React.ReactNode>(null);
 
+  const isPostPage = pathname !== "/";
+
+  // Sync activePostContent to persist children during exit animation
+  React.useEffect(() => {
+    if (isMobile && isPostPage) {
+      setActivePostContent(children);
+    }
+  }, [isMobile, isPostPage, children]);
+
+  if (!isMounted) {
+    return <div className="h-screen w-screen bg-background" />;
+  }
+
+  if (isMobile) {
     return (
       <div className="flex flex-col h-screen overflow-hidden bg-background text-system-white font-ep-sans">
         <div className="flex-1 overflow-y-auto no-scrollbar">
@@ -45,9 +59,18 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
           />
         </div>
 
-        <MobileSidebar>{!isPostPage && children}</MobileSidebar>
+        {!isPostPage && <MobileSidebar>{children}</MobileSidebar>}
 
-        {isPostPage && children}
+        <div
+          className={`fixed inset-x-0 bottom-0 top-10 bg-background z-80 transition-transform duration-200 ease-in-out ${
+            isPostPage ? "translate-y-0" : "translate-y-full"
+          }`}
+          onTransitionEnd={() => {
+            if (!isPostPage) setActivePostContent(null);
+          }}
+        >
+          {activePostContent}
+        </div>
 
         <MobileTrigger />
       </div>
