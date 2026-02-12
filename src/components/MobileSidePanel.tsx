@@ -33,14 +33,11 @@ export default function MobileSidebar({ children }: MobileSidebarProps) {
         }`}
         onClick={() => setIsMobileSidebarOpen(false)}
       />
-
-      {/* 사이드패널 상단 보더 연장선 (전체 너비) */}
       <div
         className={`fixed top-[39px] left-0 w-full border-b border-system-gray z-500 transition-transform duration-300 ease-in-out ${
           isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       />
-
       {/* 사이드패널 */}
       <div
         className={`fixed top-0 left-0 h-full w-[calc(100%-40px)] border-r border-system-gray bg-background z-500 transition-transform duration-300 ease-in-out flex flex-col ${

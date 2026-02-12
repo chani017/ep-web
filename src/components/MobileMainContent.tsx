@@ -200,7 +200,7 @@ export default function MobileMainContent({
   );
 
   return (
-    <main className="px-1.5 wrapper-content ">
+    <main className="px-2 wrapper-content ">
       <div className="pt-2 flex items-center justify-end text-size-sm text-system-gray font-ep-sans">
         <span>{filteredPosts?.length || 0} results</span>
       </div>

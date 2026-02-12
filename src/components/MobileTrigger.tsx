@@ -26,7 +26,7 @@ export default function MobileTrigger() {
   return (
     <button
       onClick={handleClick}
-      className="fixed top-0 right-0 w-10 h-10 flex flex-col justify-center items-center cursor-pointer z-1000"
+      className="fixed right-0 w-10 h-10 flex flex-col justify-center items-center cursor-pointer z-1000"
       aria-label={isPostPage ? "패널 닫기" : "메뉴 열기"}
     >
       <img

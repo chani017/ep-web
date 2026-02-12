@@ -70,7 +70,7 @@ export default function MobileHeader({
   }, []);
 
   return (
-    <main className="sticky top-0 z-50 px-1.5">
+    <main className="sticky top-0 z-50 px-2">
       <header className="flex h-10 items-center justify-between border-b border-system-gray bg-background">
         <div
           onClick={() => {

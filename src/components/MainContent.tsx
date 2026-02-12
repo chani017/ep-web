@@ -388,7 +388,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
               className="flex-1 overflow-y-auto no-scrollbar relative"
               ref={containerRef}
             >
-              <div className="sticky top-0 bg-background/80 backdrop-blur-md z-50">
+              <div className="sticky top-0 pb-1 bg-background/80 backdrop-blur-md z-50">
                 <div className="relative flex flex-wrap justify-start items-center px-2 py-1 pr-16 gap-x-2 text-size-xl leading-tight">
                   {CATEGORIES.map((category) => (
                     <div
@@ -400,7 +400,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                     </div>
                   ))}
                   <button
-                    className="absolute right-2 top-1 flex items-center gap-1 text-system-gray hover:text-system-white cursor-pointer transition-colors"
+                    className="absolute right-2 top-1 flex items-center gap-1 text-system-gray cursor-pointer transition-colors"
                     onClick={() =>
                       setViewMode(viewMode === "img" ? "list" : "img")
                     }
