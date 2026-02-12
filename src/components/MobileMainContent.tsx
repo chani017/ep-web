@@ -234,32 +234,46 @@ export default function MobileMainContent({
           ))}
         </div>
       )}
-      {/* Pagination */}
+      {/* 페이지네이션 (PC와 동일한 디자인) */}
       {totalPages >= 1 && (
-        <div className="px-3 pt-4 pb-10 flex justify-center items-center gap-2">
+        <div className="px-3 pt-4 pb-10 flex justify-start items-center text-size-md gap-1">
           {currentPage > 1 && (
             <button
               onClick={() => {
                 setCurrentPage(currentPage - 1);
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="font-ep-sans text-system-white text-size-md p-2"
+              className="font-ep-sans text-system-white text-size-md hover:bg-system-dark-gray px-1.5 leading-5 rounded-md min-w-3 text-center"
             >
-              Prev
+              〈
             </button>
           )}
-          <span className="text-system-gray text-size-sm font-ep-sans">
-            {currentPage} / {totalPages}
-          </span>
+          {Array.from({ length: totalPages }).map((_, i) => (
+            <React.Fragment key={i + 1}>
+              <button
+                onClick={() => {
+                  setCurrentPage(i + 1);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className={`font-ep-sans transition-colors cursor-pointer px-1.5 leading-5 rounded-md min-w-5 text-center ${
+                  currentPage === i + 1
+                    ? "text-system-white bg-transparent hover:bg-system-dark-gray"
+                    : "text-system-white bg-[#464646] hover:bg-system-dark-gray"
+                }`}
+              >
+                {i + 1}
+              </button>
+            </React.Fragment>
+          ))}
           {currentPage < totalPages && (
             <button
               onClick={() => {
                 setCurrentPage(currentPage + 1);
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="font-ep-sans text-system-white text-size-md p-2"
+              className="font-ep-gothic text-system-white text-size-md hover:bg-system-dark-gray px-1.5 leading-5 rounded-md min-w-3 text-center"
             >
-              Next
+              〉
             </button>
           )}
         </div>
