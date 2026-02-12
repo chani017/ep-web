@@ -153,19 +153,33 @@ export default function MobileHeader({
               )}
             </div>
 
-            <div className="flex items-center gap-2 ml-5">
+            <div className="flex items-center gap-2.5 ml-5">
               <button
                 onClick={() => setViewMode && setViewMode("grid")}
-                className={`transition-all duration-150 ${viewMode === "grid" ? "opacity-100" : "opacity-30"}`}
-              >
-                <img src="/gridview.svg" alt="Grid View" className="w-5 h-5" />
-              </button>
+                className={`w-5 h-5 transition-colors duration-150 ${
+                  viewMode === "grid" ? "bg-system-white" : "bg-system-gray"
+                }`}
+                style={{
+                  maskImage: "url(/gridview.svg)",
+                  WebkitMaskImage: "url(/gridview.svg)",
+                  maskRepeat: "no-repeat",
+                  maskPosition: "center",
+                  maskSize: "contain",
+                }}
+              />
               <button
                 onClick={() => setViewMode && setViewMode("list")}
-                className={`transition-all duration-150 ${viewMode === "list" ? "opacity-100" : "opacity-30"}`}
-              >
-                <img src="/listview.svg" alt="List View" className="w-5 h-5" />
-              </button>
+                className={`w-5 h-5 transition-colors duration-150 ${
+                  viewMode === "list" ? "bg-system-white" : "bg-system-gray"
+                }`}
+                style={{
+                  maskImage: "url(/listview.svg)",
+                  WebkitMaskImage: "url(/listview.svg)",
+                  maskRepeat: "no-repeat",
+                  maskPosition: "center",
+                  maskSize: "contain",
+                }}
+              />
             </div>
           </div>
 
