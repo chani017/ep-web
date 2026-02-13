@@ -16,6 +16,7 @@ import { useResponCols } from "@/hooks/useResponCols";
 import { usePostGridLayout } from "@/hooks/usePostGridLayout";
 import PostCard from "../post/PostCard";
 import Pagination from "../common/Pagination";
+import { CATEGORY_COLORS, CATEGORIES } from "@/constants/common";
 
 const { projectId, dataset } = client.config();
 const urlFor = (source: SanityImageSource) =>
@@ -40,32 +41,13 @@ interface MainContentProps {
   filterState?: FilterState;
 }
 
-const CATEGORIES = [
-  "All Types",
-  "Graphic",
-  "Editorial",
-  "Website",
-  "Identity",
-  "Space",
-  "Practice",
-  "Motion",
-  "Press",
-  "Everyday",
-];
-
 export default function MainContent({
   filterState,
   ...rest
 }: MainContentProps) {
   void rest.posts;
-  const {
-    language,
-    setLanguage,
-    isFullContentMode,
-    currentPost,
-    isMobile,
-    categoryColors,
-  } = useAppContext();
+  const { language, setLanguage, isFullContentMode, currentPost, isMobile } =
+    useAppContext();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
   const [viewMode, setViewMode] = React.useState<"desktopImg" | "list">(
     "desktopImg",
@@ -174,7 +156,7 @@ export default function MainContent({
                       key={category}
                       className="px-2 py-1 rounded-[6px] text-size-sm leading-none font-medium font-ep-sans text-system-dark whitespace-nowrap"
                       style={{
-                        backgroundColor: categoryColors[category] || "#787878",
+                        backgroundColor: CATEGORY_COLORS[category] || "#787878",
                       }}
                     >
                       {category}
@@ -456,7 +438,6 @@ export default function MainContent({
                     cols={cols}
                     rowItemsCount={rowItemsCount}
                     widthPct={widthPct}
-                    categoryColors={categoryColors}
                     isMobile={false}
                   />
                 ))}

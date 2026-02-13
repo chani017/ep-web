@@ -5,6 +5,7 @@ import Image from "next/image";
 import { PortableText, type SanityDocument } from "next-sanity";
 import MuxPlayer from "@mux/mux-player-react";
 import { useAppContext } from "@/context/AppContext";
+import { CATEGORY_COLORS } from "@/constants/common";
 import imageUrlBuilder from "@sanity/image-url";
 import { SanityImageSource } from "@sanity/image-url";
 import { client } from "@/sanity/client";
@@ -46,7 +47,6 @@ export default function PostContent({
     isFullContentMode,
     setIsFullContentMode,
     setCurrentPost,
-    categoryColors,
     isMobile: contextIsMobile,
   } = useAppContext();
 
@@ -244,7 +244,7 @@ export default function PostContent({
                     key={category}
                     className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
                     style={{
-                      backgroundColor: categoryColors[category] || "#787878",
+                      backgroundColor: CATEGORY_COLORS[category] || "#787878",
                     }}
                   >
                     {category}
@@ -290,7 +290,7 @@ export default function PostContent({
                     key={category}
                     className="px-[0.4rem] py-[0.2rem] rounded-[5px] text-[11px] leading-none font-medium font-ep-sans text-system-dark whitespace-nowrap"
                     style={{
-                      backgroundColor: categoryColors[category] || "#787878",
+                      backgroundColor: CATEGORY_COLORS[category] || "#787878",
                     }}
                   >
                     {category}
