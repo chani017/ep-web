@@ -14,7 +14,7 @@ import { usePage } from "@/hooks/usePage";
 import { useDropdown } from "@/hooks/useDropdown";
 import { useResponCols } from "@/hooks/useResponCols";
 import { usePostGridLayout } from "@/hooks/usePostGridLayout";
-import PostCard from "../post/DesktopPostCard";
+import PostCard from "../post/PostCard";
 import Pagination from "../common/Pagination";
 
 const { projectId, dataset } = client.config();
@@ -67,7 +67,9 @@ export default function MainContent({
     categoryColors,
   } = useAppContext();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
-  const [viewMode, setViewMode] = React.useState<"img" | "list">("img");
+  const [viewMode, setViewMode] = React.useState<"desktopImg" | "list">(
+    "desktopImg",
+  );
 
   const {
     searchTerm,
@@ -302,7 +304,9 @@ export default function MainContent({
                   <button
                     className="absolute right-2 top-1 flex items-center gap-1 text-system-gray cursor-pointer transition-colors"
                     onClick={() =>
-                      setViewMode(viewMode === "img" ? "list" : "img")
+                      setViewMode(
+                        viewMode === "desktopImg" ? "list" : "desktopImg",
+                      )
                     }
                   >
                     <Image
@@ -453,6 +457,7 @@ export default function MainContent({
                     rowItemsCount={rowItemsCount}
                     widthPct={widthPct}
                     categoryColors={categoryColors}
+                    isMobile={false}
                   />
                 ))}
               </div>

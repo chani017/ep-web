@@ -5,7 +5,7 @@ import { SIZE_MULTIPLIERS, MOBILE_SIZE_MULTIPLIERS } from "@/constants/layout";
 interface UsePostGridLayoutProps {
   posts: SanityDocument[];
   cols: number;
-  viewMode: "img" | "list" | "grid"; // "grid" is for mobile, "img" is for desktop grid
+  viewMode: "desktopImg" | "list" | "mobileImg"; // "mobileImg" is for mobile, "desktopImg" is for desktop grid
   isMobile?: boolean;
 }
 
@@ -16,7 +16,7 @@ export function usePostGridLayout({
   isMobile = false,
 }: UsePostGridLayoutProps) {
   const multipliers = isMobile ? MOBILE_SIZE_MULTIPLIERS : SIZE_MULTIPLIERS;
-  const gridMode = isMobile ? "grid" : "img";
+  const gridMode = isMobile ? "mobileImg" : "desktopImg";
 
   const renderedPosts = useMemo(() => {
     return posts.map((post, index) => {

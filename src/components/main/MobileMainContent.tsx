@@ -5,7 +5,7 @@ import { type SanityDocument } from "next-sanity";
 import { useAppContext } from "@/context/AppContext";
 import { usePage } from "@/hooks/usePage";
 import { usePostGridLayout } from "@/hooks/usePostGridLayout";
-import MobilePostCard from "../post/MobilePostCard";
+import PostCard from "../post/PostCard";
 import Pagination from "../common/Pagination";
 
 interface MobileMainContentProps {
@@ -21,14 +21,14 @@ interface MobileMainContentProps {
     filteredPosts: SanityDocument[];
     availableCategories: Set<string>;
   };
-  viewMode?: "grid" | "list";
+  viewMode?: "mobileImg" | "list";
   scrollToTop?: () => void;
 }
 
 export default function MobileMainContent({
   posts,
   filterState,
-  viewMode = "grid",
+  viewMode = "mobileImg",
   scrollToTop,
 }: MobileMainContentProps) {
   const { language, categoryColors } = useAppContext();
@@ -54,19 +54,20 @@ export default function MobileMainContent({
 
       <div
         className={`mt-3 ${
-          viewMode === "grid"
+          viewMode === "mobileImg"
             ? "flex flex-wrap gap-x-3 gap-y-6"
             : "flex flex-col border-t border-system-gray"
         }`}
       >
         {renderedPosts.map(({ post, widthPct }) => (
-          <MobilePostCard
+          <PostCard
             key={post._id}
             post={post}
             language={language}
-            widthPercent={widthPct}
+            widthPct={widthPct}
             viewMode={viewMode}
             categoryColors={categoryColors}
+            isMobile={true}
           />
         ))}
       </div>
