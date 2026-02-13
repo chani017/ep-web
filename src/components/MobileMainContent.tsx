@@ -187,6 +187,8 @@ const MobilePostCard = React.memo(
 
 MobilePostCard.displayName = "MobilePostCard";
 
+// ... imports
+
 export default function MobileMainContent({
   posts,
   filterState,
@@ -199,6 +201,40 @@ export default function MobileMainContent({
   const { currentPage, setCurrentPage, paginatedPosts, totalPages } = usePage(
     filteredPosts || posts,
   );
+
+  // Memoize grid layout calculations
+  const renderedPosts = React.useMemo(() => {
+    return paginatedPosts.map((post: any, index: number) => {
+      let rawWidthPercent;
+      if (viewMode === "grid") {
+        const cols = 2;
+        const rowStart = Math.floor(index / cols) * cols;
+        const rowEnd = rowStart + cols;
+        const rowSlice = paginatedPosts.slice(rowStart, rowEnd);
+        const rowItemCount = rowSlice.length;
+
+        const actualTotalM = rowSlice.reduce(
+          (sum: number, p: any) =>
+            sum + (SIZE_MULTIPLIERS[p.thumbnail_size || "medium"] || 1.0),
+          0,
+        );
+
+        const isLastRowShort = rowItemCount < cols;
+        const paddedTotalM = isLastRowShort
+          ? actualTotalM +
+            (cols - rowItemCount) * (SIZE_MULTIPLIERS.medium || 0.8)
+          : actualTotalM;
+
+        const m = SIZE_MULTIPLIERS[post.thumbnail_size || "medium"] || 1.0;
+        rawWidthPercent = (m / paddedTotalM) * 100;
+      }
+
+      return {
+        post,
+        widthPercent: rawWidthPercent,
+      };
+    });
+  }, [paginatedPosts, viewMode]);
 
   return (
     <main className="px-2 wrapper-content ">
@@ -213,42 +249,16 @@ export default function MobileMainContent({
             : "flex flex-col border-t border-system-gray"
         }`}
       >
-        {paginatedPosts.map((post: any, index: number) => {
-          let rawWidthPercent;
-          if (viewMode === "grid") {
-            const cols = 2;
-            const rowStart = Math.floor(index / cols) * cols;
-            const rowEnd = rowStart + cols;
-            const rowSlice = paginatedPosts.slice(rowStart, rowEnd);
-            const rowItemCount = rowSlice.length;
-
-            const actualTotalM = rowSlice.reduce(
-              (sum: number, p: any) =>
-                sum + (SIZE_MULTIPLIERS[p.thumbnail_size || "medium"] || 1.0),
-              0,
-            );
-
-            const isLastRowShort = rowItemCount < cols;
-            const paddedTotalM = isLastRowShort
-              ? actualTotalM +
-                (cols - rowItemCount) * (SIZE_MULTIPLIERS.medium || 0.8)
-              : actualTotalM;
-
-            const m = SIZE_MULTIPLIERS[post.thumbnail_size || "medium"] || 1.0;
-            rawWidthPercent = (m / paddedTotalM) * 100;
-          }
-
-          return (
-            <MobilePostCard
-              key={post._id}
-              post={post}
-              language={language}
-              widthPercent={rawWidthPercent}
-              viewMode={viewMode}
-              categoryColors={categoryColors}
-            />
-          );
-        })}
+        {renderedPosts.map(({ post, widthPercent }) => (
+          <MobilePostCard
+            key={post._id}
+            post={post}
+            language={language}
+            widthPercent={widthPercent}
+            viewMode={viewMode}
+            categoryColors={categoryColors}
+          />
+        ))}
       </div>
       {/* 페이지네이션 */}
       <Pagination

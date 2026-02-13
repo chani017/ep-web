@@ -277,7 +277,7 @@ export const postType = defineType({
 
 <br />
 
-## 2. `exhibition` & `award` (CV & Archive)
+### 2. `exhibition` & `award` (CV)
 
 사이드 패널(CV)에 노출되는 텍스트 위주의 정보입니다.
 
@@ -296,3 +296,14 @@ export const postType = defineType({
 
 3. **기능별 커스텀 훅 / 컴포넌트 분리**
    - 기능별로 커스텀 훅과 컴포넌트를 분리하여 재사용성을 높였습니다.
+
+---
+
+## 기타
+
+- CMS에 구축된 데이터를 기반으로 프론트엔드를 구현했기때문에 사이드 패널의 Client 목록이 Figma 보다 적게 구현된 점 참고해주시길 바랍니다.
+- 현재의 데이터 양으로는 페이지네이션이 완벽하게 구현되었다 어렵다고 보기 때문에, 평가에 영향이 없다면 제출 완료 기한까지 남은 시간동안 CMS 데이터를 충분한 양만큼 추가해보겠습니다.
+
+## 배포 URL
+
+- https://ep-web-three.vercel.app/

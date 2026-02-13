@@ -198,7 +198,10 @@ const CATEGORIES = [
   "Everyday",
 ];
 
+// ... imports
+
 export default function MainContent({ posts, filterState }: MainContentProps) {
+  // ... hooks
   const {
     language,
     setLanguage,
@@ -243,14 +246,42 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  // Memoize layout calculations
+  const renderedPosts = React.useMemo(() => {
+    return paginatedPosts.map((post, index) => {
+      const rowStart = Math.floor(index / cols) * cols;
+      const rowEnd = Math.min(rowStart + cols, paginatedPosts.length);
+      const rowSlice = paginatedPosts.slice(rowStart, rowEnd);
+      const rowItemCount = rowSlice.length;
+
+      const actualTotalM = rowSlice.reduce(
+        (sum, p) =>
+          sum + (SIZE_MULTIPLIERS[p.thumbnail_size || "medium"] || 1.0),
+        0,
+      );
+
+      const isLastRowShort = rowItemCount < cols;
+      const paddedTotalM = isLastRowShort
+        ? actualTotalM + (cols - rowItemCount) * SIZE_MULTIPLIERS.medium
+        : actualTotalM;
+
+      const m = SIZE_MULTIPLIERS[post.thumbnail_size || "medium"] || 1.0;
+      const widthPct = (m / paddedTotalM) * 100;
+
+      return {
+        post,
+        widthPct,
+        rowItemsCount: rowItemCount,
+      };
+    });
+  }, [paginatedPosts, cols]);
+
   return (
     <>
       <header className="flex justify-between items-center p-1 border-b border-system-gray submenu h-10">
         <div className="shrink-0 px-1 h-full flex items-center">
-          <div
-            onClick={() => {
-              window.location.href = "/";
-            }}
+          <Link
+            href="/"
             className="relative h-full flex items-center group cursor-pointer w-fit"
           >
             <div className="text-size-xl font-me text-system-white font-ep-sans uppercase transition-all duration-100 transform opacity-150 group-hover:opacity-0 whitespace-nowrap">
@@ -259,7 +290,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
             <div className="absolute inset-0 flex items-center text-size-xl font-medium text-system-white font-ep-sans transition-all duration-150 transform translate-x-2 group-hover:translate-x-0 opacity-0 group-hover:opacity-100 whitespace-nowrap">
               일상의실천
             </div>
-          </div>
+          </Link>
         </div>
         <div className="shrink-0 flex items-center text-size-xl font-normal font-ep-sans">
           {/* 국문 / 영문 전환 */}
@@ -543,42 +574,18 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                       }
                 }
               >
-                {paginatedPosts.map((post, index) => {
-                  const rowStart = Math.floor(index / cols) * cols;
-                  const rowEnd = Math.min(
-                    rowStart + cols,
-                    paginatedPosts.length,
-                  );
-                  const rowSlice = paginatedPosts.slice(rowStart, rowEnd);
-                  const rowItemCount = rowSlice.length;
-                  const actualTotalM = rowSlice.reduce(
-                    (sum, p) =>
-                      sum +
-                      (SIZE_MULTIPLIERS[p.thumbnail_size || "medium"] || 1.0),
-                    0,
-                  );
-                  const isLastRowShort = rowItemCount < cols;
-                  const paddedTotalM = isLastRowShort
-                    ? actualTotalM +
-                      (cols - rowItemCount) * SIZE_MULTIPLIERS.medium
-                    : actualTotalM;
-                  const m =
-                    SIZE_MULTIPLIERS[post.thumbnail_size || "medium"] || 1.0;
-                  const widthPct = (m / paddedTotalM) * 100;
-
-                  return (
-                    <PostCard
-                      key={post._id}
-                      post={post}
-                      language={language}
-                      viewMode={viewMode}
-                      cols={cols}
-                      rowItemsCount={rowSlice.length}
-                      widthPct={widthPct}
-                      categoryColors={categoryColors}
-                    />
-                  );
-                })}
+                {renderedPosts.map(({ post, widthPct, rowItemsCount }) => (
+                  <PostCard
+                    key={post._id}
+                    post={post}
+                    language={language}
+                    viewMode={viewMode}
+                    cols={cols}
+                    rowItemsCount={rowItemsCount}
+                    widthPct={widthPct}
+                    categoryColors={categoryColors}
+                  />
+                ))}
               </div>
               {/* 페이지네이션 */}
               <Pagination
