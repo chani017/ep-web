@@ -261,7 +261,7 @@ export default function PostContent({
       >
         <div
           onClick={() => !isFullContentMode && setIsExpanded(!isExpanded)}
-          className={`flex justify-between items-start px-2 pt-2 h-full relative overflow-hidden break-keep hover:bg-system-dark/80 ${
+          className={`flex justify-between items-start px-2 pt-2 h-full relative overflow-hidden break-keep wrap-break-word hover:bg-system-dark/80 ${
             !isFullContentMode ? "cursor-pointer" : ""
           }`}
         >
