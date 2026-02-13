@@ -31,7 +31,6 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
 
   const isPostPage = pathname !== "/";
 
-  // Sync activePostContent to persist children during exit animation
   React.useEffect(() => {
     if (isMobile && isPostPage) {
       setActivePostContent(children);

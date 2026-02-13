@@ -28,14 +28,12 @@ export default async function IndexPage() {
   }));
 
   const sortedClients = data.clients.sort((a, b) => {
-    // Check if the string starts with a Korean character
     const aIsKorean = /^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(a);
     const bIsKorean = /^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(b);
 
     if (aIsKorean && !bIsKorean) return -1;
     if (!aIsKorean && bIsKorean) return 1;
 
-    // Default sort for same-group items (Korean-Korean or English-English)
     return a.localeCompare(b, "en", { sensitivity: "base" });
   });
 
