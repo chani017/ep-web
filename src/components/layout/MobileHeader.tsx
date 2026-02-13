@@ -21,8 +21,8 @@ interface FilterState {
 
 interface MobileHeaderProps {
   filterState?: FilterState;
-  viewMode?: "grid" | "list";
-  setViewMode?: (mode: "grid" | "list") => void;
+  viewMode?: "mobileImg" | "list";
+  setViewMode?: (mode: "mobileImg" | "list") => void;
   isPostPage?: boolean;
 }
 
@@ -169,9 +169,11 @@ export default function MobileHeader({
 
             <div className="flex items-center gap-2.5 ml-5">
               <button
-                onClick={() => setViewMode && setViewMode("grid")}
+                onClick={() => setViewMode && setViewMode("mobileImg")}
                 className={`w-5 h-5 transition-colors duration-150 ${
-                  viewMode === "grid" ? "bg-system-white" : "bg-system-gray"
+                  viewMode === "mobileImg"
+                    ? "bg-system-white"
+                    : "bg-system-gray"
                 }`}
                 style={{
                   maskImage: "url(/gridview.svg)",

@@ -22,9 +22,9 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
   const { isMobile, isMounted } = useAppContext();
   const filterState = usePostFilter(posts);
   const pathname = usePathname();
-  const [mobileViewMode, setMobileViewMode] = React.useState<"grid" | "list">(
-    "grid",
-  );
+  const [mobileViewMode, setMobileViewMode] = React.useState<
+    "mobileImg" | "list"
+  >("mobileImg");
   const mobileScrollRef = React.useRef<HTMLDivElement>(null);
 
   const [activePostContent, setActivePostContent] =

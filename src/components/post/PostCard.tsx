@@ -53,8 +53,6 @@ const PostCard = React.memo(
     const isList = viewMode === "list";
     const isGrid = !isList;
 
-    // --- 스타일링 로직 ---
-
     // 컨테이너 (Link) 클래스
     const getContainerClasses = () => {
       if (isMobile) {
