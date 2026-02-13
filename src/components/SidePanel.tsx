@@ -183,7 +183,7 @@ export default function SideBar({ exhibition, award, clients }: SideBarProps) {
               {clients.map((client: string) => (
                 <button
                   key={client}
-                  className="text-system-white break-keep text-left text-size-sm md:text-size-md hover:text-system-gray transition-colors cursor-pointer flex-[120_0_120px] md:flex-[180_0_180px]"
+                  className="text-system-white break-keep text-left text-size-sm md:text-size-md hover:text-system-gray transition-colors cursor-pointer flex-[0_0_120px] md:flex-[0_0_180px]"
                   onClick={() => {
                     setSearchTerm(client);
                     if (isMobile) setIsMobileSidebarOpen(false);
