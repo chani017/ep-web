@@ -6,6 +6,7 @@ import React from "react";
 import { useAppContext } from "@/context/AppContext";
 import { useDropdown } from "@/hooks/useDropdown";
 import { CATEGORIES } from "@/constants/common";
+import { useSearch } from "@/hooks/useSearch";
 import { useRouter } from "next/navigation";
 
 interface FilterState {
@@ -35,7 +36,9 @@ export default function MobileHeader({
   const { language, setLanguage } = useAppContext();
   const router = useRouter();
 
-  const [isSearchFocused, setIsSearchFocused] = React.useState(false);
+  const { isSearchFocused, setIsSearchFocused, handleSearchChange } =
+    useSearch();
+
   // 카테고리 드롭다운
   const {
     isOpen: isCategoryOpen,
@@ -125,9 +128,7 @@ export default function MobileHeader({
                 type="text"
                 className="w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans caret-transparent"
                 value={searchTerm}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setSearchTerm?.(e.target.value)
-                }
+                onChange={handleSearchChange}
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
               />

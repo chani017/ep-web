@@ -14,6 +14,7 @@ import { usePage } from "@/hooks/usePage";
 import { useDropdown } from "@/hooks/useDropdown";
 import { useResponCols } from "@/hooks/useResponCols";
 import { usePostGridLayout } from "@/hooks/usePostGridLayout";
+import { useSearch } from "@/hooks/useSearch";
 import PostCard from "../post/PostCard";
 import Pagination from "../common/Pagination";
 import { CATEGORY_COLORS, CATEGORIES } from "@/constants/common";
@@ -48,7 +49,7 @@ export default function MainContent({
   void rest.posts;
   const { language, setLanguage, isFullContentMode, currentPost, isMobile } =
     useAppContext();
-  const [isSearchFocused, setIsSearchFocused] = React.useState(false);
+
   const [viewMode, setViewMode] = React.useState<"desktopImg" | "list">(
     "desktopImg",
   );
@@ -65,21 +66,24 @@ export default function MainContent({
     availableCategories,
   } = filterState || {};
 
+  // 검색 훅
+  const { isSearchFocused, setIsSearchFocused, handleSearchChange } =
+    useSearch();
+
   // 페이지네이션 훅
   const { currentPage, setCurrentPage, paginatedPosts, totalPages } = usePage(
     filteredPosts ?? [],
   );
 
-  // 연도 드롭다운 제어 훅
   const {
     isOpen: isYearOpen,
     setIsOpen: setIsYearOpen,
     dropdownRef: yearDropdownRef,
   } = useDropdown();
+
   // 반응형 컬럼 수 계산 훅
   const [containerRef, cols] = useResponCols([isFullContentMode, isMobile]);
 
-  // 포스트 그리드 레이아웃 계산
   // 포스트 그리드 레이아웃 계산
   const renderedPosts = usePostGridLayout({
     posts: paginatedPosts,
@@ -307,9 +311,13 @@ export default function MainContent({
                 <div className="col-span-2 flex items-end bg-system-dark-gray border-b border-system-gray relative">
                   {!searchTerm && (
                     <div className="absolute inset-0 pointer-events-none text-size-md font-ep-sans text-system-white flex items-center justify-between pr-1 py-2">
-                      <div className="flex items-center">
+                      <div
+                        className={`flex items-center transition-transform duration-100 ease-in-out ${
+                          isSearchFocused ? "translate-x-6" : "translate-x-0"
+                        }`}
+                      >
                         {isSearchFocused && (
-                          <span className="w-px h-[1em] bg-system-white animate-blink" />
+                          <span className="mr-px w-px h-4 bg-system-white animate-blink" />
                         )}
                         Search
                       </div>
@@ -328,7 +336,7 @@ export default function MainContent({
                       !searchTerm ? "caret-transparent" : ""
                     }`}
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm?.(e.target.value)}
+                    onChange={handleSearchChange}
                     onFocus={() => setIsSearchFocused(true)}
                     onBlur={() => setIsSearchFocused(false)}
                   />
