@@ -1,6 +1,9 @@
 import { useMemo } from "react";
 import { type SanityDocument } from "next-sanity";
-import { SIZE_MULTIPLIERS, MOBILE_SIZE_MULTIPLIERS } from "@/constants/layout";
+import {
+  SIZE_MULTIPLIERS,
+  MOBILE_SIZE_MULTIPLIERS,
+} from "@/constants/size_multipliers";
 
 interface UsePostGridLayoutProps {
   posts: SanityDocument[];

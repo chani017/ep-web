@@ -65,20 +65,13 @@ export default function MobileHeader({
     availableCategories,
   } = filterState || {};
 
-  const handleLogoClick = () => {
-    setIsFullContentMode(false);
-    setCurrentPost(null);
-    setSearchTerm?.("");
-    setSelectedYear?.("Year");
-    setSelectedCategory?.("All Types");
-    router.push("/");
-  };
-
   return (
     <main className="sticky top-0 z-50 px-2">
       <header className="flex h-10 items-center justify-between border-b border-system-gray bg-background">
         <div
-          onClick={handleLogoClick}
+          onClick={() =>
+            (window.location.href = "https://ep-web-three.vercel.app")
+          }
           className="text-size-xl font-light text-system-white font-ep-sans uppercase cursor-pointer whitespace-nowrap"
         >
           Everyday Practice
