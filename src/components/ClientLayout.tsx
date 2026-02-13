@@ -25,6 +25,7 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
   const [mobileViewMode, setMobileViewMode] = React.useState<"grid" | "list">(
     "grid",
   );
+  const mobileScrollRef = React.useRef<HTMLDivElement>(null);
 
   const [activePostContent, setActivePostContent] =
     React.useState<React.ReactNode>(null);
@@ -47,7 +48,10 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
     }
     return (
       <div className="flex h-screen flex-col overflow-hidden bg-background font-ep-sans text-system-white">
-        <div className="flex-1 overflow-y-auto no-scrollbar">
+        <div
+          className="flex-1 overflow-y-auto no-scrollbar"
+          ref={mobileScrollRef}
+        >
           <MobileHeader
             filterState={filterState}
             viewMode={mobileViewMode}
@@ -58,6 +62,9 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
             posts={posts}
             filterState={filterState}
             viewMode={mobileViewMode}
+            scrollToTop={() =>
+              mobileScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" })
+            }
           />
         </div>
 

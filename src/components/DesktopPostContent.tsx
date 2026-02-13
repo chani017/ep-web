@@ -24,8 +24,18 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 type MediaItem =
-  | { _type: "image"; _key?: string; caption?: string; image?: { asset?: { _ref?: string } } }
-  | { _type: "mux.video"; _key?: string; asset?: { playbackId?: string }; [key: string]: unknown }
+  | {
+      _type: "image";
+      _key?: string;
+      caption?: string;
+      image?: { asset?: { _ref?: string } };
+    }
+  | {
+      _type: "mux.video";
+      _key?: string;
+      asset?: { playbackId?: string };
+      [key: string]: unknown;
+    }
   | { _type: "youtube"; _key?: string; url?: string; [key: string]: unknown };
 
 interface PostContentProps {

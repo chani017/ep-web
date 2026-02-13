@@ -23,6 +23,7 @@ interface MobileMainContentProps {
     availableCategories: Set<string>;
   };
   viewMode?: "grid" | "list";
+  scrollToTop?: () => void;
 }
 
 const SIZE_MULTIPLIERS: Record<string, number> = {
@@ -210,6 +211,7 @@ export default function MobileMainContent({
   posts,
   filterState,
   viewMode = "grid",
+  scrollToTop,
 }: MobileMainContentProps) {
   const { language, categoryColors } = useAppContext();
 
@@ -283,7 +285,7 @@ export default function MobileMainContent({
         totalPages={totalPages}
         onPageChange={(page) => {
           setCurrentPage(page);
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          scrollToTop?.();
         }}
         className="mt-2 mb-10"
       />

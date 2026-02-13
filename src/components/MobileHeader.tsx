@@ -186,7 +186,7 @@ export default function MobileHeader({
           <div className="flex gap-2">
             {/* 카테고리 필터링 */}
             <div
-              className="flex-1 py-2 border-b border-system-gray relative flex items-end"
+              className="flex-1 py-1.5 border-b border-system-gray relative flex items-end"
               ref={categoryDropdownRef}
             >
               <button
@@ -236,7 +236,7 @@ export default function MobileHeader({
 
             {/* 연도별 필터링 */}
             <div
-              className="flex-1 py-2 border-b border-system-gray relative flex items-end"
+              className="flex-1 py-1.5 border-b border-system-gray relative flex items-end"
               ref={yearDropdownRef}
             >
               <button

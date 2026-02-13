@@ -28,7 +28,7 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
     <div className="h-full w-full overflow-y-auto bg-background no-scrollbar">
       <div className="flex min-h-screen flex-col bg-background pb-5 text-system-white">
         <div className="px-2 pb-2 flex justify-between items-start">
-          <h1 className="mt-2 font-ep-sans font-normal leading-none text-size-xl">
+          <h1 className="mt-2 font-ep-sans font-normal leading-tight text-size-xl">
             {language === "kr" ? post.title_kr : post.title_en}
           </h1>
           <div className="flex items-start gap-x-2 mt-2">
@@ -52,72 +52,85 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
         </div>
 
         <div className="flex flex-col gap-2 px-2 mb-5">
-          {media.map((item: { _type: string; _key?: string; caption?: string; asset?: { playbackId?: string }; image?: { asset?: { _ref?: string } }; url?: string; [key: string]: unknown }, index: number) => {
-            if (item._type === "image") {
-              const imgUrl = urlFor(item)?.url();
-              return (
-                <figure key={item._key || index} className="w-full">
-                  {imgUrl && (
-                    <img
-                      src={imgUrl}
-                      alt={item.caption || ""}
-                      className="w-full h-auto"
+          {media.map(
+            (
+              item: {
+                _type: string;
+                _key?: string;
+                caption?: string;
+                asset?: { playbackId?: string };
+                image?: { asset?: { _ref?: string } };
+                url?: string;
+                [key: string]: unknown;
+              },
+              index: number,
+            ) => {
+              if (item._type === "image") {
+                const imgUrl = urlFor(item)?.url();
+                return (
+                  <figure key={item._key || index} className="w-full">
+                    {imgUrl && (
+                      <img
+                        src={imgUrl}
+                        alt={item.caption || ""}
+                        className="w-full h-auto"
+                      />
+                    )}
+                    {item.caption && (
+                      <figcaption className="text-left text-xs text-system-gray mt-2 font-ep-sans">
+                        {item.caption}
+                      </figcaption>
+                    )}
+                  </figure>
+                );
+              }
+              if (item._type === "mux.video") {
+                const playbackId = item.asset?.playbackId;
+                if (!playbackId) return null;
+                return (
+                  <div
+                    key={item._key || index}
+                    className="w-full overflow-hidden"
+                  >
+                    <MuxPlayer
+                      playbackId={playbackId}
+                      streamType="on-demand"
+                      autoPlay="muted"
+                      loop
+                      muted
+                      style={{ width: "100%", aspectRatio: "1/1" }}
+                      className="w-full h-auto block"
                     />
-                  )}
-                  {item.caption && (
-                    <figcaption className="text-left text-xs text-system-gray mt-2 font-ep-sans">
-                      {item.caption}
-                    </figcaption>
-                  )}
-                </figure>
-              );
-            }
-            if (item._type === "mux.video") {
-              const playbackId = item.asset?.playbackId;
-              if (!playbackId) return null;
-              return (
-                <div
-                  key={item._key || index}
-                  className="w-full overflow-hidden"
-                >
-                  <MuxPlayer
-                    playbackId={playbackId}
-                    streamType="on-demand"
-                    autoPlay="muted"
-                    loop
-                    muted
-                    style={{ width: "100%", aspectRatio: "1/1" }}
-                    className="w-full h-auto block"
-                  />
-                </div>
-              );
-            }
-            if (item._type === "youtube") {
-              const videoId = item.url?.match(
-                /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
-              )?.[1];
-              if (!videoId) return null;
+                  </div>
+                );
+              }
+              if (item._type === "youtube") {
+                const videoId = item.url?.match(
+                  /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
+                )?.[1];
+                if (!videoId) return null;
 
-              return (
-                <div
-                  key={item._key || index}
-                  className="w-full aspect-video rounded-sm overflow-hidden"
-                >
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src={`https://www.youtube.com/embed/${videoId}`}
-                    title="YouTube video player"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                </div>
-              );
-            }
-            return null;
-          })}
+                return (
+                  <div
+                    key={item._key || index}
+                    className="w-full aspect-video rounded-sm overflow-hidden"
+                  >
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      src={`https://www.youtube.com/embed/${videoId}`}
+                      title="YouTube video player"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+                );
+              }
+              return null;
+            },
+          )}
         </div>
-        <div className="mx-2 break-keep font-ep-sans font-medium leading-relaxed text-[0.875rem] text-system-white">
+        <div className="mx-2 break-keep break-words font-ep-sans font-medium leading-relaxed text-[0.875rem] text-system-white">
           {Array.isArray(description) && (
             <PortableText
               value={description}
