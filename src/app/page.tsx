@@ -1,6 +1,6 @@
 import { client } from "@/sanity/client";
 import { type SanityDocument } from "next-sanity";
-import SidePanel from "@/components/SidePanel";
+import SidePanel from "@/components/layout/SidePanel";
 
 const CV_QUERY = `{
   "exhibition": *[_type == "exhibition"] | order(date desc),

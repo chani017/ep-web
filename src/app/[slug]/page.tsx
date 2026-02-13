@@ -1,6 +1,6 @@
 import { client } from "@/sanity/client";
 import { type SanityDocument } from "next-sanity";
-import ProjectContent from "@/components/ResponsivePost";
+import PostContent from "@/components/post/PostContent";
 import { notFound } from "next/navigation";
 
 const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]`;
@@ -23,5 +23,5 @@ export default async function ProjectPage({ params }: PageProps) {
     notFound();
   }
 
-  return <ProjectContent post={post} />;
+  return <PostContent post={post} />;
 }
