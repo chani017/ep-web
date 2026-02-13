@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useAppContext } from "@/context/AppContext";
-import { useYearDropdown } from "@/hooks/useYearDropdown";
+import { useDropdown } from "@/hooks/useDropdown";
 import { useRouter } from "next/navigation";
 
 interface FilterState {
@@ -33,9 +33,19 @@ export default function MobileHeader({
   const router = useRouter();
 
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
-  const [isCategoryOpen, setIsCategoryOpen] = React.useState(false);
-  const categoryDropdownRef = React.useRef<HTMLDivElement>(null);
-  const { isYearOpen, setIsYearOpen, yearDropdownRef } = useYearDropdown();
+  // 카테고리 드롭다운
+  const {
+    isOpen: isCategoryOpen,
+    setIsOpen: setIsCategoryOpen,
+    dropdownRef: categoryDropdownRef,
+  } = useDropdown();
+
+  // 연도 드롭다운
+  const {
+    isOpen: isYearOpen,
+    setIsOpen: setIsYearOpen,
+    dropdownRef: yearDropdownRef,
+  } = useDropdown();
 
   const {
     searchTerm,
@@ -61,19 +71,6 @@ export default function MobileHeader({
     "Everyday",
   ];
 
-  React.useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (
-        categoryDropdownRef.current &&
-        !categoryDropdownRef.current.contains(e.target as Node)
-      ) {
-        setIsCategoryOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
   return (
     <main className="sticky top-0 z-50 px-2">
       <header className="flex h-10 items-center justify-between border-b border-system-gray bg-background">
@@ -86,7 +83,7 @@ export default function MobileHeader({
           Everyday Practice
         </div>
 
-        {/* 국문 / 영문 전환 */}
+        {/* 국문/영문 전환 */}
         <div className="flex items-center text-size-xl font-normal font-ep-sans">
           <span
             className={`${
@@ -113,7 +110,6 @@ export default function MobileHeader({
       {filterState && (
         <div className="z-50 flex flex-col bg-background/80 backdrop-blur-[2px]">
           <div className="flex items-center border-b border-system-gray">
-            {/* 검색창 */}
             {/* 검색 기능 */}
             <div className="flex-1 flex items-center py-2 relative">
               <img src="/search.svg" alt="Search" className="w-4 h-4" />
@@ -133,7 +129,9 @@ export default function MobileHeader({
                 type="text"
                 className="w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans caret-transparent"
                 value={searchTerm}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm?.(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSearchTerm?.(e.target.value)
+                }
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
               />
@@ -186,7 +184,6 @@ export default function MobileHeader({
           </div>
 
           <div className="flex gap-2">
-            {/* 카테고리 */}
             {/* 카테고리 필터링 */}
             <div
               className="flex-1 py-2 border-b border-system-gray relative flex items-end"
@@ -237,7 +234,6 @@ export default function MobileHeader({
               </div>
             </div>
 
-            {/* 연도 */}
             {/* 연도별 필터링 */}
             <div
               className="flex-1 py-2 border-b border-system-gray relative flex items-end"

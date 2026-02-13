@@ -10,7 +10,7 @@ import { SanityImageSource } from "@sanity/image-url";
 import { client } from "@/sanity/client";
 import { useInView } from "@/hooks/useInView";
 import { usePage } from "@/hooks/usePage";
-import { useYearDropdown } from "@/hooks/useYearDropdown";
+import { useDropdown } from "@/hooks/useDropdown";
 import { useResponCols } from "@/hooks/useResponCols";
 import Pagination from "./Pagination";
 
@@ -41,7 +41,7 @@ interface PostCardProps {
   post: SanityDocument;
   language: string;
   viewMode: "img" | "list";
-  cols: number; // used by parent for grid layout
+  cols: number;
   rowItemsCount: number;
   widthPct?: number;
   categoryColors: Record<string, string>;
@@ -49,6 +49,7 @@ interface PostCardProps {
 
 const loadedVideos = new Set<string>();
 
+// 썸네일 크기 배율 정의 (small, medium, large)
 const SIZE_MULTIPLIERS: Record<string, number> = {
   small: 0.65,
   medium: 0.8,
@@ -61,7 +62,7 @@ const PostCard = React.memo(
     language,
     viewMode,
     rowItemsCount,
-    cols, // required by parent for layout; intentionally unused in card
+    cols,
     widthPct,
     categoryColors,
   }: PostCardProps) => {
@@ -69,7 +70,9 @@ const PostCard = React.memo(
     const alreadyLoaded = post.playbackId
       ? loadedVideos.has(post.playbackId)
       : false;
+    // 뷰포트 진입 감지 (Lazy Loading)
     const [cardRef, inView] = useInView();
+    // 비디오 로딩 조건: 이미 로드되었거나 뷰포트에 진입했을 때
     const shouldRenderVideo = alreadyLoaded || inView;
 
     React.useEffect(() => {
@@ -78,6 +81,7 @@ const PostCard = React.memo(
       }
     }, [inView, post.playbackId]);
 
+    // Mux 비디오 썸네일 URL 생성
     const muxThumbnail = post.playbackId
       ? `https://image.mux.com/${post.playbackId}/thumbnail.webp?width=480&time=0`
       : null;
@@ -108,36 +112,53 @@ const PostCard = React.memo(
             {post.playbackId ? (
               <div className="w-full relative overflow-hidden">
                 {shouldRenderVideo ? (
-                  <MuxPlayer
-                    playbackId={post.playbackId}
-                    metadataVideoTitle={
-                      language === "kr" ? post.title_kr : post.title_en
-                    }
-                    streamType="on-demand"
-                    autoPlay="muted"
-                    loop
-                    muted
-                    placeholder={muxThumbnail || post.imageUrl || undefined}
-                    className="w-full h-auto block"
-                    style={{ "--controls": "none", display: "block" } as React.CSSProperties & Record<`--${string}`, string>}
-                  />
+                  <>
+                    {/* 비디오 플레이어 (Lazy Load) */}
+                    <MuxPlayer
+                      playbackId={post.playbackId}
+                      metadataVideoTitle={
+                        language === "kr" ? post.title_kr : post.title_en
+                      }
+                      streamType="on-demand"
+                      autoPlay="muted"
+                      loop
+                      muted
+                      placeholder={muxThumbnail || post.imageUrl || undefined}
+                      className="w-full h-auto block"
+                      style={
+                        {
+                          "--controls": "none",
+                          display: "block",
+                        } as React.CSSProperties & Record<`--${string}`, string>
+                      }
+                    />
+                  </>
                 ) : (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={muxThumbnail || post.imageUrl}
                     className="w-full h-auto object-contain"
-                    alt={language === "kr" ? (post.title_kr as string) ?? "" : (post.title_en as string) ?? ""}
+                    alt={
+                      language === "kr"
+                        ? ((post.title_kr as string) ?? "")
+                        : ((post.title_en as string) ?? "")
+                    }
                     loading="lazy"
                   />
                 )}
               </div>
             ) : post.imageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={post.imageUrl}
-                alt={language === "kr" ? (post.title_kr as string) ?? "" : (post.title_en as string) ?? ""}
-                className="w-full h-auto object-contain"
-              />
+              <>
+                {/* 일반 이미지 썸네일 */}
+                <img
+                  src={post.imageUrl}
+                  alt={
+                    language === "kr"
+                      ? ((post.title_kr as string) ?? "")
+                      : ((post.title_en as string) ?? "")
+                  }
+                  className="w-full h-auto object-contain"
+                />
+              </>
             ) : (
               <div className="w-full aspect-square flex items-center justify-center text-system-gray text-size-sm font-ep-sans">
                 No Media
@@ -145,9 +166,11 @@ const PostCard = React.memo(
             )}
           </div>
           <div className="flex flex-col gap-2 pt-2 w-full min-h-18">
+            {/* 포스트 제목 */}
             <p className="text-system-white text-size-md font-medium font-ep-sans leading-tight line-clamp-2">
               {language === "kr" ? post.title_kr : post.title_en}
             </p>
+            {/* 카테고리 태그 리스트 */}
             <div className="flex flex-wrap gap-1">
               {post.category?.map((category: string) => (
                 <span
@@ -210,8 +233,11 @@ const CATEGORIES = [
   "Everyday",
 ];
 
-export default function MainContent({ filterState, ...rest }: MainContentProps) {
-  void rest.posts; // reserved for future use
+export default function MainContent({
+  filterState,
+  ...rest
+}: MainContentProps) {
+  void rest.posts;
   const {
     language,
     setLanguage,
@@ -222,10 +248,13 @@ export default function MainContent({ filterState, ...rest }: MainContentProps) 
   } = useAppContext();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
   const [viewMode, setViewMode] = React.useState<"img" | "list">("img");
-  // isCategoryOpen used only via setIsCategoryOpen (e.g. click-outside)
-  const [isCategoryOpen, setIsCategoryOpen] = React.useState(false);
-  void isCategoryOpen;
-  const categoryDropdownRef = React.useRef<HTMLDivElement>(null);
+
+  // useDropdown for Category
+  const {
+    isOpen: isCategoryOpen,
+    setIsOpen: setIsCategoryOpen,
+    dropdownRef: categoryDropdownRef,
+  } = useDropdown();
 
   const {
     searchTerm,
@@ -239,25 +268,21 @@ export default function MainContent({ filterState, ...rest }: MainContentProps) 
     availableCategories,
   } = filterState || {};
 
-  const { currentPage, setCurrentPage, paginatedPosts, totalPages } =
-    usePage(filteredPosts ?? []);
+  // 페이지네이션 훅
+  const { currentPage, setCurrentPage, paginatedPosts, totalPages } = usePage(
+    filteredPosts ?? [],
+  );
 
-  const { isYearOpen, setIsYearOpen, yearDropdownRef } = useYearDropdown();
+  // 연도 드롭다운 제어 훅
+  const {
+    isOpen: isYearOpen,
+    setIsOpen: setIsYearOpen,
+    dropdownRef: yearDropdownRef,
+  } = useDropdown();
+  // 반응형 컬럼 수 계산 훅
   const [containerRef, cols] = useResponCols([isFullContentMode, isMobile]);
 
-  React.useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (
-        categoryDropdownRef.current &&
-        !categoryDropdownRef.current.contains(e.target as Node)
-      ) {
-        setIsCategoryOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
+  // 포스트 그리드 레이아웃 계산
   const renderedPosts = React.useMemo(() => {
     return paginatedPosts.map((post, index) => {
       const rowStart = Math.floor(index / cols) * cols;
@@ -290,6 +315,7 @@ export default function MainContent({ filterState, ...rest }: MainContentProps) 
   return (
     <>
       <header className="flex justify-between items-center p-1 border-b border-system-gray submenu h-10">
+        {/* 상단 헤더 */}
         <div className="shrink-0 px-1 h-full flex items-center">
           <Link
             href="/"
@@ -323,6 +349,7 @@ export default function MainContent({ filterState, ...rest }: MainContentProps) 
             Eng
           </span>
         </div>
+        {/* 이메일 링크 */}
         <div className="shrink-0 h-full flex items-center">
           <Link
             href="mailto:hello@everyday-practice.com"
@@ -334,6 +361,7 @@ export default function MainContent({ filterState, ...rest }: MainContentProps) 
       </header>
       {/* 태그 */}
       <div className="flex flex-col h-full overflow-hidden">
+        {/* 상세 페이지: 제목 및 메타 데이터 */}
         {isFullContentMode && currentPost ? (
           <div className="flex-1 overflow-y-auto no-scrollbar p-2 flex flex-col gap-6">
             <div className="flex justify-between items-start gap-4">
@@ -361,72 +389,87 @@ export default function MainContent({ filterState, ...rest }: MainContentProps) 
                 </div>
               </div>
             </div>
+            {/* 상세 페이지: 미디어 리스트 (이미지, 비디오) */}
             <div>
-              {(currentPost.media || []).map((item: { _type: string; _key?: string; caption?: string; asset?: { playbackId?: string }; url?: string; image?: { asset?: { _ref?: string } }; [key: string]: unknown }, index: number) => {
-                if (item._type === "image") {
-                  const imgUrl = urlFor(item)?.url();
-                  return (
-                    <figure key={item._key || index} className="w-full">
-                      {imgUrl && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={imgUrl}
-                          alt={item.caption || ""}
-                          className="w-full h-auto"
+              {(currentPost.media || []).map(
+                (
+                  item: {
+                    _type: string;
+                    _key?: string;
+                    caption?: string;
+                    asset?: { playbackId?: string };
+                    url?: string;
+                    image?: { asset?: { _ref?: string } };
+                    [key: string]: unknown;
+                  },
+                  index: number,
+                ) => {
+                  if (item._type === "image") {
+                    const imgUrl = urlFor(item)?.url();
+                    return (
+                      <figure key={item._key || index} className="w-full">
+                        {imgUrl && (
+                          <img
+                            src={imgUrl}
+                            alt={item.caption || ""}
+                            className="w-full h-auto"
+                          />
+                        )}
+                        {item.caption && (
+                          <figcaption className="text-left text-size-md text-system-gray mt-2 font-ep-sans">
+                            {item.caption}
+                          </figcaption>
+                        )}
+                      </figure>
+                    );
+                  }
+
+                  if (item._type === "mux.video") {
+                    const playbackId = item.asset?.playbackId;
+                    if (!playbackId) return null;
+                    return (
+                      <div key={item._key || index} className="w-full">
+                        <MuxPlayer
+                          playbackId={playbackId}
+                          streamType="on-demand"
+                          autoPlay="muted"
+                          loop
+                          muted
+                          style={{ width: "100%", aspectRatio: "16/9" }}
+                          {...({ videoQuality: "basic" } as {
+                            videoQuality?: string;
+                          })}
                         />
-                      )}
-                      {item.caption && (
-                        <figcaption className="text-left text-size-md text-system-gray mt-2 font-ep-sans">
-                          {item.caption}
-                        </figcaption>
-                      )}
-                    </figure>
-                  );
-                }
+                      </div>
+                    );
+                  }
 
-                if (item._type === "mux.video") {
-                  const playbackId = item.asset?.playbackId;
-                  if (!playbackId) return null;
-                  return (
-                    <div key={item._key || index} className="w-full">
-                      <MuxPlayer
-                        playbackId={playbackId}
-                        streamType="on-demand"
-                        autoPlay="muted"
-                        loop
-                        muted
-                        style={{ width: "100%", aspectRatio: "16/9" }}
-                        {...({ videoQuality: "basic" } as { videoQuality?: string })}
-                      />
-                    </div>
-                  );
-                }
+                  if (item._type === "youtube") {
+                    const videoId = item.url?.match(
+                      /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
+                    )?.[1];
+                    if (!videoId) return null;
 
-                if (item._type === "youtube") {
-                  const videoId = item.url?.match(
-                    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
-                  )?.[1];
-                  if (!videoId) return null;
-
-                  return (
-                    <div
-                      key={item._key || index}
-                      className="w-full overflow-hidden"
-                      style={{ aspectRatio: "1/1" }}
-                    >
-                      <iframe
-                        width="100%"
-                        height="100%"
-                        src={`https://www.youtube.com/embed/${videoId}`}
-                        title="YouTube video player"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      ></iframe>
-                    </div>
-                  );
-                }
-                return null;
-              })}
+                    return (
+                      <div
+                        key={item._key || index}
+                        className="w-full overflow-hidden"
+                        style={{ aspectRatio: "1/1" }}
+                      >
+                        <iframe
+                          width="100%"
+                          height="100%"
+                          src={`https://www.youtube.com/embed/${videoId}`}
+                          title="YouTube video player"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                    );
+                  }
+                  return null;
+                },
+              )}
             </div>
           </div>
         ) : (
@@ -437,7 +480,7 @@ export default function MainContent({ filterState, ...rest }: MainContentProps) 
               ref={containerRef}
             >
               <div className="sticky top-0 pb-1 bg-background/80 backdrop-blur-md z-50">
-                {/* 카테고리 필터링 */}
+                {/* 카테고리 필터 리스트 */}
                 <div className="relative flex flex-wrap justify-start items-center px-2 py-1 pr-16 gap-x-2 text-size-xl leading-tight">
                   {CATEGORIES.map((category) => {
                     const isAvailable =
@@ -460,7 +503,7 @@ export default function MainContent({ filterState, ...rest }: MainContentProps) 
                       </div>
                     );
                   })}
-                  {/* 뷰 모드 전환 (리스트 / 그리드) */}
+                  {/* 뷰 모드 전환 버튼 (그리드/리스트) */}
                   <button
                     className="absolute right-2 top-1 flex items-center gap-1 text-system-gray cursor-pointer transition-colors"
                     onClick={() =>
@@ -545,7 +588,7 @@ export default function MainContent({ filterState, ...rest }: MainContentProps) 
                     ))}
                   </div>
                 </div>
-                {/* 프로젝트 갯수 */}
+                {/* 결과 개수 표시 및 필터 리셋 버튼 */}
                 <div className="col-span-1 text-size-sm text-system-gray font-ep-sans border-b border-system-gray flex items-center justify-between">
                   <span>{(filteredPosts ?? []).length} results</span>
                   {(searchTerm ||
@@ -584,6 +627,7 @@ export default function MainContent({ filterState, ...rest }: MainContentProps) 
                       }
                 }
               >
+                {/* 포스트 목록 렌더링 (그리드/리스트 뷰) */}
                 {renderedPosts.map(({ post, widthPct, rowItemsCount }) => (
                   <PostCard
                     key={post._id}
@@ -597,7 +641,7 @@ export default function MainContent({ filterState, ...rest }: MainContentProps) 
                   />
                 ))}
               </div>
-              {/* 페이지네이션 */}
+              {/* 페이지네이션 컴포넌트 */}
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
