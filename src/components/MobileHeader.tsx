@@ -111,7 +111,7 @@ export default function MobileHeader({
         <div className="z-50 flex flex-col bg-background/80 backdrop-blur-[2px]">
           <div className="flex items-center border-b border-system-gray">
             {/* 검색 기능 */}
-            <div className="flex-1 flex items-center py-2 relative">
+            <div className="flex-1 flex items-center py-[7px] relative">
               <img src="/search.svg" alt="Search" className="w-4 h-4" />
               {!searchTerm && (
                 <span
