@@ -137,7 +137,7 @@ export default function SideBar({ exhibition, award, clients }: SideBarProps) {
                   </h3>
                   <div className="space-y-4">
                     {types.map((type) => (
-                      <div key={type} className="space-y-1">
+                      <div key={type || "undefined"} className="space-y-1">
                         {type && <p className="font-medium">{type}</p>}
                         <div className="space-y-0">
                           {categoryCvs
