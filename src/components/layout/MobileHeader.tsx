@@ -105,20 +105,20 @@ export default function MobileHeader({
           <div className="flex items-center border-b border-system-gray">
             {/* 검색 기능 */}
             <div className="flex-1 flex items-center relative overflow-hidden">
+              <Image
+                src="/search.svg"
+                alt="Search"
+                width={16}
+                height={16}
+                className="w-4 h-4 shrink-0"
+              />
               <div
-                className={`ml-auto flex items-center relative transition-all duration-300 ease-in-out ${
+                className={`ml-auto flex items-center relative transition-all duration-150 ease-in-out ${
                   isSearchFocused || searchTerm
-                    ? "w-[calc(100%-1.5rem)]"
-                    : "w-full"
+                    ? "w-[calc(100%-2.5rem)]"
+                    : "w-[calc(100%-1.25rem)]"
                 }`}
               >
-                <Image
-                  src="/search.svg"
-                  alt="Search"
-                  width={16}
-                  height={16}
-                  className="w-4 h-4 shrink-0 absolute right-0"
-                />
                 {!searchTerm && (
                   <span className="absolute inset-y-0 left-0 pointer-events-none text-size-lg font-ep-sans text-system-gray flex items-center">
                     {isSearchFocused && (
@@ -129,7 +129,7 @@ export default function MobileHeader({
                 )}
                 <input
                   type="text"
-                  className="w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans caret-transparent py-[7px] pr-5"
+                  className="w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans caret-transparent py-[7px]"
                   value={searchTerm}
                   onChange={handleSearchChange}
                   onFocus={() => setIsSearchFocused(true)}

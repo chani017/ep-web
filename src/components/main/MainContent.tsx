@@ -228,7 +228,7 @@ export default function MainContent({
                 {/* 검색창 */}
                 <div className="col-span-2 flex items-center relative overflow-hidden border-b border-system-gray bg-system-dark-gray py-1.5">
                   <div
-                    className={`ml-auto flex items-center relative transition-all duration-150 ease-in-out ${
+                    className={`ml-auto flex items-center relative transition-all duration-100 ease-in-out ${
                       isSearchFocused || searchTerm
                         ? "w-[calc(100%-1.5rem)]"
                         : "w-full"
