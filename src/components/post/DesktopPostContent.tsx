@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { PortableText, type SanityDocument } from "next-sanity";
 import MuxPlayer from "@mux/mux-player-react";
 import { useAppContext } from "@/context/AppContext";
@@ -103,10 +104,13 @@ export default function DesktopPostContent({ post }: PostContentProps) {
                 return (
                   <figure key={item._key || index} className="w-full">
                     {imgUrl && (
-                      <img
+                      <Image
                         src={imgUrl}
                         alt={item.caption || ""}
                         className="w-full h-auto"
+                        width={0}
+                        height={0}
+                        sizes="100vw"
                       />
                     )}
                     {item.caption && (
@@ -234,9 +238,11 @@ export default function DesktopPostContent({ post }: PostContentProps) {
                         rel="noopener noreferrer"
                         className="flex items-center hover:brightness-50 transition-all text-size-md font-ep-sans text-system-white"
                       >
-                        <img
+                        <Image
                           src="/plus_md.svg"
                           alt="Plus"
+                          width={12}
+                          height={12}
                           className="inline mr-1 mb-0.5 w-3 h-3"
                         />
                         {link}
@@ -249,9 +255,11 @@ export default function DesktopPostContent({ post }: PostContentProps) {
                       rel="noopener noreferrer"
                       className="flex items-center hover:brightness-50 transition-all text-size-md font-ep-sans text-system-white"
                     >
-                      <img
+                      <Image
                         src="/plus.svg"
                         alt="Plus"
+                        width={12}
+                        height={12}
                         className="inline mr-1 mb-0.5"
                       />
                       {post.additional_link}
@@ -264,10 +272,14 @@ export default function DesktopPostContent({ post }: PostContentProps) {
 
           {!isFullContentMode && (
             <div className="absolute top-2 right-2">
-              <img
+              <Image
                 src="/arrow.svg"
                 alt="Toggle Description"
-                className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? "-rotate-180" : ""}`}
+                width={16}
+                height={16}
+                className={`w-4 h-4 transition-transform duration-300 ${
+                  isExpanded ? "-rotate-180" : ""
+                }`}
               />
             </div>
           )}

@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { type SanityDocument } from "next-sanity";
 import MuxPlayer from "@mux/mux-player-react";
 import { useInView } from "@/hooks/useInView";
@@ -95,7 +96,7 @@ const PostCard = React.memo(
                     />
                   </>
                 ) : (
-                  <img
+                  <Image
                     src={muxThumbnail || post.imageUrl}
                     className="w-full h-auto object-contain"
                     alt={
@@ -103,6 +104,9 @@ const PostCard = React.memo(
                         ? ((post.title_kr as string) ?? "")
                         : ((post.title_en as string) ?? "")
                     }
+                    width={0}
+                    height={0}
+                    sizes="100vw"
                     loading="lazy"
                   />
                 )}
@@ -110,7 +114,7 @@ const PostCard = React.memo(
             ) : post.imageUrl ? (
               <>
                 {/* 일반 이미지 썸네일 */}
-                <img
+                <Image
                   src={post.imageUrl}
                   alt={
                     language === "kr"
@@ -118,6 +122,9 @@ const PostCard = React.memo(
                       : ((post.title_en as string) ?? "")
                   }
                   className="w-full h-auto object-contain"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
                 />
               </>
             ) : (

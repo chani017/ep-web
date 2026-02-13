@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { useAppContext } from "@/context/AppContext";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -27,10 +28,14 @@ export default function MobileTrigger() {
       onClick={handleClick}
       className="fixed right-0 w-10 h-10 flex flex-col justify-center items-center cursor-pointer z-1000"
     >
-      <img
+      <Image
         src="/plus.svg"
         alt="Menu"
-        className={`w-5 h-5 transition-transform duration-200 ${isRotated ? "rotate-135" : ""}`}
+        width={20}
+        height={20}
+        className={`w-5 h-5 transition-transform duration-200 ${
+          isRotated ? "rotate-135" : ""
+        }`}
         style={{ display: "block" }}
       />
     </button>

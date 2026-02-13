@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import React from "react";
 import { useAppContext } from "@/context/AppContext";
 import { useDropdown } from "@/hooks/useDropdown";
@@ -112,7 +114,13 @@ export default function MobileHeader({
           <div className="flex items-center border-b border-system-gray">
             {/* 검색 기능 */}
             <div className="flex-1 flex items-center py-[7px] relative">
-              <img src="/search.svg" alt="Search" className="w-4 h-4" />
+              <Image
+                src="/search.svg"
+                alt="Search"
+                width={16}
+                height={16}
+                className="w-4 h-4"
+              />
               {!searchTerm && (
                 <span
                   className={`absolute inset-y-0 left-0 pointer-events-none text-size-lg font-ep-sans text-system-gray transition-all duration-100 ease-in-out flex items-center pl-5.5 ${
@@ -148,7 +156,13 @@ export default function MobileHeader({
                   }}
                   className="transition-opacity active:opacity-50"
                 >
-                  <img src="/reset.svg" alt="Reset" className="w-5 h-5" />
+                  <Image
+                    src="/reset.svg"
+                    alt="Reset"
+                    width={20}
+                    height={20}
+                    className="w-5 h-5"
+                  />
                 </button>
               )}
             </div>
@@ -194,10 +208,14 @@ export default function MobileHeader({
                 onClick={() => setIsCategoryOpen(!isCategoryOpen)}
               >
                 <span>{selectedCategory}</span>
-                <img
+                <Image
                   src="/dropdown.svg"
                   alt="Dropdown"
-                  className={`w-3.5 h-3.5 transition-transform duration-150 ${isCategoryOpen ? "-rotate-180" : ""}`}
+                  width={14}
+                  height={14}
+                  className={`w-3.5 h-3.5 transition-transform duration-150 ${
+                    isCategoryOpen ? "-rotate-180" : ""
+                  }`}
                 />
               </button>
               <div
@@ -244,10 +262,14 @@ export default function MobileHeader({
                 onClick={() => setIsYearOpen(!isYearOpen)}
               >
                 <span>{selectedYear}</span>
-                <img
+                <Image
                   src="/dropdown.svg"
                   alt="Dropdown"
-                  className={`w-3.5 h-3.5 transition-transform duration-150 ${isYearOpen ? "-rotate-180" : ""}`}
+                  width={14}
+                  height={14}
+                  className={`w-3.5 h-3.5 transition-transform duration-150 ${
+                    isYearOpen ? "-rotate-180" : ""
+                  }`}
                 />
               </button>
               <div

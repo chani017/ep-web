@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import React from "react";
 import Link from "next/link";
 import { type SanityDocument } from "next-sanity";
@@ -66,13 +68,6 @@ export default function MainContent({
   } = useAppContext();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
   const [viewMode, setViewMode] = React.useState<"img" | "list">("img");
-
-  // useDropdown for Category
-  const {
-    isOpen: isCategoryOpen,
-    setIsOpen: setIsCategoryOpen,
-    dropdownRef: categoryDropdownRef,
-  } = useDropdown();
 
   const {
     searchTerm,
@@ -206,9 +201,12 @@ export default function MainContent({
                     return (
                       <figure key={item._key || index} className="w-full">
                         {imgUrl && (
-                          <img
+                          <Image
                             src={imgUrl}
                             alt={item.caption || ""}
+                            width={0}
+                            height={0}
+                            sizes="100vw"
                             className="w-full h-auto"
                           />
                         )}
@@ -307,7 +305,13 @@ export default function MainContent({
                       setViewMode(viewMode === "img" ? "list" : "img")
                     }
                   >
-                    <img src="/change.svg" alt="Change" className="w-4 h-4" />
+                    <Image
+                      src="/change.svg"
+                      alt="Change"
+                      width={16}
+                      height={16}
+                      className="w-4 h-4"
+                    />
                     <span>{viewMode}</span>
                   </button>
                 </div>
@@ -323,7 +327,13 @@ export default function MainContent({
                         )}
                         Search
                       </div>
-                      <img src="/search.svg" alt="Search" className="w-4 h-4" />
+                      <Image
+                        src="/search.svg"
+                        alt="Search"
+                        width={16}
+                        height={16}
+                        className="w-4 h-4"
+                      />
                     </div>
                   )}
                   <input
@@ -337,9 +347,11 @@ export default function MainContent({
                     onBlur={() => setIsSearchFocused(false)}
                   />
                   {searchTerm && (
-                    <img
+                    <Image
                       src="/search.svg"
                       alt="Search"
+                      width={16}
+                      height={16}
                       className="w-4 h-4 absolute right-1 bottom-1 pointer-events-none"
                     />
                   )}
@@ -354,10 +366,14 @@ export default function MainContent({
                     onClick={() => setIsYearOpen(!isYearOpen)}
                   >
                     <span>{selectedYear}</span>
-                    <img
+                    <Image
                       src="/dropdown.svg"
                       alt="Dropdown"
-                      className={`w-3 h-3 transition-transform duration-150 ${isYearOpen ? "-rotate-180" : ""}`}
+                      width={12}
+                      height={12}
+                      className={`w-3 h-3 transition-transform duration-150 ${
+                        isYearOpen ? "-rotate-180" : ""
+                      }`}
                     />
                   </button>
                   <div
@@ -400,9 +416,11 @@ export default function MainContent({
                       }}
                     >
                       <span className="mr-1">Reset</span>
-                      <img
+                      <Image
                         src="/reset.svg"
                         alt="Reset"
+                        width={14}
+                        height={14}
                         className="w-3.5 h-3.5"
                       />
                     </button>

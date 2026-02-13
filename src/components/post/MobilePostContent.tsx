@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { PortableText, type SanityDocument } from "next-sanity";
 import MuxPlayer from "@mux/mux-player-react";
 import { useAppContext } from "@/context/AppContext";
@@ -70,10 +71,13 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
                 return (
                   <figure key={item._key || index} className="w-full">
                     {imgUrl && (
-                      <img
+                      <Image
                         src={imgUrl}
                         alt={item.caption || ""}
                         className="w-full h-auto"
+                        width={0}
+                        height={0}
+                        sizes="100vw"
                       />
                     )}
                     {item.caption && (
@@ -152,7 +156,13 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
                     rel="noopener noreferrer"
                     className="flex items-center gap-1 text-system-white hover:opacity-70 transition-opacity"
                   >
-                    <img src="/plus.svg" alt="" className="w-3 h-3" />
+                    <Image
+                      src="/plus.svg"
+                      alt=""
+                      width={12}
+                      height={12}
+                      className="w-3 h-3"
+                    />
                     <span>{link}</span>
                   </a>
                 ))
@@ -163,7 +173,13 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
                   rel="noopener noreferrer"
                   className="flex items-center gap-1 text-system-white hover:opacity-70 transition-opacity"
                 >
-                  <img src="/plus.svg" alt="" className="w-3 h-3" />
+                  <Image
+                    src="/plus.svg"
+                    alt=""
+                    width={12}
+                    height={12}
+                    className="w-3 h-3"
+                  />
                   <span>{post.additional_link}</span>
                 </a>
               )}

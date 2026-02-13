@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAppContext, type Tab } from "@/context/AppContext";
@@ -26,13 +27,15 @@ export default function SidebarHeader() {
           onClick={() => setIsFullContentMode(!isFullContentMode)}
           className="absolute left-2"
         >
-          <img
+          <Image
             src={
               isFullContentMode
                 ? "/full-button_contract.svg"
                 : "/full-button_expand.svg"
             }
             alt="Toggle Full Mode"
+            width={24}
+            height={24}
             className="w-6 h-6"
           />
         </button>

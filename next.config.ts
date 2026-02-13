@@ -9,6 +9,14 @@ const nextConfig: NextConfig = {
       root: process.cwd(),
     },
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

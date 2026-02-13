@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { type SanityDocument } from "next-sanity";
 import MuxPlayer from "@mux/mux-player-react";
 import { useInView } from "@/hooks/useInView";
@@ -86,19 +87,25 @@ const MobilePostCard = React.memo(
                   {...({ videoQuality: "basic" } as { videoQuality?: string })}
                 />
               ) : (
-                <img
+                <Image
                   src={muxThumbnail || post.imageUrl}
                   className="w-full h-auto object-contain"
                   alt=""
                   loading="lazy"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
                 />
               )}
             </div>
           ) : post.imageUrl ? (
-            <img
+            <Image
               src={post.imageUrl}
               className="w-full h-auto object-contain"
               alt={post.title_en}
+              width={0}
+              height={0}
+              sizes="100vw"
             />
           ) : (
             <div className="flex aspect-square w-full items-center justify-center bg-system-dark-gray/20 font-ep-sans text-size-md text-system-gray">

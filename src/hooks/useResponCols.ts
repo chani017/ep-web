@@ -33,7 +33,8 @@ export function useResponCols(
 
     observer.observe(containerRef.current);
     return () => observer.disconnect();
-  }, deps as DependencyList);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps as React.DependencyList);
 
   return [containerRef, cols];
 }
