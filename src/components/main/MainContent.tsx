@@ -226,51 +226,46 @@ export default function MainContent({
               </div>
               <div className="grid grid-cols-4 px-2 items-stretch gap-x-3 mt-12">
                 {/* 검색창 */}
-                <div className="col-span-2 flex items-end bg-system-dark-gray border-b border-system-gray relative">
-                  {!searchTerm && (
-                    <div className="absolute inset-0 pointer-events-none text-size-md font-ep-sans text-system-white flex items-center justify-between pr-1 py-2">
-                      <div
-                        className={`flex items-center transition-transform duration-100 ease-in-out ${
-                          isSearchFocused ? "translate-x-6" : "translate-x-0"
-                        }`}
-                      >
-                        {isSearchFocused && (
-                          <span className="mr-px w-px h-4 bg-system-white animate-blink" />
-                        )}
-                        Search
-                      </div>
-                      <Image
-                        src="/search.svg"
-                        alt="Search"
-                        width={16}
-                        height={16}
-                        className="w-4 h-4"
-                      />
-                    </div>
-                  )}
-                  <input
-                    type="text"
-                    className={`w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans h-full ${
-                      !searchTerm ? "caret-transparent" : ""
+                <div className="col-span-2 flex items-center relative overflow-hidden border-b border-system-gray bg-system-dark-gray py-1.5">
+                  <div
+                    className={`ml-auto flex items-center relative transition-all duration-150 ease-in-out ${
+                      isSearchFocused || searchTerm
+                        ? "w-[calc(100%-1.5rem)]"
+                        : "w-full"
                     }`}
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    onFocus={() => setIsSearchFocused(true)}
-                    onBlur={() => setIsSearchFocused(false)}
-                  />
-                  {searchTerm && (
+                  >
+                    {!searchTerm && (
+                      <div className="absolute inset-0 pointer-events-none text-size-md font-ep-sans text-system-white flex items-center pr-1">
+                        <div className="flex items-center">
+                          {isSearchFocused && (
+                            <span className="mr-px w-px h-4 bg-system-white animate-blink" />
+                          )}
+                          Search
+                        </div>
+                      </div>
+                    )}
+                    <input
+                      type="text"
+                      className={`w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans h-full py-0 pr-5 ${
+                        !searchTerm ? "caret-transparent" : ""
+                      }`}
+                      value={searchTerm}
+                      onChange={handleSearchChange}
+                      onFocus={() => setIsSearchFocused(true)}
+                      onBlur={() => setIsSearchFocused(false)}
+                    />
                     <Image
                       src="/search.svg"
                       alt="Search"
                       width={16}
                       height={16}
-                      className="w-4 h-4 absolute right-1 bottom-1 pointer-events-none"
+                      className="w-4 h-4 absolute right-1 pointer-events-none"
                     />
-                  )}
+                  </div>
                 </div>
                 {/* 연도별 필터링 */}
                 <div
-                  className="col-span-1 py-1.5 border-b border-system-gray relative flex items-end"
+                  className="col-span-1 py-1.5 border-b border-system-gray relative flex items-center"
                   ref={yearDropdownRef}
                 >
                   <button

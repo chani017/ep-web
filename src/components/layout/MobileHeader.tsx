@@ -104,34 +104,38 @@ export default function MobileHeader({
         <div className="z-50 flex flex-col bg-background/80 backdrop-blur-[2px]">
           <div className="flex items-center border-b border-system-gray">
             {/* 검색 기능 */}
-            <div className="flex-1 flex items-center py-[7px] relative">
-              <Image
-                src="/search.svg"
-                alt="Search"
-                width={16}
-                height={16}
-                className="w-4 h-4"
-              />
-              {!searchTerm && (
-                <span
-                  className={`absolute inset-y-0 left-0 pointer-events-none text-size-lg font-ep-sans text-system-gray transition-all duration-100 ease-in-out flex items-center pl-5.5 ${
-                    isSearchFocused ? "translate-x-4" : "translate-x-0"
-                  }`}
-                >
-                  {isSearchFocused && (
-                    <span className="mr-px w-px h-[1.2em] bg-system-white animate-blink" />
-                  )}
-                  <span className="leading-none">Search</span>
-                </span>
-              )}
-              <input
-                type="text"
-                className="w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans caret-transparent"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setIsSearchFocused(false)}
-              />
+            <div className="flex-1 flex items-center relative overflow-hidden">
+              <div
+                className={`ml-auto flex items-center relative transition-all duration-300 ease-in-out ${
+                  isSearchFocused || searchTerm
+                    ? "w-[calc(100%-1.5rem)]"
+                    : "w-full"
+                }`}
+              >
+                <Image
+                  src="/search.svg"
+                  alt="Search"
+                  width={16}
+                  height={16}
+                  className="w-4 h-4 shrink-0 absolute right-0"
+                />
+                {!searchTerm && (
+                  <span className="absolute inset-y-0 left-0 pointer-events-none text-size-lg font-ep-sans text-system-gray flex items-center">
+                    {isSearchFocused && (
+                      <span className="mr-px w-px h-[1.2em] bg-system-white animate-blink" />
+                    )}
+                    <span className="leading-none">Search</span>
+                  </span>
+                )}
+                <input
+                  type="text"
+                  className="w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans caret-transparent py-[7px] pr-5"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={() => setIsSearchFocused(false)}
+                />
+              </div>
             </div>
             <div className="flex items-center gap-2">
               {(searchTerm !== "" ||
