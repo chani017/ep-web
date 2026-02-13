@@ -54,7 +54,7 @@ export default function SideBar({ exhibition, award, clients }: SideBarProps) {
                 </>
               )}
             </h3>
-            <table className="mt-3 text-[0.875rem] md:text-size-md font-medium text-system-white font-ep-sans w-full">
+            <table className="mt-3 text-size-sm md:text-size-md font-medium text-system-white font-ep-sans w-full">
               <tbody>
                 <tr className="h-6">
                   <td className="w-25 align-top">address.</td>
@@ -108,7 +108,7 @@ export default function SideBar({ exhibition, award, clients }: SideBarProps) {
         const finalCategories = [...categories, ...otherCategories];
 
         return (
-          <div className="text-[0.875rem] md:text-[0.9rem] font-medium text-system-white font-ep-sans space-y-10">
+          <div className="text-size-sm md:text-[0.9rem] font-medium text-system-white font-ep-sans space-y-10">
             {finalCategories.map((category) => {
               const categoryCvs = allCvs.filter(
                 (cv: SanityDocument) => cv.category === category,
@@ -175,7 +175,7 @@ export default function SideBar({ exhibition, award, clients }: SideBarProps) {
       }
       case "Client":
         return (
-          <div className="text-[0.875rem] md:text-size-md font-medium text-system-white font-ep-sans space-y-4">
+          <div className="text-size-sm md:text-size-md font-medium text-system-white font-ep-sans space-y-4">
             <h3 className="underline underline-offset-6 decoration-1 decoration-system-gray uppercase font-medium mb-5">
               <p>Clients</p>
             </h3>
@@ -183,7 +183,7 @@ export default function SideBar({ exhibition, award, clients }: SideBarProps) {
               {clients.map((client: string) => (
                 <button
                   key={client}
-                  className="text-system-white break-keep text-left text-[0.875rem] md:text-size-md hover:text-system-gray transition-colors cursor-pointer flex-[120_0_120px] md:flex-[180_0_180px]"
+                  className="text-system-white break-keep text-left text-size-sm md:text-size-md hover:text-system-gray transition-colors cursor-pointer flex-[120_0_120px] md:flex-[180_0_180px]"
                   onClick={() => {
                     setSearchTerm(client);
                     if (isMobile) setIsMobileSidebarOpen(false);

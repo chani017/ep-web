@@ -32,7 +32,7 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
             {language === "kr" ? post.title_kr : post.title_en}
           </h1>
           <div className="flex items-start gap-x-2 mt-2">
-            <span className="text-[0.875rem] text-system-white font-normal font-ep-sans leading-none">
+            <span className="text-size-sm text-system-white font-normal font-ep-sans leading-none">
               {post.publishedAt}
             </span>
             <div className="flex flex-col gap-0.5 items-end">
@@ -130,7 +130,7 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
             },
           )}
         </div>
-        <div className="mx-2 break-keep break-all font-ep-sans font-medium leading-relaxed text-[0.875rem] text-system-white">
+        <div className="mx-2 break-keep break-all font-ep-sans font-medium leading-relaxed text-size-sm text-system-white">
           {Array.isArray(description) && (
             <PortableText
               value={description}
