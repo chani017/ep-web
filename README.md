@@ -84,7 +84,7 @@ npm run dev
 
 Sanity Studio는 데이터의 성격에 따라 **메인 포트폴리오**와 **아카이브 정보**로 구분하여 설계했습니다.
 
-### 1. `post` (메인 포트폴리오)
+### 1. `postType.ts` (메인 포트폴리오)
 
 가장 핵심이 되는 프로젝트 데이터입니다.
 
@@ -295,7 +295,7 @@ export const postType = defineType({
 
 <br />
 
-### 2. `exhibition` & `award` (CV)
+### 2. `exhibitionType.ts` & `awardType.ts` (CV)
 
 사이드 패널(CV)에 노출되는 텍스트 위주의 정보입니다.
 
