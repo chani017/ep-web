@@ -62,9 +62,7 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
             posts={posts}
             filterState={filterState}
             viewMode={mobileViewMode}
-            scrollToTop={() =>
-              mobileScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" })
-            }
+            scrollToTop={() => mobileScrollRef.current?.scrollTo({ top: 0 })}
           />
         </div>
 

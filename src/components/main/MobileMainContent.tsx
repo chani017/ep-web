@@ -79,7 +79,7 @@ export default function MobileMainContent({
           setCurrentPage(page);
           scrollToTop?.();
         }}
-        className="mt-2 mb-10"
+        className="mt-2 mb-20"
       />
     </main>
   );
