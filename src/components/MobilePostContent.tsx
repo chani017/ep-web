@@ -133,16 +133,31 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
             />
           )}
           {post.additional_link && (
-            <div className="mt-2">
-              <a
-                href={post.additional_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 text-system-white hover:opacity-70 transition-opacity"
-              >
-                <img src="/plus.svg" alt="" className="w-3 h-3" />
-                <span>{post.additional_link}</span>
-              </a>
+            <div className="mt-2 flex flex-col gap-1">
+              {Array.isArray(post.additional_link) ? (
+                post.additional_link.map((link: string, index: number) => (
+                  <a
+                    key={index}
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-system-white hover:opacity-70 transition-opacity"
+                  >
+                    <img src="/plus.svg" alt="" className="w-3 h-3" />
+                    <span>{link}</span>
+                  </a>
+                ))
+              ) : (
+                <a
+                  href={post.additional_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-system-white hover:opacity-70 transition-opacity"
+                >
+                  <img src="/plus.svg" alt="" className="w-3 h-3" />
+                  <span>{post.additional_link}</span>
+                </a>
+              )}
             </div>
           )}
         </div>

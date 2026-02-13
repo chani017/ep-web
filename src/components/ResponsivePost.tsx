@@ -6,11 +6,11 @@ import { useAppContext } from "@/context/AppContext";
 import DesktopPostContent from "./DesktopPostContent";
 import MobilePostContent from "./MobilePostContent";
 
-interface PostContentProps {
+interface ResponsivePostProps {
   post: SanityDocument;
 }
 
-export default function PostContent({ post }: PostContentProps) {
+export default function ResponsivePost({ post }: ResponsivePostProps) {
   const { isMobile } = useAppContext();
 
   if (isMobile) {

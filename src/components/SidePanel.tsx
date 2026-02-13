@@ -4,19 +4,27 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { type SanityDocument } from "next-sanity";
 import { useAppContext } from "@/context/AppContext";
+import { useRouter } from "next/navigation";
 
 interface SideBarProps {
-  selExhs: SanityDocument[];
+  exhibition: SanityDocument[];
   award: SanityDocument[];
   clients: string[];
 }
 
 type Tab = "Contact" | "CV" | "Client";
 
-export default function SideBar({ selExhs, award, clients }: SideBarProps) {
-  const { activeTab, language } = useAppContext();
+export default function SideBar({ exhibition, award, clients }: SideBarProps) {
+  const {
+    activeTab,
+    language,
+    setSearchTerm,
+    setIsMobileSidebarOpen,
+    isMobile,
+  } = useAppContext();
+  const router = useRouter();
 
-  const allCvs = [...(selExhs || []), ...(award || [])];
+  const allCvs = [...(exhibition || []), ...(award || [])];
 
   const renderAsideContent = () => {
     switch (activeTab) {
@@ -123,7 +131,7 @@ export default function SideBar({ selExhs, award, clients }: SideBarProps) {
               });
 
               return (
-                <div key={category} className="space-y-2">
+                <div key={category} className="space-y-4">
                   <h3 className="underline underline-offset-6 decoration-1 uppercase font-medium">
                     {category}
                   </h3>
@@ -147,7 +155,7 @@ export default function SideBar({ selExhs, award, clients }: SideBarProps) {
                             })
                             .map((cv: SanityDocument) => (
                               <div key={cv._id} className="group">
-                                <div className="flex items-baseline gap-x-4">
+                                <div className="flex items-baseline gap-x-8">
                                   <span className="shrink-0 w-10">
                                     {cv.date}
                                   </span>
@@ -167,18 +175,23 @@ export default function SideBar({ selExhs, award, clients }: SideBarProps) {
       }
       case "Client":
         return (
-          <div className="text-[0.875rem] md:text-[0.9rem] font-medium text-system-white font-ep-sans space-y-4">
-            <h3 className="underline underline-offset-6 decoration-1 uppercase font-medium">
+          <div className="text-[0.875rem] md:text-size-md font-medium text-system-white font-ep-sans space-y-4">
+            <h3 className="underline underline-offset-6 decoration-1 decoration-system-gray uppercase font-medium mb-5">
               <p>Clients</p>
             </h3>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div className="grid grid-cols-2">
               {clients.map((client: string) => (
-                <p
+                <button
                   key={client}
-                  className="text-system-white break-keep text-[0.875rem] md:text-[0.9rem]"
+                  onClick={() => {
+                    setSearchTerm(client);
+                    if (isMobile) setIsMobileSidebarOpen(false);
+                    router.push("/");
+                  }}
+                  className="text-system-white break-keep text-left text-[0.875rem] md:text-size-md hover:text-system-gray transition-colors cursor-pointer"
                 >
                   {client}
-                </p>
+                </button>
               ))}
             </div>
           </div>

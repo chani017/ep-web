@@ -41,6 +41,7 @@ export default function MobileHeader({
     setSelectedCategory,
     uniqueYears,
     filteredPosts,
+    availableCategories,
   } = filterState || {};
 
   const CATEGORIES = [
@@ -203,22 +204,30 @@ export default function MobileHeader({
                     : "max-h-0 opacity-0 -translate-y-1 pointer-events-none"
                 }`}
               >
-                {CATEGORIES.map((category) => (
-                  <div
-                    key={category}
-                    className={`py-1 text-size-lg font-ep-sans cursor-pointer transition-colors ${
-                      selectedCategory === category
-                        ? "text-system-white bg-white/10"
-                        : "text-system-white hover:bg-white/10"
-                    }`}
-                    onClick={() => {
-                      setSelectedCategory(category);
-                      setIsCategoryOpen(false);
-                    }}
-                  >
-                    {category}
-                  </div>
-                ))}
+                {CATEGORIES.map((category) => {
+                  const isAvailable =
+                    category === "All Types" ||
+                    availableCategories?.has(category);
+                  const isSelected = selectedCategory === category;
+                  return (
+                    <div
+                      key={category}
+                      className={`py-1 text-size-lg font-ep-sans cursor-pointer transition-colors ${
+                        isSelected
+                          ? "text-system-white bg-white/10"
+                          : isAvailable
+                            ? "text-system-white hover:bg-white/10"
+                            : "text-system-white opacity-50"
+                      }`}
+                      onClick={() => {
+                        setSelectedCategory(category);
+                        setIsCategoryOpen(false);
+                      }}
+                    >
+                      {category}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

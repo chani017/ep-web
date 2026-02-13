@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { type SanityDocument } from "next-sanity";
+import { useAppContext } from "@/context/AppContext";
 
 const CATEGORIES = [
   "All Types",
@@ -35,7 +36,7 @@ function updateCategoryUrl(category: string) {
 }
 
 export function usePostFilter(posts: SanityDocument[]) {
-  const [searchTerm, setSearchTerm] = useState("");
+  const { searchTerm, setSearchTerm } = useAppContext();
   const [selectedYear, setSelectedYear] = useState<string>("Year");
   const [selectedCategory, setSelectedCategoryState] =
     useState<string>(getInitialCategory);
@@ -55,9 +56,13 @@ export function usePostFilter(posts: SanityDocument[]) {
     ];
   }, [posts]);
 
-  const filteredPosts = useMemo(() => {
-    return posts.filter((post) => {
-      const term = searchTerm.toLowerCase();
+  const { filteredPosts, availableCategories } = useMemo(() => {
+    const term = searchTerm.toLowerCase();
+    const matchingSearchAndYear: SanityDocument[] = [];
+    const final: SanityDocument[] = [];
+    const categories = new Set<string>();
+
+    posts.forEach((post) => {
       const matchesSearch =
         post.title_kr?.toLowerCase().includes(term) ||
         post.title_en?.toLowerCase().includes(term) ||
@@ -69,14 +74,24 @@ export function usePostFilter(posts: SanityDocument[]) {
       const matchesYear =
         selectedYear === "Year" || post.year?.toString() === selectedYear;
 
+      if (matchesSearch && matchesYear) {
+        matchingSearchAndYear.push(post);
+        post.category?.forEach((c: string) => categories.add(c));
+      }
+    });
+    matchingSearchAndYear.forEach((post) => {
       const matchesCategory =
         selectedCategory === "All Types" ||
         post.category?.some(
           (Category: string) => Category === selectedCategory,
         );
 
-      return matchesSearch && matchesYear && matchesCategory;
+      if (matchesCategory) {
+        final.push(post);
+      }
     });
+
+    return { filteredPosts: final, availableCategories: categories };
   }, [posts, searchTerm, selectedYear, selectedCategory]);
 
   return {
@@ -88,5 +103,6 @@ export function usePostFilter(posts: SanityDocument[]) {
     setSelectedCategory,
     uniqueYears,
     filteredPosts,
+    availableCategories,
   };
 }

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 const POSTS_QUERY = `*[
   _type == "post"
-] | order(index desc)[0...100] {
+] | order(orderRank asc)[0...100] {
   _id,
   title_kr,
   title_en,

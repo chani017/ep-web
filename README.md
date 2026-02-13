@@ -115,15 +115,10 @@ Sanity Studio(`studio-ep-web`)에서 관리되는 주요 데이터 타입은 다
 │   ├── app/                # Next.js App Router (Pages & Layouts)
 │   ├── components/         # UI Components (Header, PostCard, SidePanel...)
 │   ├── context/            # React Context (AppContext)
-│   ├── hooks/              # Custom Hooks (usePostFilter, useYearDropdown...)
+│   ├── hooks/              # 커스텀 훅을 정리해두었습니다.(useInView: Mux Player를 위한 현재 화면 안에 들어온 영상만 로딩하는 훅)
 │   ├── sanity/             # Sanity Client Config & Queries
 │   └── types/              # TypeScript Definitions
-├── public/                 # Static Assets (Icons, Images)
+├── public/                 # 웹에 사용된 아이콘들을 정리해두었습니다.
 └── ...
+
 ```
-
----
-
-## 📝 License
-
-This project is properly of **Everyday Practice**.

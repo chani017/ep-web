@@ -250,43 +250,46 @@ export default function MobileMainContent({
         })}
       </div>
       {/* 페이지네이션 */}
-      {totalPages >= 1 && (
-        <div className="px-3 pt-10 pb-20 flex justify-start items-center text-size-md gap-1">
+      {totalPages > 1 && (
+        <div className="mx-3 mt-10 mb-20 flex justify-start items-center text-size-md gap-1">
           {currentPage > 1 && (
             <button
               onClick={() => {
-                setCurrentPage(currentPage - 1);
-                window.scrollTo({ top: 0, behavior: "smooth" });
+                if (currentPage > 1) {
+                  setCurrentPage(currentPage - 1);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
               }}
-              className="font-ep-sans text-system-white text-size-md hover:bg-system-dark-gray rounded-md min-w-3 text-center"
+              className={`font-ep-sans text-system-white text-size-md hover:bg-system-dark-gray rounded-md min-w-3 text-center cursor-pointer`}
             >
               〈
             </button>
           )}
           {Array.from({ length: totalPages }).map((_, i) => (
-            <React.Fragment key={i + 1}>
-              <button
-                onClick={() => {
-                  setCurrentPage(i + 1);
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-                className={`font-ep-sans transition-colors cursor-pointer px-1.5 leading-5 rounded-md min-w-5 text-center ${
-                  currentPage === i + 1
-                    ? "text-system-white bg-transparent hover:bg-system-dark-gray"
-                    : "text-system-white bg-[#464646] hover:bg-system-dark-gray"
-                }`}
-              >
-                {i + 1}
-              </button>
-            </React.Fragment>
+            <button
+              key={i + 1}
+              onClick={() => {
+                setCurrentPage(i + 1);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className={`font-ep-sans transition-colors cursor-pointer px-1.5 leading-5 rounded-md min-w-5 text-center ${
+                currentPage === i + 1
+                  ? "text-system-white bg-transparent hover:bg-system-dark-gray"
+                  : "text-system-white bg-[#464646] hover:bg-system-dark-gray hover:text-system-white"
+              }`}
+            >
+              {i + 1}
+            </button>
           ))}
           {currentPage < totalPages && (
             <button
               onClick={() => {
-                setCurrentPage(currentPage + 1);
-                window.scrollTo({ top: 0, behavior: "smooth" });
+                if (currentPage < totalPages) {
+                  setCurrentPage(currentPage + 1);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
               }}
-              className="font-ep-gothic text-system-white text-size-md hover:bg-system-dark-gray px-1.5 leading-5 rounded-md min-w-3 text-center"
+              className={`font-ep-gothic text-system-white text-size-md hover:bg-system-dark-gray px-1.5 leading-5 rounded-md min-w-3 text-center cursor-pointer`}
             >
               〉
             </button>

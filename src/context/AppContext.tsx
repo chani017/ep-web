@@ -55,6 +55,8 @@ interface AppContextType {
   setIsMobileSidebarOpen: (open: boolean) => void;
   categoryColors: Record<string, string>;
   categories: string[];
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -67,6 +69,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [isMobile, setIsMobile] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     setIsMounted(true);
@@ -97,6 +100,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setIsMobileSidebarOpen,
         categoryColors: CATEGORY_COLORS,
         categories: CATEGORIES,
+        searchTerm,
+        setSearchTerm,
       }}
     >
       {children}

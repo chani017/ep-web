@@ -71,51 +71,28 @@ const PostCard = React.memo(
       ? `https://image.mux.com/${post.playbackId}/thumbnail.webp?width=480&time=0`
       : null;
 
-    if (viewMode === "list") {
-      return (
-        <Link
-          href={`/${post.slug.current}`}
-          className="col-span-4 grid grid-cols-4 border-b border-system-gray min-h-10 hover:bg-system-dark-gray transition-colors items-start px-1 group py-2 gap-x-3"
-        >
-          <div className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-size-md text-system-white font-ep-sans">
-            <span>{language === "kr" ? post.title_kr : post.title_en}</span>
-            <div className="flex gap-1 shrink-0">
-              {post.category?.map((category: string) => (
-                <span
-                  key={category}
-                  className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
-                  style={{
-                    backgroundColor: categoryColors[category] || "#787878",
-                  }}
-                >
-                  {category}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="col-span-1 text-size-md text-system-white font-ep-sans uppercase">
-            {post.publishedAt}
-          </div>
-          <div className="col-span-1 text-size-md text-system-white font-ep-sans uppercase text-left">
-            {post.client || ""}
-          </div>
-        </Link>
-      );
-    }
+    const isList = viewMode === "list";
 
     return (
       <Link
         href={`/${post.slug.current}`}
-        className="group flex flex-col"
+        className={`group ${
+          isList
+            ? "col-span-4 grid grid-cols-4 border-b border-system-gray min-h-10 hover:bg-system-dark-gray transition-colors items-start px-1 py-2 gap-x-3"
+            : "flex flex-col"
+        }`}
         style={
-          widthPct
+          !isList && widthPct
             ? {
                 flex: `0 0 calc(${widthPct}% - ${(widthPct * (rowItemsCount - 1) * 0.5) / 100}rem)`,
               }
             : undefined
         }
       >
-        <div className="flex flex-col w-full transition-all duration-150 group-hover:brightness-60">
+        <div
+          className="flex flex-col w-full transition-all duration-150 group-hover:brightness-60"
+          style={{ display: isList ? "none" : "flex" }}
+        >
           <div ref={cardRef} className="w-full overflow-hidden">
             {post.playbackId ? (
               <div className="w-full relative overflow-hidden">
@@ -173,6 +150,33 @@ const PostCard = React.memo(
             </div>
           </div>
         </div>
+
+        {isList && (
+          <>
+            <div className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-size-md text-system-white font-ep-sans">
+              <span>{language === "kr" ? post.title_kr : post.title_en}</span>
+              <div className="flex gap-1 shrink-0">
+                {post.category?.map((category: string) => (
+                  <span
+                    key={category}
+                    className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
+                    style={{
+                      backgroundColor: categoryColors[category] || "#787878",
+                    }}
+                  >
+                    {category}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="col-span-1 text-size-md text-system-white font-ep-sans uppercase">
+              {post.publishedAt}
+            </div>
+            <div className="col-span-1 text-size-md text-system-white font-ep-sans uppercase text-left">
+              {post.client || ""}
+            </div>
+          </>
+        )}
       </Link>
     );
   },
@@ -207,7 +211,6 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
   const [isCategoryOpen, setIsCategoryOpen] = React.useState(false);
   const categoryDropdownRef = React.useRef<HTMLDivElement>(null);
 
-  // Use passed filterState instead of local hook
   const {
     searchTerm,
     setSearchTerm,
@@ -217,7 +220,8 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
     setSelectedCategory,
     uniqueYears,
     filteredPosts,
-  } = filterState || {}; // Fallback for safety, though it should be passed
+    availableCategories,
+  } = filterState || {};
 
   const { currentPage, setCurrentPage, paginatedPosts, totalPages } =
     usePage(filteredPosts);
@@ -225,7 +229,6 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
   const { isYearOpen, setIsYearOpen, yearDropdownRef } = useYearDropdown();
   const [containerRef, cols] = useResponCols([isFullContentMode, isMobile]);
 
-  // 카테고리 드롭다운 외부 클릭 닫기
   React.useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (
@@ -390,15 +393,27 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
             >
               <div className="sticky top-0 pb-1 bg-background/80 backdrop-blur-md z-50">
                 <div className="relative flex flex-wrap justify-start items-center px-2 py-1 pr-16 gap-x-2 text-size-xl leading-tight">
-                  {CATEGORIES.map((category) => (
-                    <div
-                      key={category}
-                      className={`${selectedCategory === category ? "text-system-white" : "text-system-gray"} hover:text-system-white cursor-pointer transition-colors`}
-                      onClick={() => setSelectedCategory(category)}
-                    >
-                      {category}
-                    </div>
-                  ))}
+                  {CATEGORIES.map((category) => {
+                    const isAvailable =
+                      category === "All Types" ||
+                      availableCategories?.has(category);
+                    const isSelected = selectedCategory === category;
+                    return (
+                      <div
+                        key={category}
+                        className={`${
+                          isSelected
+                            ? "text-system-white"
+                            : isAvailable
+                              ? "text-system-gray hover:text-system-white"
+                              : "text-system-gray opacity-50"
+                        } cursor-pointer transition-all duration-200`}
+                        onClick={() => setSelectedCategory(category)}
+                      >
+                        {category}
+                      </div>
+                    );
+                  })}
                   <button
                     className="absolute right-2 top-1 flex items-center gap-1 text-system-gray cursor-pointer transition-colors"
                     onClick={() =>
@@ -507,104 +522,99 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                   )}
                 </div>
               </div>
-              {viewMode === "list" ? (
-                <div className="grid grid-cols-4 px-2">
-                  {paginatedPosts.map((post) => (
+              <div
+                className={
+                  viewMode === "list"
+                    ? "grid grid-cols-4 px-2"
+                    : "flex flex-wrap px-2 py-1 items-end mt-10"
+                }
+                style={
+                  viewMode === "list"
+                    ? undefined
+                    : {
+                        columnGap: "0.5rem",
+                        rowGap: "2.5rem",
+                      }
+                }
+              >
+                {paginatedPosts.map((post, index) => {
+                  const rowStart = Math.floor(index / cols) * cols;
+                  const rowEnd = Math.min(
+                    rowStart + cols,
+                    paginatedPosts.length,
+                  );
+                  const rowSlice = paginatedPosts.slice(rowStart, rowEnd);
+                  const rowItemCount = rowSlice.length;
+                  const actualTotalM = rowSlice.reduce(
+                    (sum, p) =>
+                      sum +
+                      (SIZE_MULTIPLIERS[p.thumbnail_size || "medium"] || 1.0),
+                    0,
+                  );
+                  const isLastRowShort = rowItemCount < cols;
+                  const paddedTotalM = isLastRowShort
+                    ? actualTotalM +
+                      (cols - rowItemCount) * SIZE_MULTIPLIERS.medium
+                    : actualTotalM;
+                  const m =
+                    SIZE_MULTIPLIERS[post.thumbnail_size || "medium"] || 1.0;
+                  const widthPct = (m / paddedTotalM) * 100;
+
+                  return (
                     <PostCard
                       key={post._id}
                       post={post}
                       language={language}
                       viewMode={viewMode}
                       cols={cols}
-                      rowItemsCount={0}
+                      rowItemsCount={rowSlice.length}
+                      widthPct={widthPct}
                       categoryColors={categoryColors}
                     />
-                  ))}
-                </div>
-              ) : (
-                <div
-                  className={`flex flex-wrap px-2 py-1 items-end mt-10`}
-                  style={{
-                    columnGap: "0.5rem",
-                    rowGap: "2.5rem",
-                  }}
-                >
-                  {paginatedPosts.map((post, index) => {
-                    const rowStart = Math.floor(index / cols) * cols;
-                    const rowEnd = Math.min(
-                      rowStart + cols,
-                      paginatedPosts.length,
-                    );
-                    const rowSlice = paginatedPosts.slice(rowStart, rowEnd);
-                    const rowItemCount = rowSlice.length;
-                    const actualTotalM = rowSlice.reduce(
-                      (sum, p) =>
-                        sum +
-                        (SIZE_MULTIPLIERS[p.thumbnail_size || "medium"] || 1.0),
-                      0,
-                    );
-                    const isLastRowShort = rowItemCount < cols;
-                    const paddedTotalM = isLastRowShort
-                      ? actualTotalM +
-                        (cols - rowItemCount) * SIZE_MULTIPLIERS.medium
-                      : actualTotalM;
-                    const m =
-                      SIZE_MULTIPLIERS[post.thumbnail_size || "medium"] || 1.0;
-                    const widthPct = (m / paddedTotalM) * 100;
-
-                    return (
-                      <PostCard
-                        key={post._id}
-                        post={post}
-                        language={language}
-                        viewMode={viewMode}
-                        cols={cols}
-                        rowItemsCount={rowSlice.length}
-                        widthPct={widthPct}
-                        categoryColors={categoryColors}
-                      />
-                    );
-                  })}
-                </div>
-              )}
+                  );
+                })}
+              </div>
               {/* 페이지네이션 */}
-              {totalPages >= 1 && (
-                <div className="px-4 pt-2 pb-10 flex justify-start items-center text-size-md gap-1">
+              {totalPages > 1 && (
+                <div className="px-4 pt-8 pb-10 flex justify-start items-center text-size-md gap-1">
                   {currentPage > 1 && (
                     <button
                       onClick={() => {
-                        setCurrentPage(currentPage - 1);
-                        containerRef.current?.scrollTo({ top: 0 });
+                        if (currentPage > 1) {
+                          setCurrentPage(currentPage - 1);
+                          containerRef.current?.scrollTo({ top: 0 });
+                        }
                       }}
-                      className="font-ep-sans text-system-white text-size-md hover:bg-system-dark-gray px-1.5 leading-5 rounded-md min-w-3 text-center"
+                      className={`font-ep-sans text-system-white text-size-md hover:bg-system-dark-gray rounded-md min-w-3 text-center cursor-pointer`}
                     >
                       〈
                     </button>
                   )}
                   {Array.from({ length: totalPages }).map((_, i) => (
-                    <React.Fragment key={i + 1}>
-                      <button
-                        onClick={() => {
-                          setCurrentPage(i + 1);
-                          containerRef.current?.scrollTo({ top: 0 });
-                        }}
-                        className={`font-ep-sans transition-colors cursor-pointer bg-[#464646] px-1.5 leading-5 rounded-md min-w-5 text-center ${
-                          currentPage === i + 1
-                            ? "text-system-white bg-transparent hover:bg-system-dark-gray"
-                            : "text-system-white hover:bg-system-dark-gray"
-                        }`}
-                      >
-                        {i + 1}
-                      </button>
-                    </React.Fragment>
+                    <button
+                      key={i + 1}
+                      onClick={() => {
+                        setCurrentPage(i + 1);
+                        containerRef.current?.scrollTo({ top: 0 });
+                      }}
+                      className={`font-ep-sans transition-colors cursor-pointer px-1.5 leading-5 rounded-md min-w-5 text-center ${
+                        currentPage === i + 1
+                          ? "text-system-white bg-transparent hover:bg-system-dark-gray"
+                          : "text-system-white bg-[#464646] hover:bg-system-dark-gray hover:text-system-white"
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
                   ))}
                   {currentPage < totalPages && (
                     <button
                       onClick={() => {
-                        setCurrentPage(currentPage + 1);
-                        containerRef.current?.scrollTo({ top: 0 });
+                        if (currentPage < totalPages) {
+                          setCurrentPage(currentPage + 1);
+                          containerRef.current?.scrollTo({ top: 0 });
+                        }
                       }}
-                      className="font-ep-gothic text-system-white text-size-md hover:bg-system-dark-gray px-1.5 leading-5 rounded-md min-w-3 text-center"
+                      className={`font-ep-sans text-system-white text-size-md hover:bg-system-dark-gray rounded-md min-w-3 text-center cursor-pointer`}
                     >
                       〉
                     </button>

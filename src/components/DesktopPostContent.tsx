@@ -209,20 +209,39 @@ export default function DesktopPostContent({ post }: PostContentProps) {
                 />
               )}
               {post.additional_link && (
-                <div className="flex items-center hover:brightness-50 transition-all">
-                  <a
-                    href={post.additional_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block text-size-md font-ep-sans text-system-white"
-                  >
-                    <img
-                      src="/plus.svg"
-                      alt="Plus"
-                      className="inline mr-1 mb-0.5"
-                    />
-                    {post.additional_link}
-                  </a>
+                <div className="flex flex-col gap-1 items-start mt-2">
+                  {Array.isArray(post.additional_link) ? (
+                    post.additional_link.map((link: string, index: number) => (
+                      <a
+                        key={index}
+                        href={link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center hover:brightness-50 transition-all text-size-md font-ep-sans text-system-white"
+                      >
+                        <img
+                          src="/plus_md.svg"
+                          alt="Plus"
+                          className="inline mr-1 mb-0.5 w-3 h-3"
+                        />
+                        {link}
+                      </a>
+                    ))
+                  ) : (
+                    <a
+                      href={post.additional_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center hover:brightness-50 transition-all text-size-md font-ep-sans text-system-white"
+                    >
+                      <img
+                        src="/plus.svg"
+                        alt="Plus"
+                        className="inline mr-1 mb-0.5"
+                      />
+                      {post.additional_link}
+                    </a>
+                  )}
                 </div>
               )}
             </div>
