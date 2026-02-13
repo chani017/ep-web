@@ -122,7 +122,6 @@ const MobilePostCard = React.memo(
                   {...({ videoQuality: "basic" } as { videoQuality?: string })}
                 />
               ) : (
-                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={muxThumbnail || post.imageUrl}
                   className="w-full h-auto object-contain"
@@ -132,7 +131,6 @@ const MobilePostCard = React.memo(
               )}
             </div>
           ) : post.imageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={post.imageUrl}
               className="w-full h-auto object-contain"
@@ -188,8 +186,6 @@ const MobilePostCard = React.memo(
 );
 
 MobilePostCard.displayName = "MobilePostCard";
-
-// ... imports
 
 export default function MobileMainContent({
   posts,
