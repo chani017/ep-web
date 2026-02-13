@@ -17,6 +17,36 @@ export default function Pagination({
 }: PaginationProps) {
   if (totalPages <= 1) return null;
 
+  const renderPageNumbers = () => {
+    const pages = [];
+    const windowSize = 5;
+
+    pages.push(1);
+
+    const start = Math.max(2, currentPage - windowSize);
+    const end = Math.min(totalPages - 1, currentPage + windowSize);
+
+    if (start > 2) {
+      pages.push("...");
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    if (end < totalPages - 1) {
+      pages.push("...");
+    }
+
+    if (totalPages > 1) {
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
+
+  const pageNumbers = renderPageNumbers();
+
   return (
     <div
       className={`flex justify-start items-center text-size-md gap-1 ${className}`}
@@ -29,19 +59,34 @@ export default function Pagination({
           〈
         </button>
       )}
-      {Array.from({ length: totalPages }).map((_, i) => (
-        <button
-          key={i + 1}
-          onClick={() => onPageChange(i + 1)}
-          className={`font-ep-sans transition-colors cursor-pointer px-1.5 leading-5 rounded-md min-w-5 text-center ${
-            currentPage === i + 1
-              ? "text-system-white bg-transparent hover:bg-system-dark-gray"
-              : "text-system-white bg-[#464646] hover:bg-system-dark-gray hover:text-system-white"
-          }`}
-        >
-          {i + 1}
-        </button>
-      ))}
+
+      {pageNumbers.map((page, index) => {
+        if (page === "...") {
+          return (
+            <span
+              key={`ellipsis-${index}`}
+              className="font-ep-sans text-system-white px-1.5 leading-5 min-w-5 text-center"
+            >
+              ...
+            </span>
+          );
+        }
+
+        return (
+          <button
+            key={page}
+            onClick={() => onPageChange(page as number)}
+            className={`font-ep-sans transition-colors cursor-pointer px-1.5 leading-5 rounded-md min-w-5 text-center ${
+              currentPage === page
+                ? "text-system-white bg-transparent hover:bg-system-dark-gray"
+                : "text-system-white bg-[#464646] hover:bg-system-dark-gray hover:text-system-white"
+            }`}
+          >
+            {page}
+          </button>
+        );
+      })}
+
       {currentPage < totalPages && (
         <button
           onClick={() => onPageChange(currentPage + 1)}
