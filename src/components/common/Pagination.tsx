@@ -49,7 +49,7 @@ export default function Pagination({
 
   return (
     <div
-      className={`flex justify-start items-center text-size-sm gap-1 ${className}`}
+      className={`flex flex-wrap justify-start items-center text-size-sm gap-x-1 gap-y-2 ${className}`}
     >
       {currentPage > 1 && (
         <button
