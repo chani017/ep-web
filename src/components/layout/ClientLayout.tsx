@@ -19,8 +19,38 @@ interface ClientLayoutProps {
 }
 
 export default function ClientLayout({ posts, children }: ClientLayoutProps) {
-  const { isMobile, isMounted } = useAppContext();
+  const { isMobile, isMounted, setVisibleClients } = useAppContext();
   const filterState = usePostFilter(posts);
+  const { filteredPosts, searchTerm, selectedYear, selectedCategory } =
+    filterState;
+
+  React.useEffect(() => {
+    const isFiltered =
+      searchTerm !== "" ||
+      selectedYear !== "Year" ||
+      selectedCategory !== "All Types";
+
+    if (!isFiltered) {
+      setVisibleClients([]);
+      return;
+    }
+
+    const clients = Array.from(
+      new Set(
+        filteredPosts
+          .map((post) => post.client?.trim())
+          .filter((client): client is string => !!client),
+      ),
+    );
+    setVisibleClients(clients);
+  }, [
+    filteredPosts,
+    searchTerm,
+    selectedYear,
+    selectedCategory,
+    setVisibleClients,
+  ]);
+
   const pathname = usePathname();
   const [mobileViewMode, setMobileViewMode] = React.useState<
     "mobileImg" | "list"

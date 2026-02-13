@@ -30,6 +30,8 @@ interface AppContextType {
   setIsMobileSidebarOpen: (open: boolean) => void;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
+  visibleClients: string[];
+  setVisibleClients: (clients: string[]) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -43,6 +45,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [isMounted, setIsMounted] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [visibleClients, setVisibleClients] = useState<string[]>([]);
 
   const check = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
 
@@ -76,6 +79,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setIsMobileSidebarOpen,
         searchTerm,
         setSearchTerm,
+        visibleClients,
+        setVisibleClients,
       }}
     >
       {children}
