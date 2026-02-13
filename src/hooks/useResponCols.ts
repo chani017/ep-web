@@ -5,8 +5,10 @@ const MAX_COLS = 6;
 const MOBILE_BREAKPOINT = 768;
 const MOBILE_COLS = 2;
 
+type DependencyList = ReadonlyArray<unknown>;
+
 export function useResponCols(
-  deps: any[] = [],
+  deps: DependencyList = [],
 ): [RefObject<HTMLDivElement | null>, number] {
   const containerRef = useRef<HTMLDivElement>(null);
   const [cols, setCols] = useState(3);
@@ -31,7 +33,7 @@ export function useResponCols(
 
     observer.observe(containerRef.current);
     return () => observer.disconnect();
-  }, deps);
+  }, deps as DependencyList);
 
   return [containerRef, cols];
 }

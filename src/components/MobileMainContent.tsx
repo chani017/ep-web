@@ -5,18 +5,24 @@ import Link from "next/link";
 import { type SanityDocument } from "next-sanity";
 import MuxPlayer from "@mux/mux-player-react";
 import { useAppContext } from "@/context/AppContext";
-import imageUrlBuilder from "@sanity/image-url";
-import { SanityImageSource } from "@sanity/image-url";
-import { client } from "@/sanity/client";
 import { useInView } from "@/hooks/useInView";
 import { usePage } from "@/hooks/usePage";
 import Pagination from "./Pagination";
 
-const { projectId, dataset } = client.config();
 
 interface MobileMainContentProps {
   posts: SanityDocument[];
-  filterState?: any;
+  filterState?: {
+    searchTerm: string;
+    setSearchTerm: (term: string) => void;
+    selectedYear: string;
+    setSelectedYear: (year: string) => void;
+    selectedCategory: string;
+    setSelectedCategory: (category: string) => void;
+    uniqueYears: string[];
+    filteredPosts: SanityDocument[];
+    availableCategories: Set<string>;
+  };
   viewMode?: "grid" | "list";
 }
 
@@ -27,7 +33,17 @@ const SIZE_MULTIPLIERS: Record<string, number> = {
 };
 
 interface PostCardProps {
-  post: any;
+  post: SanityDocument & {
+    playbackId?: string;
+    imageUrl?: string;
+    title_kr?: string;
+    title_en?: string;
+    category?: string[];
+    publishedAt?: string;
+    client?: string;
+    thumbnail_size?: string;
+    slug?: { current: string };
+  };
   language: string;
   widthPercent?: number;
   viewMode: "grid" | "list";
@@ -65,7 +81,7 @@ const MobilePostCard = React.memo(
 
     return (
       <Link
-        href={`/${post.slug.current}`}
+        href={`/${post.slug?.current ?? ""}`}
         className={`flex group ${
           isGrid
             ? "flex-col group-active:brightness-75"
@@ -115,11 +131,12 @@ const MobilePostCard = React.memo(
                     {
                       "--controls": "none",
                       display: isGrid ? "block" : "none",
-                    } as any
+                    } as React.CSSProperties & Record<`--${string}`, string>
                   }
-                  {...({ videoQuality: "basic" } as any)}
+                  {...({ videoQuality: "basic" } as { videoQuality?: string })}
                 />
               ) : (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={muxThumbnail || post.imageUrl}
                   className="w-full h-auto object-contain"
@@ -130,6 +147,7 @@ const MobilePostCard = React.memo(
               )}
             </div>
           ) : post.imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={post.imageUrl}
               className="w-full h-auto object-contain"
@@ -204,7 +222,7 @@ export default function MobileMainContent({
 
   // Memoize grid layout calculations
   const renderedPosts = React.useMemo(() => {
-    return paginatedPosts.map((post: any, index: number) => {
+    return paginatedPosts.map((post: SanityDocument, index: number) => {
       let rawWidthPercent;
       if (viewMode === "grid") {
         const cols = 2;
@@ -214,7 +232,7 @@ export default function MobileMainContent({
         const rowItemCount = rowSlice.length;
 
         const actualTotalM = rowSlice.reduce(
-          (sum: number, p: any) =>
+          (sum: number, p: SanityDocument) =>
             sum + (SIZE_MULTIPLIERS[p.thumbnail_size || "medium"] || 1.0),
           0,
         );

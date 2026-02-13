@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  experimental: {
+    // @ts-expect-error - turbopack is not yet in the type definition but is required to fix the warning
+    turbopack: {
+      // Set the root directory for Turbopack to the current working directory
+      // to resolve the warning about multiple lockfiles.
+      root: process.cwd(),
+    },
+  },
 };
 
 export default nextConfig;

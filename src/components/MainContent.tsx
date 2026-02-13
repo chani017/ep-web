@@ -20,16 +20,28 @@ const urlFor = (source: SanityImageSource) =>
     ? imageUrlBuilder({ projectId, dataset }).image(source)
     : null;
 
+interface FilterState {
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  selectedYear: string;
+  setSelectedYear: (year: string) => void;
+  selectedCategory: string;
+  setSelectedCategory: (category: string) => void;
+  uniqueYears: string[];
+  filteredPosts: SanityDocument[];
+  availableCategories: Set<string>;
+}
+
 interface MainContentProps {
   posts: SanityDocument[];
-  filterState?: any; // Passed from parent
+  filterState?: FilterState;
 }
 
 interface PostCardProps {
-  post: any;
+  post: SanityDocument;
   language: string;
   viewMode: "img" | "list";
-  cols: number;
+  cols: number; // used by parent for grid layout
   rowItemsCount: number;
   widthPct?: number;
   categoryColors: Record<string, string>;
@@ -48,14 +60,12 @@ const PostCard = React.memo(
     post,
     language,
     viewMode,
-    cols,
     rowItemsCount,
+    cols, // required by parent for layout; intentionally unused in card
     widthPct,
     categoryColors,
   }: PostCardProps) => {
-    const multipliers = SIZE_MULTIPLIERS;
-    const m = multipliers[post.thumbnail_size || "medium"] || 1.0;
-
+    void cols;
     const alreadyLoaded = post.playbackId
       ? loadedVideos.has(post.playbackId)
       : false;
@@ -109,21 +119,23 @@ const PostCard = React.memo(
                     muted
                     placeholder={muxThumbnail || post.imageUrl || undefined}
                     className="w-full h-auto block"
-                    style={{ "--controls": "none", display: "block" } as any}
-                    {...({ videoQuality: "basic" } as any)}
+                    style={{ "--controls": "none", display: "block" } as React.CSSProperties & Record<`--${string}`, string>}
                   />
                 ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={muxThumbnail || post.imageUrl}
                     className="w-full h-auto object-contain"
-                    alt=""
+                    alt={language === "kr" ? (post.title_kr as string) ?? "" : (post.title_en as string) ?? ""}
                     loading="lazy"
                   />
                 )}
               </div>
             ) : post.imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={post.imageUrl}
+                alt={language === "kr" ? (post.title_kr as string) ?? "" : (post.title_en as string) ?? ""}
                 className="w-full h-auto object-contain"
               />
             ) : (
@@ -198,10 +210,8 @@ const CATEGORIES = [
   "Everyday",
 ];
 
-// ... imports
-
-export default function MainContent({ posts, filterState }: MainContentProps) {
-  // ... hooks
+export default function MainContent({ filterState, ...rest }: MainContentProps) {
+  void rest.posts; // reserved for future use
   const {
     language,
     setLanguage,
@@ -212,7 +222,9 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
   } = useAppContext();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
   const [viewMode, setViewMode] = React.useState<"img" | "list">("img");
+  // isCategoryOpen used only via setIsCategoryOpen (e.g. click-outside)
   const [isCategoryOpen, setIsCategoryOpen] = React.useState(false);
+  void isCategoryOpen;
   const categoryDropdownRef = React.useRef<HTMLDivElement>(null);
 
   const {
@@ -228,7 +240,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
   } = filterState || {};
 
   const { currentPage, setCurrentPage, paginatedPosts, totalPages } =
-    usePage(filteredPosts);
+    usePage(filteredPosts ?? []);
 
   const { isYearOpen, setIsYearOpen, yearDropdownRef } = useYearDropdown();
   const [containerRef, cols] = useResponCols([isFullContentMode, isMobile]);
@@ -246,7 +258,6 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  // Memoize layout calculations
   const renderedPosts = React.useMemo(() => {
     return paginatedPosts.map((post, index) => {
       const rowStart = Math.floor(index / cols) * cols;
@@ -351,12 +362,13 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
               </div>
             </div>
             <div>
-              {(currentPost.media || []).map((item: any, index: number) => {
+              {(currentPost.media || []).map((item: { _type: string; _key?: string; caption?: string; asset?: { playbackId?: string }; url?: string; image?: { asset?: { _ref?: string } }; [key: string]: unknown }, index: number) => {
                 if (item._type === "image") {
                   const imgUrl = urlFor(item)?.url();
                   return (
                     <figure key={item._key || index} className="w-full">
                       {imgUrl && (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={imgUrl}
                           alt={item.caption || ""}
@@ -384,7 +396,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                         loop
                         muted
                         style={{ width: "100%", aspectRatio: "16/9" }}
-                        {...({ videoQuality: "basic" } as any)}
+                        {...({ videoQuality: "basic" } as { videoQuality?: string })}
                       />
                     </div>
                   );
@@ -442,7 +454,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                               ? "text-system-gray hover:text-system-white"
                               : "text-system-gray opacity-50"
                         } cursor-pointer transition-all duration-200`}
-                        onClick={() => setSelectedCategory(category)}
+                        onClick={() => setSelectedCategory?.(category)}
                       >
                         {category}
                       </div>
@@ -462,7 +474,6 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
               </div>
               <div className="grid grid-cols-4 px-2 items-stretch gap-x-3 mt-12">
                 {/* 검색창 */}
-                {/* 검색 기능 */}
                 <div className="col-span-2 flex items-end bg-system-dark-gray border-b border-system-gray relative">
                   {!searchTerm && (
                     <div className="absolute inset-0 pointer-events-none text-size-md font-ep-sans text-system-white flex items-center justify-between pr-1 py-2">
@@ -481,7 +492,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                       !searchTerm ? "caret-transparent" : ""
                     }`}
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => setSearchTerm?.(e.target.value)}
                     onFocus={() => setIsSearchFocused(true)}
                     onBlur={() => setIsSearchFocused(false)}
                   />
@@ -493,7 +504,6 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                     />
                   )}
                 </div>
-                {/* 연도 선택 */}
                 {/* 연도별 필터링 */}
                 <div
                   className="col-span-1 py-1.5 border-b border-system-gray relative flex items-end"
@@ -517,7 +527,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                         : "max-h-0 opacity-0 -translate-y-1 pointer-events-none border-transparent"
                     }`}
                   >
-                    {uniqueYears.map((year: string) => (
+                    {(uniqueYears ?? []).map((year: string) => (
                       <div
                         key={year}
                         className={`px-1.5 py-0.5 text-size-md font-ep-sans cursor-pointer transition-colors ${
@@ -526,7 +536,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                             : "text-system-white hover:bg-white/10"
                         }`}
                         onClick={() => {
-                          setSelectedYear(year);
+                          setSelectedYear?.(year);
                           setIsYearOpen(false);
                         }}
                       >
@@ -537,16 +547,16 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                 </div>
                 {/* 프로젝트 갯수 */}
                 <div className="col-span-1 text-size-sm text-system-gray font-ep-sans border-b border-system-gray flex items-center justify-between">
-                  <span>{filteredPosts.length} results</span>
+                  <span>{(filteredPosts ?? []).length} results</span>
                   {(searchTerm ||
                     selectedYear !== "Year" ||
                     selectedCategory !== "All Types") && (
                     <button
                       className="flex items-center gap-1 text-system-white text-size-md hover:brightness-50 transition-all duration-150 ease-in-out cursor-pointer"
                       onClick={() => {
-                        setSearchTerm("");
-                        setSelectedYear("Year");
-                        setSelectedCategory("All Types");
+                        setSearchTerm?.("");
+                        setSelectedYear?.("Year");
+                        setSelectedCategory?.("All Types");
                       }}
                     >
                       <span className="mr-1">Reset</span>

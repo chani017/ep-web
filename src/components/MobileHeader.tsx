@@ -5,8 +5,20 @@ import { useAppContext } from "@/context/AppContext";
 import { useYearDropdown } from "@/hooks/useYearDropdown";
 import { useRouter } from "next/navigation";
 
+interface FilterState {
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  selectedYear: string;
+  setSelectedYear: (year: string) => void;
+  selectedCategory: string;
+  setSelectedCategory: (category: string) => void;
+  uniqueYears: string[];
+  filteredPosts: unknown[];
+  availableCategories: Set<string>;
+}
+
 interface MobileHeaderProps {
-  filterState?: any;
+  filterState?: FilterState;
   viewMode?: "grid" | "list";
   setViewMode?: (mode: "grid" | "list") => void;
   isPostPage?: boolean;
@@ -16,15 +28,8 @@ export default function MobileHeader({
   filterState,
   viewMode,
   setViewMode,
-  isPostPage,
 }: MobileHeaderProps) {
-  const {
-    language,
-    setLanguage,
-    isMobileSidebarOpen,
-    setIsMobileSidebarOpen,
-    categoryColors,
-  } = useAppContext();
+  const { language, setLanguage } = useAppContext();
   const router = useRouter();
 
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
@@ -40,7 +45,6 @@ export default function MobileHeader({
     selectedCategory,
     setSelectedCategory,
     uniqueYears,
-    filteredPosts,
     availableCategories,
   } = filterState || {};
 
@@ -129,7 +133,7 @@ export default function MobileHeader({
                 type="text"
                 className="w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans caret-transparent"
                 value={searchTerm}
-                onChange={(e: any) => setSearchTerm(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm?.(e.target.value)}
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
               />
@@ -140,9 +144,9 @@ export default function MobileHeader({
                 selectedYear !== "Year") && (
                 <button
                   onClick={() => {
-                    setSearchTerm("");
-                    setSelectedCategory("All Types");
-                    setSelectedYear("Year");
+                    setSearchTerm?.("");
+                    setSelectedCategory?.("All Types");
+                    setSelectedYear?.("Year");
                   }}
                   className="transition-opacity active:opacity-50"
                 >
@@ -222,7 +226,7 @@ export default function MobileHeader({
                             : "text-system-white opacity-50"
                       }`}
                       onClick={() => {
-                        setSelectedCategory(category);
+                        setSelectedCategory?.(category);
                         setIsCategoryOpen(false);
                       }}
                     >
@@ -257,7 +261,7 @@ export default function MobileHeader({
                     : "max-h-0 opacity-0 -translate-y-1 pointer-events-none"
                 }`}
               >
-                {uniqueYears.map((year: any) => (
+                {(uniqueYears ?? []).map((year: string) => (
                   <div
                     key={year}
                     className={`py-1 text-size-lg font-ep-sans cursor-pointer transition-colors ${
@@ -266,7 +270,7 @@ export default function MobileHeader({
                         : "text-system-white hover:bg-white/10"
                     }`}
                     onClick={() => {
-                      setSelectedYear(year);
+                      setSelectedYear?.(year);
                       setIsYearOpen(false);
                     }}
                   >

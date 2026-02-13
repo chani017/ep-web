@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { type SanityDocument } from "next-sanity";
 import { useAppContext } from "@/context/AppContext";
@@ -11,8 +11,6 @@ interface SideBarProps {
   award: SanityDocument[];
   clients: string[];
 }
-
-type Tab = "Contact" | "CV" | "Client";
 
 export default function SideBar({ exhibition, award, clients }: SideBarProps) {
   const {
@@ -143,7 +141,9 @@ export default function SideBar({ exhibition, award, clients }: SideBarProps) {
                           {categoryCvs
                             .filter((cv: SanityDocument) => cv.type === type)
                             .sort((a, b) => {
-                              const parseDate = (dateStr: any) => {
+                              const parseDate = (
+                                dateStr: string | number | null | undefined,
+                              ) => {
                                 if (!dateStr) return 0;
                                 const str = String(dateStr);
                                 const parts = str.split(".");
@@ -179,16 +179,16 @@ export default function SideBar({ exhibition, award, clients }: SideBarProps) {
             <h3 className="underline underline-offset-6 decoration-1 decoration-system-gray uppercase font-medium mb-5">
               <p>Clients</p>
             </h3>
-            <div className="grid grid-cols-2">
+            <div className="flex flex-wrap w-full">
               {clients.map((client: string) => (
                 <button
                   key={client}
+                  className="text-system-white break-keep text-left text-[0.875rem] md:text-size-md hover:text-system-gray transition-colors cursor-pointer flex-[120_0_120px] md:flex-[180_0_180px]"
                   onClick={() => {
                     setSearchTerm(client);
                     if (isMobile) setIsMobileSidebarOpen(false);
                     router.push("/");
                   }}
-                  className="text-system-white break-keep text-left text-[0.875rem] md:text-size-md hover:text-system-gray transition-colors cursor-pointer"
                 >
                   {client}
                 </button>

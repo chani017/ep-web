@@ -33,7 +33,7 @@ export function usePage(filteredPosts: SanityDocument[]) {
       isFirstRender.current = false;
       return;
     }
-    setCurrentPage(1);
+    queueMicrotask(() => setCurrentPage(1));
   }, [filteredPosts, setCurrentPage]);
 
   const totalPages = Math.ceil(filteredPosts.length / ITEMS_PER_PAGE);

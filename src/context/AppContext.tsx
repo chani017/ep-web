@@ -71,16 +71,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const check = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+
   useEffect(() => {
-    setIsMounted(true);
-    const check = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    check();
+    queueMicrotask(() => {
+      setIsMounted(true);
+      check();
+    });
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
 
   useEffect(() => {
-    if (!isMobile) setIsMobileSidebarOpen(false);
+    if (!isMobile) queueMicrotask(() => setIsMobileSidebarOpen(false));
   }, [isMobile]);
 
   return (

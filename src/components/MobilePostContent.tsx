@@ -7,8 +7,6 @@ import { useAppContext } from "@/context/AppContext";
 import imageUrlBuilder from "@sanity/image-url";
 import { SanityImageSource } from "@sanity/image-url";
 import { client } from "@/sanity/client";
-import { usePathname } from "next/navigation";
-
 const { projectId, dataset } = client.config();
 const urlFor = (source: SanityImageSource) =>
   projectId && dataset
@@ -21,8 +19,6 @@ interface MobilePostContentProps {
 
 export default function MobilePostContent({ post }: MobilePostContentProps) {
   const { language, categoryColors } = useAppContext();
-  const pathname = usePathname();
-  const isPostPage = pathname !== "/";
 
   const description =
     language === "kr" ? post.description_kr : post.description_en;
@@ -56,7 +52,7 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
         </div>
 
         <div className="flex flex-col gap-2 px-2 mb-5">
-          {media.map((item: any, index: number) => {
+          {media.map((item: { _type: string; _key?: string; caption?: string; asset?: { playbackId?: string }; image?: { asset?: { _ref?: string } }; url?: string; [key: string]: unknown }, index: number) => {
             if (item._type === "image") {
               const imgUrl = urlFor(item)?.url();
               return (

@@ -5,8 +5,7 @@ import { useAppContext } from "@/context/AppContext";
 import { useRouter, usePathname } from "next/navigation";
 
 export default function MobileTrigger() {
-  const { language, isMobileSidebarOpen, setIsMobileSidebarOpen } =
-    useAppContext();
+  const { isMobileSidebarOpen, setIsMobileSidebarOpen } = useAppContext();
   const router = useRouter();
   const pathname = usePathname();
   const isPostPage = pathname !== "/";

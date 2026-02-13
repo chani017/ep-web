@@ -26,6 +26,7 @@ export default function SidebarHeader() {
           onClick={() => setIsFullContentMode(!isFullContentMode)}
           className="absolute left-2"
         >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={
               isFullContentMode
