@@ -1,8 +1,8 @@
-# Everyday Practice (일상의실천) Web Archive
+# 일상의실천 프론트엔드 사전과제
 
-'일상의실천'의 웹 아카이브 프로젝트입니다. Next.js 16과 Sanity CMS를 활용하여 구축되었으며, 다양한 프로젝트 포트폴리오를 효과적으로 보여주기 위해 그리드/리스트 뷰 전환, 필터링, 그리고 반응형 디자인에 중점을 두었습니다.
+'일상의실천'의 웹 아카이브 클론 과제물입니다. Next.js 16과 Sanity CMS를 활용하여 구축되었습니다.
 
-## 🚀 프로젝트 실행 (Getting Started)
+## 프로젝트 개요
 
 이 프로젝트는 **Frontend (Next.js)**와 **CMS Studio (Sanity)** 두 개의 파트로 구성되어 있습니다.
 

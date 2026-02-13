@@ -10,6 +10,7 @@ import { SanityImageSource } from "@sanity/image-url";
 import { client } from "@/sanity/client";
 import { useInView } from "@/hooks/useInView";
 import { usePage } from "@/hooks/usePage";
+import Pagination from "./Pagination";
 
 const { projectId, dataset } = client.config();
 
@@ -250,52 +251,15 @@ export default function MobileMainContent({
         })}
       </div>
       {/* 페이지네이션 */}
-      {totalPages > 1 && (
-        <div className="mx-3 mt-10 mb-20 flex justify-start items-center text-size-md gap-1">
-          {currentPage > 1 && (
-            <button
-              onClick={() => {
-                if (currentPage > 1) {
-                  setCurrentPage(currentPage - 1);
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }
-              }}
-              className={`font-ep-sans text-system-white text-size-md hover:bg-system-dark-gray rounded-md min-w-3 text-center cursor-pointer`}
-            >
-              〈
-            </button>
-          )}
-          {Array.from({ length: totalPages }).map((_, i) => (
-            <button
-              key={i + 1}
-              onClick={() => {
-                setCurrentPage(i + 1);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-              className={`font-ep-sans transition-colors cursor-pointer px-1.5 leading-5 rounded-md min-w-5 text-center ${
-                currentPage === i + 1
-                  ? "text-system-white bg-transparent hover:bg-system-dark-gray"
-                  : "text-system-white bg-[#464646] hover:bg-system-dark-gray hover:text-system-white"
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
-          {currentPage < totalPages && (
-            <button
-              onClick={() => {
-                if (currentPage < totalPages) {
-                  setCurrentPage(currentPage + 1);
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }
-              }}
-              className={`font-ep-gothic text-system-white text-size-md hover:bg-system-dark-gray px-1.5 leading-5 rounded-md min-w-3 text-center cursor-pointer`}
-            >
-              〉
-            </button>
-          )}
-        </div>
-      )}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={(page) => {
+          setCurrentPage(page);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+        className="mx-3 mt-10 mb-20"
+      />
     </main>
   );
 }

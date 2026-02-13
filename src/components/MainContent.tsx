@@ -12,6 +12,7 @@ import { useInView } from "@/hooks/useInView";
 import { usePage } from "@/hooks/usePage";
 import { useYearDropdown } from "@/hooks/useYearDropdown";
 import { useResponCols } from "@/hooks/useResponCols";
+import Pagination from "./Pagination";
 
 const { projectId, dataset } = client.config();
 const urlFor = (source: SanityImageSource) =>
@@ -261,6 +262,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
           </div>
         </div>
         <div className="shrink-0 flex items-center text-size-xl font-normal font-ep-sans">
+          {/* 국문 / 영문 전환 */}
           <span
             className={`${
               language === "kr" ? "text-system-white" : "text-system-gray"
@@ -392,6 +394,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
               ref={containerRef}
             >
               <div className="sticky top-0 pb-1 bg-background/80 backdrop-blur-md z-50">
+                {/* 카테고리 필터링 */}
                 <div className="relative flex flex-wrap justify-start items-center px-2 py-1 pr-16 gap-x-2 text-size-xl leading-tight">
                   {CATEGORIES.map((category) => {
                     const isAvailable =
@@ -414,6 +417,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                       </div>
                     );
                   })}
+                  {/* 뷰 모드 전환 (리스트 / 그리드) */}
                   <button
                     className="absolute right-2 top-1 flex items-center gap-1 text-system-gray cursor-pointer transition-colors"
                     onClick={() =>
@@ -427,6 +431,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
               </div>
               <div className="grid grid-cols-4 px-2 items-stretch gap-x-3 mt-12">
                 {/* 검색창 */}
+                {/* 검색 기능 */}
                 <div className="col-span-2 flex items-end bg-system-dark-gray border-b border-system-gray relative">
                   {!searchTerm && (
                     <div className="absolute inset-0 pointer-events-none text-size-md font-ep-sans text-system-white flex items-center justify-between pr-1 py-2">
@@ -458,6 +463,7 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                   )}
                 </div>
                 {/* 연도 선택 */}
+                {/* 연도별 필터링 */}
                 <div
                   className="col-span-1 py-1.5 border-b border-system-gray relative flex items-end"
                   ref={yearDropdownRef}
@@ -575,52 +581,15 @@ export default function MainContent({ posts, filterState }: MainContentProps) {
                 })}
               </div>
               {/* 페이지네이션 */}
-              {totalPages > 1 && (
-                <div className="px-4 pt-8 pb-10 flex justify-start items-center text-size-md gap-1">
-                  {currentPage > 1 && (
-                    <button
-                      onClick={() => {
-                        if (currentPage > 1) {
-                          setCurrentPage(currentPage - 1);
-                          containerRef.current?.scrollTo({ top: 0 });
-                        }
-                      }}
-                      className={`font-ep-sans text-system-white text-size-md hover:bg-system-dark-gray rounded-md min-w-3 text-center cursor-pointer`}
-                    >
-                      〈
-                    </button>
-                  )}
-                  {Array.from({ length: totalPages }).map((_, i) => (
-                    <button
-                      key={i + 1}
-                      onClick={() => {
-                        setCurrentPage(i + 1);
-                        containerRef.current?.scrollTo({ top: 0 });
-                      }}
-                      className={`font-ep-sans transition-colors cursor-pointer px-1.5 leading-5 rounded-md min-w-5 text-center ${
-                        currentPage === i + 1
-                          ? "text-system-white bg-transparent hover:bg-system-dark-gray"
-                          : "text-system-white bg-[#464646] hover:bg-system-dark-gray hover:text-system-white"
-                      }`}
-                    >
-                      {i + 1}
-                    </button>
-                  ))}
-                  {currentPage < totalPages && (
-                    <button
-                      onClick={() => {
-                        if (currentPage < totalPages) {
-                          setCurrentPage(currentPage + 1);
-                          containerRef.current?.scrollTo({ top: 0 });
-                        }
-                      }}
-                      className={`font-ep-sans text-system-white text-size-md hover:bg-system-dark-gray rounded-md min-w-3 text-center cursor-pointer`}
-                    >
-                      〉
-                    </button>
-                  )}
-                </div>
-              )}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => {
+                  setCurrentPage(page);
+                  containerRef.current?.scrollTo({ top: 0 });
+                }}
+                className="px-4 pt-8 pb-10"
+              />
             </div>
           </>
         )}

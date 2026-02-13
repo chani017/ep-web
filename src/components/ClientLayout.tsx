@@ -42,6 +42,9 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
   }
 
   if (isMobile) {
+    {
+      /* 반응형 구현 (Mobile) */
+    }
     return (
       <div className="flex h-screen flex-col overflow-hidden bg-background font-ep-sans text-system-white">
         <div className="flex-1 overflow-y-auto no-scrollbar">

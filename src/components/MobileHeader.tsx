@@ -82,7 +82,7 @@ export default function MobileHeader({
           Everyday Practice
         </div>
 
-        {/* 한영 전환 */}
+        {/* 국문 / 영문 전환 */}
         <div className="flex items-center text-size-xl font-normal font-ep-sans">
           <span
             className={`${
@@ -110,6 +110,7 @@ export default function MobileHeader({
         <div className="z-50 flex flex-col bg-background/80 backdrop-blur-[2px]">
           <div className="flex items-center border-b border-system-gray">
             {/* 검색창 */}
+            {/* 검색 기능 */}
             <div className="flex-1 flex items-center py-2 relative">
               <img src="/search.svg" alt="Search" className="w-4 h-4" />
               {!searchTerm && (
@@ -182,6 +183,7 @@ export default function MobileHeader({
 
           <div className="flex gap-2">
             {/* 카테고리 */}
+            {/* 카테고리 필터링 */}
             <div
               className="flex-1 py-2 border-b border-system-gray relative flex items-end"
               ref={categoryDropdownRef}
@@ -232,6 +234,7 @@ export default function MobileHeader({
             </div>
 
             {/* 연도 */}
+            {/* 연도별 필터링 */}
             <div
               className="flex-1 py-2 border-b border-system-gray relative flex items-end"
               ref={yearDropdownRef}
