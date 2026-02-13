@@ -108,7 +108,7 @@ export default function SideBar({ exhibition, award, clients }: SideBarProps) {
         const finalCategories = [...categories, ...otherCategories];
 
         return (
-          <div className="text-size-sm md:text-[0.9rem] font-medium text-system-white font-ep-sans space-y-10">
+          <div className="text-size-sm font-medium text-system-white font-ep-sans space-y-10">
             {finalCategories.map((category) => {
               const categoryCvs = allCvs.filter(
                 (cv: SanityDocument) => cv.category === category,
@@ -130,7 +130,7 @@ export default function SideBar({ exhibition, award, clients }: SideBarProps) {
 
               return (
                 <div key={category} className="space-y-4">
-                  <h3 className="underline underline-offset-6 decoration-1 uppercase font-medium">
+                  <h3 className="underline underline-offset-6 decoration-1 decoration-system-gray uppercase font-medium text-size-md">
                     {category}
                   </h3>
                   <div className="space-y-4">
