@@ -285,7 +285,7 @@ export default function MobileMainContent({
           setCurrentPage(page);
           window.scrollTo({ top: 0, behavior: "smooth" });
         }}
-        className="mx-3 mt-1 mb-20"
+        className="mt-2 mb-10"
       />
     </main>
   );

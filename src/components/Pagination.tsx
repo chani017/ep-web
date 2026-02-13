@@ -49,12 +49,15 @@ export default function Pagination({
 
   return (
     <div
-      className={`flex justify-start items-center text-size-md gap-1 ${className}`}
+      className={`flex justify-start items-center text-size-sm gap-1 ${className}`}
     >
       {currentPage > 1 && (
         <button
-          onClick={() => onPageChange(currentPage - 1)}
-          className="font-ep-sans text-system-white text-size-md hover:bg-system-dark-gray rounded-md min-w-3 text-center cursor-pointer"
+          onClick={() => {
+            onPageChange(currentPage - 1);
+            window.scrollTo(0, 0);
+          }}
+          className="font-ep-sans text-system-white hover:bg-system-dark-gray px-2 leading-5 rounded-md min-w-4 text-center cursor-pointer"
         >
           〈
         </button>
@@ -65,7 +68,7 @@ export default function Pagination({
           return (
             <span
               key={`ellipsis-${index}`}
-              className="font-ep-sans text-system-white px-1.5 leading-5 min-w-5 text-center"
+              className="font-ep-sans text-system-white px-2 leading-5 min-w-4 text-center"
             >
               ...
             </span>
@@ -75,8 +78,11 @@ export default function Pagination({
         return (
           <button
             key={page}
-            onClick={() => onPageChange(page as number)}
-            className={`font-ep-sans transition-colors cursor-pointer px-1.5 leading-5 rounded-md min-w-5 text-center ${
+            onClick={() => {
+              onPageChange(page as number);
+              window.scrollTo(0, 0);
+            }}
+            className={`font-ep-sans transition-colors cursor-pointer px-2 leading-5 rounded-md min-w-4 text-center ${
               currentPage === page
                 ? "text-system-white bg-transparent hover:bg-system-dark-gray"
                 : "text-system-white bg-[#464646] hover:bg-system-dark-gray hover:text-system-white"
@@ -89,7 +95,10 @@ export default function Pagination({
 
       {currentPage < totalPages && (
         <button
-          onClick={() => onPageChange(currentPage + 1)}
+          onClick={() => {
+            onPageChange(currentPage + 1);
+            window.scrollTo(0, 0);
+          }}
           className="font-ep-sans text-system-white text-size-md hover:bg-system-dark-gray rounded-md min-w-3 text-center cursor-pointer"
         >
           〉
