@@ -4,46 +4,10 @@ import React from "react";
 import Link from "next/link";
 import { type SanityDocument } from "next-sanity";
 import MuxPlayer from "@mux/mux-player-react";
-import { useAppContext } from "@/context/AppContext";
 import { useInView } from "@/hooks/useInView";
-import { usePage } from "@/hooks/usePage";
-import Pagination from "./Pagination";
-
-interface MobileMainContentProps {
-  posts: SanityDocument[];
-  filterState?: {
-    searchTerm: string;
-    setSearchTerm: (term: string) => void;
-    selectedYear: string;
-    setSelectedYear: (year: string) => void;
-    selectedCategory: string;
-    setSelectedCategory: (category: string) => void;
-    uniqueYears: string[];
-    filteredPosts: SanityDocument[];
-    availableCategories: Set<string>;
-  };
-  viewMode?: "grid" | "list";
-  scrollToTop?: () => void;
-}
-
-const SIZE_MULTIPLIERS: Record<string, number> = {
-  small: 0.5,
-  medium: 0.7,
-  large: 0.9,
-};
 
 interface PostCardProps {
-  post: SanityDocument & {
-    playbackId?: string;
-    imageUrl?: string;
-    title_kr?: string;
-    title_en?: string;
-    category?: string[];
-    publishedAt?: string;
-    client?: string;
-    thumbnail_size?: string;
-    slug?: { current: string };
-  };
+  post: SanityDocument;
   language: string;
   widthPercent?: number;
   viewMode: "grid" | "list";
@@ -187,88 +151,4 @@ const MobilePostCard = React.memo(
 
 MobilePostCard.displayName = "MobilePostCard";
 
-export default function MobileMainContent({
-  posts,
-  filterState,
-  viewMode = "grid",
-  scrollToTop,
-}: MobileMainContentProps) {
-  const { language, categoryColors } = useAppContext();
-
-  const { filteredPosts } = filterState || {};
-
-  const { currentPage, setCurrentPage, paginatedPosts, totalPages } = usePage(
-    filteredPosts || posts,
-  );
-
-  // Memoize grid layout calculations
-  const renderedPosts = React.useMemo(() => {
-    return paginatedPosts.map((post: SanityDocument, index: number) => {
-      let rawWidthPercent;
-      if (viewMode === "grid") {
-        const cols = 2;
-        const rowStart = Math.floor(index / cols) * cols;
-        const rowEnd = rowStart + cols;
-        const rowSlice = paginatedPosts.slice(rowStart, rowEnd);
-        const rowItemCount = rowSlice.length;
-
-        const actualTotalM = rowSlice.reduce(
-          (sum: number, p: SanityDocument) =>
-            sum + (SIZE_MULTIPLIERS[p.thumbnail_size || "medium"] || 1.0),
-          0,
-        );
-
-        const isLastRowShort = rowItemCount < cols;
-        const paddedTotalM = isLastRowShort
-          ? actualTotalM +
-            (cols - rowItemCount) * (SIZE_MULTIPLIERS.medium || 0.8)
-          : actualTotalM;
-
-        const m = SIZE_MULTIPLIERS[post.thumbnail_size || "medium"] || 1.0;
-        rawWidthPercent = (m / paddedTotalM) * 100;
-      }
-
-      return {
-        post,
-        widthPercent: rawWidthPercent,
-      };
-    });
-  }, [paginatedPosts, viewMode]);
-
-  return (
-    <main className="px-2 wrapper-content ">
-      <div className="pt-2 flex items-center justify-end text-size-sm text-system-gray font-ep-sans">
-        <span>{filteredPosts?.length || 0} results</span>
-      </div>
-
-      <div
-        className={`mt-3 ${
-          viewMode === "grid"
-            ? "flex flex-wrap gap-x-3 gap-y-6"
-            : "flex flex-col border-t border-system-gray"
-        }`}
-      >
-        {renderedPosts.map(({ post, widthPercent }) => (
-          <MobilePostCard
-            key={post._id}
-            post={post}
-            language={language}
-            widthPercent={widthPercent}
-            viewMode={viewMode}
-            categoryColors={categoryColors}
-          />
-        ))}
-      </div>
-      {/* 페이지네이션 */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={(page) => {
-          setCurrentPage(page);
-          scrollToTop?.();
-        }}
-        className="mt-2 mb-10"
-      />
-    </main>
-  );
-}
+export default MobilePostCard;

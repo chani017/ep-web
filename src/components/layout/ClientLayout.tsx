@@ -4,13 +4,13 @@ import React from "react";
 import { type SanityDocument } from "next-sanity";
 import { useAppContext } from "@/context/AppContext";
 import { usePostFilter } from "@/hooks/usePostFilter";
-import MobileMainContent from "./MobileMainContent";
+import MobileMainContent from "../main/MobileMainContent";
 import ResizableLayout from "./ResizableLayout";
-import MainContent from "./MainContent";
+import MainContent from "../main/MainContent";
 import SidePanelHeader from "./SidePanelHeader";
 import MobileHeader from "./MobileHeader";
 import MobileSidebar from "./MobileSidePanel";
-import MobileTrigger from "./MobileTrigger";
+import MobileTrigger from "../common/MobileTrigger";
 import { usePathname } from "next/navigation";
 
 interface ClientLayoutProps {

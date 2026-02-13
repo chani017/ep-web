@@ -1,6 +1,6 @@
 import { client } from "@/sanity/client";
 import { type SanityDocument } from "next-sanity";
-import ProjectContent from "@/components/ResponsivePost";
+import ProjectContent from "@/components/post/ResponsivePost";
 import { notFound } from "next/navigation";
 
 const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]`;

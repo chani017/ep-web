@@ -3,7 +3,7 @@ import "./globals.css";
 import { client } from "@/sanity/client";
 import { type SanityDocument } from "next-sanity";
 import { AppProvider } from "@/context/AppContext";
-import ClientLayout from "@/components/ClientLayout";
+import ClientLayout from "@/components/layout/ClientLayout";
 
 export const metadata: Metadata = {
   title: "일상의실천",
