@@ -98,23 +98,10 @@ const MobilePostCard = React.memo(
       >
         <div
           ref={cardRef}
-          className={`${isGrid ? "w-full overflow-hidden" : "hidden invisible opacity-0 pointer-events-none"}`}
-          style={{
-            display: isGrid ? "block" : "none",
-            visibility: isGrid ? "visible" : "hidden",
-            height: isGrid ? "auto" : 0,
-            width: isGrid ? "100%" : 0,
-            position: isGrid ? "relative" : "absolute",
-            zIndex: isGrid ? 1 : -100,
-            opacity: isGrid ? 1 : 0,
-            overflow: "hidden",
-          }}
+          className={`${isGrid ? "w-full overflow-hidden relative" : "hidden"}`}
         >
           {post.playbackId ? (
-            <div
-              className="w-full relative overflow-hidden"
-              style={{ display: isGrid ? "block" : "none" }}
-            >
+            <div className="w-full relative overflow-hidden">
               {shouldRenderVideo ? (
                 <MuxPlayer
                   playbackId={post.playbackId}
@@ -130,7 +117,6 @@ const MobilePostCard = React.memo(
                   style={
                     {
                       "--controls": "none",
-                      display: isGrid ? "block" : "none",
                     } as React.CSSProperties & Record<`--${string}`, string>
                   }
                   {...({ videoQuality: "basic" } as { videoQuality?: string })}
@@ -142,7 +128,6 @@ const MobilePostCard = React.memo(
                   className="w-full h-auto object-contain"
                   alt=""
                   loading="lazy"
-                  style={{ display: isGrid ? "block" : "none" }}
                 />
               )}
             </div>
@@ -152,7 +137,6 @@ const MobilePostCard = React.memo(
               src={post.imageUrl}
               className="w-full h-auto object-contain"
               alt={post.title_en}
-              style={{ display: isGrid ? "block" : "none" }}
             />
           ) : (
             <div className="flex aspect-square w-full items-center justify-center bg-system-dark-gray/20 font-ep-sans text-size-md text-system-gray">

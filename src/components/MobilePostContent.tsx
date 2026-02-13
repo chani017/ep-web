@@ -130,7 +130,7 @@ export default function MobilePostContent({ post }: MobilePostContentProps) {
             },
           )}
         </div>
-        <div className="mx-2 break-keep break-words font-ep-sans font-medium leading-relaxed text-[0.875rem] text-system-white">
+        <div className="mx-2 break-keep break-all font-ep-sans font-medium leading-relaxed text-[0.875rem] text-system-white">
           {Array.isArray(description) && (
             <PortableText
               value={description}
