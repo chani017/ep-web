@@ -187,7 +187,7 @@ const PostCard = React.memo(
           <div
             className={`flex ${
               isMobile
-                ? "flex-col gap-2 py-2 w-full"
+                ? "flex-col py-2 w-full"
                 : "flex-col gap-2 pt-2 w-full min-h-18"
             }`}
           >
