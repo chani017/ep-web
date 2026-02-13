@@ -39,8 +39,15 @@ export default function MainContent({
   ...rest
 }: MainContentProps) {
   void rest.posts;
-  const { language, setLanguage, isFullContentMode, currentPost, isMobile } =
-    useAppContext();
+  const {
+    language,
+    setLanguage,
+    isFullContentMode,
+    setIsFullContentMode,
+    currentPost,
+    setCurrentPost,
+    isMobile,
+  } = useAppContext();
 
   const [viewMode, setViewMode] = React.useState<"desktopImg" | "list">(
     "desktopImg",
@@ -57,6 +64,14 @@ export default function MainContent({
     filteredPosts,
     availableCategories,
   } = filterState || {};
+
+  const handleLogoClick = () => {
+    setIsFullContentMode(false);
+    setCurrentPost(null);
+    setSearchTerm?.("");
+    setSelectedYear?.("Year");
+    setSelectedCategory?.("All Types");
+  };
 
   // 검색 훅
   const { isSearchFocused, setIsSearchFocused, handleSearchChange } =
@@ -91,6 +106,7 @@ export default function MainContent({
         <div className="shrink-0 px-1 h-full flex items-center">
           <Link
             href="/"
+            onClick={handleLogoClick}
             className="relative h-full flex items-center group cursor-pointer w-fit"
           >
             <div className="text-size-xl font-me text-system-white font-ep-sans uppercase transition-all duration-100 transform opacity-150 group-hover:opacity-0 whitespace-nowrap">
