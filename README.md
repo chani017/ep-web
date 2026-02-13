@@ -49,7 +49,7 @@ npm run dev
   <img 
     src="https://github.com/user-attachments/assets/2d9d5894-10ec-4839-83fb-e00939e41e48" 
     alt="preview image"
-    width="800"
+    width="300"
   />
 </p>
 
