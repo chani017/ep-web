@@ -6,6 +6,7 @@ import Image from "next/image";
 import { type SanityDocument } from "next-sanity";
 import MuxPlayer from "@mux/mux-player-react";
 import { useInView } from "@/hooks/useInView";
+import { CATEGORY_COLORS } from "@/constants/common";
 
 interface PostCardProps {
   post: SanityDocument;
@@ -14,7 +15,6 @@ interface PostCardProps {
   cols?: number;
   rowItemsCount?: number;
   widthPct?: number;
-  categoryColors: Record<string, string>;
   isMobile?: boolean;
 }
 
@@ -28,7 +28,6 @@ const PostCard = React.memo(
     rowItemsCount,
     cols,
     widthPct,
-    categoryColors,
     isMobile = false,
   }: PostCardProps) => {
     const [cardRef, inView] = useInView();
@@ -206,7 +205,7 @@ const PostCard = React.memo(
                       key={`${category}-${index}`}
                       className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
                       style={{
-                        backgroundColor: categoryColors[category] || "#787878",
+                        backgroundColor: CATEGORY_COLORS[category] || "#787878",
                       }}
                     >
                       {category}
@@ -230,7 +229,7 @@ const PostCard = React.memo(
                     key={category}
                     className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
                     style={{
-                      backgroundColor: categoryColors[category] || "#787878",
+                      backgroundColor: CATEGORY_COLORS[category] || "#787878",
                     }}
                   >
                     {category}
@@ -260,7 +259,7 @@ const PostCard = React.memo(
                     key={`${category}-${index}`}
                     className="rounded-[4px] px-[0.35rem] py-[0.15rem] font-ep-sans font-medium leading-none text-[11px] text-system-dark"
                     style={{
-                      backgroundColor: categoryColors[category] || "#787878",
+                      backgroundColor: CATEGORY_COLORS[category] || "#787878",
                     }}
                   >
                     {category}

@@ -5,6 +5,7 @@ import Image from "next/image";
 import React from "react";
 import { useAppContext } from "@/context/AppContext";
 import { useDropdown } from "@/hooks/useDropdown";
+import { CATEGORIES } from "@/constants/common";
 import { useRouter } from "next/navigation";
 
 interface FilterState {
@@ -59,19 +60,6 @@ export default function MobileHeader({
     uniqueYears,
     availableCategories,
   } = filterState || {};
-
-  const CATEGORIES = [
-    "All Types",
-    "Graphic",
-    "Editorial",
-    "Website",
-    "Identity",
-    "Space",
-    "Practice",
-    "Motion",
-    "Press",
-    "Everyday",
-  ];
 
   return (
     <main className="sticky top-0 z-50 px-2">

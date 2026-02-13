@@ -7,6 +7,7 @@ import { usePage } from "@/hooks/usePage";
 import { usePostGridLayout } from "@/hooks/usePostGridLayout";
 import PostCard from "../post/PostCard";
 import Pagination from "../common/Pagination";
+import { CATEGORY_COLORS } from "@/constants/common";
 
 interface MobileMainContentProps {
   posts: SanityDocument[];
@@ -31,7 +32,7 @@ export default function MobileMainContent({
   viewMode = "mobileImg",
   scrollToTop,
 }: MobileMainContentProps) {
-  const { language, categoryColors } = useAppContext();
+  const { language } = useAppContext();
 
   const { filteredPosts } = filterState || {};
 
@@ -66,7 +67,6 @@ export default function MobileMainContent({
             language={language}
             widthPct={widthPct}
             viewMode={viewMode}
-            categoryColors={categoryColors}
             isMobile={true}
           />
         ))}
