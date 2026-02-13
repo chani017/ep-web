@@ -3,18 +3,10 @@
 import React from "react";
 import Image from "next/image";
 import { PortableText, type SanityDocument } from "next-sanity";
-import MuxPlayer from "@mux/mux-player-react";
+import { client } from "@/sanity/client";
 import { useAppContext } from "@/context/AppContext";
 import { CATEGORY_COLORS } from "@/constants/common";
-import imageUrlBuilder from "@sanity/image-url";
-import { SanityImageSource } from "@sanity/image-url";
-import { client } from "@/sanity/client";
-
-const { projectId, dataset } = client.config();
-const urlFor = (source: SanityImageSource) =>
-  projectId && dataset
-    ? imageUrlBuilder({ projectId, dataset }).image(source)
-    : null;
+import MediaRenderer from "./MediaRenderer";
 
 interface PostContentProps {
   post: SanityDocument;
@@ -75,77 +67,6 @@ export default function PostContent({
       setContentHeight(contentRef.current.scrollHeight);
     }
   }, [description, isExpanded, language, mobile]);
-
-  const renderMediaItem = (item: MediaItem, index: number) => {
-    if (item._type === "image") {
-      const imgUrl = urlFor(item)?.url();
-      return (
-        <figure key={item._key || index} className="w-full">
-          {imgUrl && (
-            <Image
-              src={imgUrl}
-              alt={item.caption || ""}
-              className="w-full h-auto"
-              width={0}
-              height={0}
-              sizes="100vw"
-            />
-          )}
-          {item.caption && (
-            <figcaption className="text-left text-[10px] text-system-gray mt-1 font-ep-sans">
-              {item.caption}
-            </figcaption>
-          )}
-        </figure>
-      );
-    }
-
-    if (item._type === "mux.video") {
-      const playbackId = item.asset?.playbackId;
-      if (!playbackId) return null;
-      return (
-        <div key={item._key || index} className="w-full">
-          <MuxPlayer
-            playbackId={playbackId}
-            streamType="on-demand"
-            autoPlay="muted"
-            loop
-            muted
-            style={{ width: "100%", aspectRatio: mobile ? "1/1" : "16/9" }}
-            className="w-full h-auto block"
-            {...({ videoQuality: "basic" } as {
-              videoQuality?: string;
-            })}
-          />
-        </div>
-      );
-    }
-
-    if (item._type === "youtube") {
-      const videoId = item.url?.match(
-        /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
-      )?.[1];
-      if (!videoId) return null;
-
-      return (
-        <div
-          key={item._key || index}
-          className={`w-full overflow-hidden ${mobile ? "aspect-video rounded-sm" : ""}`}
-          style={{ aspectRatio: mobile ? undefined : "1/1" }}
-        >
-          <iframe
-            width="100%"
-            height="100%"
-            src={`https://www.youtube.com/embed/${videoId}`}
-            title="YouTube video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
-        </div>
-      );
-    }
-    return null;
-  };
 
   const renderDescription = () => (
     <>
@@ -255,11 +176,16 @@ export default function PostContent({
           </div>
 
           <div className="flex flex-col gap-2 px-2 mb-5">
-            {media.map((item: MediaItem, index: number) =>
-              renderMediaItem(item, index),
-            )}
+            {media.map((item: any, index: number) => (
+              <MediaRenderer
+                key={item._key || index}
+                item={item}
+                index={index}
+                isMobile={mobile}
+              />
+            ))}
           </div>
-          <div className="mx-2 break-keep break-all font-ep-sans font-medium leading-relaxed text-size-sm text-system-white">
+          <div className="mx-2 break-keep wrap-break-word font-ep-sans font-medium leading-relaxed text-size-sm text-system-white">
             {renderDescription()}
           </div>
         </div>
@@ -300,9 +226,14 @@ export default function PostContent({
             </div>
           </div>
           <div className="flex flex-col gap-4 pb-20">
-            {media.map((item: MediaItem, index: number) =>
-              renderMediaItem(item, index),
-            )}
+            {media.map((item: any, index: number) => (
+              <MediaRenderer
+                key={item._key || index}
+                item={item}
+                index={index}
+                isMobile={mobile}
+              />
+            ))}
           </div>
         </div>
       )}

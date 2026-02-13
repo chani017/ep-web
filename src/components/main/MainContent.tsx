@@ -5,25 +5,17 @@ import Image from "next/image";
 import React from "react";
 import Link from "next/link";
 import { type SanityDocument } from "next-sanity";
-import MuxPlayer from "@mux/mux-player-react";
-import { useAppContext } from "@/context/AppContext";
-import imageUrlBuilder from "@sanity/image-url";
-import { SanityImageSource } from "@sanity/image-url";
 import { client } from "@/sanity/client";
+import { useAppContext } from "@/context/AppContext";
 import { usePage } from "@/hooks/usePage";
 import { useDropdown } from "@/hooks/useDropdown";
 import { useResponCols } from "@/hooks/useResponCols";
 import { usePostGridLayout } from "@/hooks/usePostGridLayout";
 import { useSearch } from "@/hooks/useSearch";
 import PostCard from "../post/PostCard";
+import MediaRenderer from "../post/MediaRenderer";
 import Pagination from "../common/Pagination";
 import { CATEGORY_COLORS, CATEGORIES } from "@/constants/common";
-
-const { projectId, dataset } = client.config();
-const urlFor = (source: SanityImageSource) =>
-  projectId && dataset
-    ? imageUrlBuilder({ projectId, dataset }).image(source)
-    : null;
 
 interface FilterState {
   searchTerm: string;
@@ -171,88 +163,14 @@ export default function MainContent({
             </div>
             {/* 상세 페이지: 미디어 리스트 (이미지, 비디오) */}
             <div>
-              {(currentPost.media || []).map(
-                (
-                  item: {
-                    _type: string;
-                    _key?: string;
-                    caption?: string;
-                    asset?: { playbackId?: string };
-                    url?: string;
-                    image?: { asset?: { _ref?: string } };
-                    [key: string]: unknown;
-                  },
-                  index: number,
-                ) => {
-                  if (item._type === "image") {
-                    const imgUrl = urlFor(item)?.url();
-                    return (
-                      <figure key={item._key || index} className="w-full">
-                        {imgUrl && (
-                          <Image
-                            src={imgUrl}
-                            alt={item.caption || ""}
-                            width={0}
-                            height={0}
-                            sizes="100vw"
-                            className="w-full h-auto"
-                          />
-                        )}
-                        {item.caption && (
-                          <figcaption className="text-left text-size-md text-system-gray mt-2 font-ep-sans">
-                            {item.caption}
-                          </figcaption>
-                        )}
-                      </figure>
-                    );
-                  }
-
-                  if (item._type === "mux.video") {
-                    const playbackId = item.asset?.playbackId;
-                    if (!playbackId) return null;
-                    return (
-                      <div key={item._key || index} className="w-full">
-                        <MuxPlayer
-                          playbackId={playbackId}
-                          streamType="on-demand"
-                          autoPlay="muted"
-                          loop
-                          muted
-                          style={{ width: "100%", aspectRatio: "16/9" }}
-                          {...({ videoQuality: "basic" } as {
-                            videoQuality?: string;
-                          })}
-                        />
-                      </div>
-                    );
-                  }
-
-                  if (item._type === "youtube") {
-                    const videoId = item.url?.match(
-                      /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
-                    )?.[1];
-                    if (!videoId) return null;
-
-                    return (
-                      <div
-                        key={item._key || index}
-                        className="w-full overflow-hidden"
-                        style={{ aspectRatio: "1/1" }}
-                      >
-                        <iframe
-                          width="100%"
-                          height="100%"
-                          src={`https://www.youtube.com/embed/${videoId}`}
-                          title="YouTube video player"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        ></iframe>
-                      </div>
-                    );
-                  }
-                  return null;
-                },
-              )}
+              {(currentPost.media || []).map((item: any, index: number) => (
+                <MediaRenderer
+                  key={item._key || index}
+                  item={item}
+                  index={index}
+                  isMobile={isMobile}
+                />
+              ))}
             </div>
           </div>
         ) : (
