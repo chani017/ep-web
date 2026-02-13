@@ -9,7 +9,6 @@ import { useInView } from "@/hooks/useInView";
 import { usePage } from "@/hooks/usePage";
 import Pagination from "./Pagination";
 
-
 interface MobileMainContentProps {
   posts: SanityDocument[];
   filterState?: {
@@ -286,7 +285,7 @@ export default function MobileMainContent({
           setCurrentPage(page);
           window.scrollTo({ top: 0, behavior: "smooth" });
         }}
-        className="mx-3 mt-10 mb-20"
+        className="mx-3 mt-1 mb-20"
       />
     </main>
   );
