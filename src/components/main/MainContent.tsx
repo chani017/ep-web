@@ -298,7 +298,7 @@ export default function MainContent({
                       height={16}
                       className="w-4 h-4"
                     />
-                    <span>{viewMode}</span>
+                    <span>{viewMode === "desktopImg" ? "img" : viewMode}</span>
                   </button>
                 </div>
               </div>
