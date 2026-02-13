@@ -45,6 +45,14 @@ npm run dev
 
 - **선정 이유**: 정형화된 템플릿이 아닌, 스스로 정리할 수 있는 스키마를 통해 프로젝트의 고유한 데이터 구조(다양한 미디어 타입, 커스텀 정렬 로직 등)를 자유롭게 정의할 수 있어 선택했습니다. 저는 orderRank 등을 사용하여 드래그 정렬 기능을 새롭게 추가하여 아카이브 자료의 순서를 편하게 정리할 수 있도록 하였습니다.
 
+<p align="center">
+  <img 
+    src="https://github.com/user-attachments/assets/2d9d5894-10ec-4839-83fb-e00939e41e48" 
+    alt="preview image"
+    width="800"
+  />
+</p>
+
 ### **Styling: Tailwind CSS 4**
 
 - **선정 이유**: grobal CSS 변수(`@theme`)를 활용한 디자인 시스템 구축이 용이하고, 클래스 기반 스타일링으로 개발 생산성을 높이기 위해 선택했습니다.
