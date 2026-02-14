@@ -75,7 +75,7 @@ export default function MobileHeader({
 
   return (
     <main className="sticky top-0 z-50 px-2">
-      <header className="flex h-10 items-center justify-between border-b border-system-gray bg-background">
+      <header className="flex h-9 items-center justify-between border-b border-system-gray bg-background">
         <div
           onClick={handleLogoClick}
           className="text-size-xl font-light text-system-white font-ep-sans uppercase cursor-pointer whitespace-nowrap"
@@ -109,7 +109,7 @@ export default function MobileHeader({
 
       {filterState && (
         <div className="z-50 flex flex-col bg-background/80 backdrop-blur-[2px]">
-          <div className="flex items-center border-b border-system-gray">
+          <div className="flex h-[36px] items-center border-b border-system-gray">
             {/* 검색 기능 */}
             <div className="flex-1 flex items-center relative overflow-hidden">
               <Image
@@ -136,7 +136,7 @@ export default function MobileHeader({
                 )}
                 <input
                   type="text"
-                  className="w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans caret-transparent py-[7px]"
+                  className="w-full bg-transparent border-none outline-none text-size-md text-system-white font-ep-sans h-full caret-transparent"
                   value={searchTerm}
                   onChange={handleSearchChange}
                   onFocus={() => setIsSearchFocused(true)}
@@ -199,10 +199,10 @@ export default function MobileHeader({
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex h-[36px] items-center gap-2">
             {/* 카테고리 필터링 */}
             <div
-              className="flex-1 py-1.5 border-b border-system-gray relative flex items-end"
+              className="flex-1 border-b border-system-gray relative flex items-center h-full"
               ref={categoryDropdownRef}
             >
               <button
@@ -256,7 +256,7 @@ export default function MobileHeader({
 
             {/* 연도별 필터링 */}
             <div
-              className="flex-1 py-1.5 border-b border-system-gray relative flex items-end"
+              className="flex-1 border-b border-system-gray relative flex items-center h-full"
               ref={yearDropdownRef}
             >
               <button

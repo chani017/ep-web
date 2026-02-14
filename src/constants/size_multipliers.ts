@@ -9,5 +9,5 @@ export const SIZE_MULTIPLIERS: Record<string, number> = {
 export const MOBILE_SIZE_MULTIPLIERS: Record<string, number> = {
   small: 0.5,
   medium: 0.7,
-  large: 0.9,
+  large: 0.8,
 };
