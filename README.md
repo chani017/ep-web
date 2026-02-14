@@ -317,6 +317,7 @@ export const postType = defineType({
 <details>
 <summary><b>스크립트 코드 보기</b></summary>
 
+```script
 import {createClient} from '@sanity/client'
 
 const client = createClient({
@@ -427,6 +428,7 @@ console.log(
 generateDummyData()
 
 </details>
+```
 
 ## 배포 URL
 
