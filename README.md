@@ -310,23 +310,123 @@ export const postType = defineType({
 
 ---
 
-## 주요 구현 기능 (Key Features)
-
-1. **지속성 있는 뷰 전환**
-   - 리스트 뷰 ↔ 그리드 뷰 전환 시, 컴포넌트를 언마운트하지 않고 CSS로 스타일만 변경하여 Mux가 재로딩되지않고 동영상 재생 상태가 부드럽게 유지되도록 구현했습니다.
-
-2. **URL 동기화 필터링**
-   - 카테고리/연도 필터 상태를 URL 쿼리 파라미터와 동기화하여, 새로고침이나 링크 공유 시에도 상태가 유지됩니다.
-
-3. **기능별 커스텀 훅 / 컴포넌트 분리**
-   - 기능별로 커스텀 훅과 컴포넌트를 분리하여 재사용성을 높였습니다.
-
----
-
 ## 기타
 
-- CMS에 구축된 데이터를 기반으로 프론트엔드를 구현했기때문에 사이드 패널의 Client 목록이 Figma 보다 적게 구현된 점 참고해주시길 바랍니다.
-- 현재의 데이터 양으로는 페이지네이션이 완벽하게 구현되었다 어렵다고 보기 때문에, 평가에 영향이 없다면 제출 완료 기한까지 남은 시간동안 CMS 데이터를 충분한 양만큼 추가해보겠습니다.
+- 이번 과제를 하면서 대량의 데이터들을 사전해 테스트해보기에는 양이 너무 많아 Sanity에서 더미 데이터들을 한번에 만들어낼 수 있는 스크립트를 만들어보았습니다. 다른 프로젝트를 테스트해볼 때도 유용할 것 같아 기록합니다.
+
+<details>
+<summary><b>스크립트 코드 보기</b></summary>
+
+import {createClient} from '@sanity/client'
+
+const client = createClient({
+projectId: 'f7s9b9q3',
+dataset: 'production',
+useCdn: false,
+apiVersion: '2023-01-01',
+token:
+'skfz4KpREco0cJxjNeWZHRvIdal3E9fhCbvYBhgAEBlv42Mx74SGc6VqATOW32LdfGg5iuct5qTfhsQYeaGGW4Nr0s7JoNFXcSEJ0j9BceLOnBurBAn9EiS6IZP6ttJNMSwJE5neZBaOTWE3qdFp78ZnK5h1xfAaESmeSOjpmAzVP9l6GvXh', // 여기에 Write 권한이 있는 토큰을 넣으세요
+})
+
+const CATEGORIES = [
+'Graphic',
+'Editorial',
+'Website',
+'Identity',
+'Space',
+'Practice',
+'Motion',
+'Press',
+'Everyday',
+]
+
+const CLIENTS = [
+'Samsung',
+'Apple',
+'Google',
+'Naver',
+'Kakao',
+'Hyundai',
+'LG',
+'Everyday Practice',
+'National Museum of Korea',
+'Seoul Museum of Art',
+]
+
+async function generateDummyData() {
+console.log('Fetching current state...')
+const maxRankQuery =
+'\*[_type == "post" && defined(orderRank)] | order(orderRank desc)[0].orderRank'
+const maxRank = await client.fetch(maxRankQuery)
+console.log('Current Max OrderRank:', maxRank || 'None')
+
+// 기존 데이터 이후로 오도록 접두사 설정
+// 만약 이미 z| 로 시작하는 데이터가 있다면 그 뒤로 붙임
+const timestamp = Date.now()
+
+console.log(`Generating 300 dummy posts...`)
+
+const transaction = client.transaction()
+
+for (let i = 1; i <= 300; i++) {
+const title*kr = `더미 프로젝트 ${timestamp}-${i}`
+const title_en = `Dummy Project ${timestamp}-${i}`
+const slug = `dummy-project-${timestamp}-${i}`
+const year = (Math.floor(Math.random() * (2025 - 2015 + 1)) + 2015).toString()
+const clientName = CLIENTS[Math.floor(Math.random() _ CLIENTS.length)]
+
+    // 1~3개의 랜덤 카테고리 선택
+    const randomCategories = Array.from(
+      {length: Math.floor(Math.random() * 3) + 1},
+      () => CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)],
+    )
+    const uniqueCategories = [...new Set(randomCategories)]
+
+    // orderRank 생성:
+    // 기존 maxRank가 z| 로 시작하면 그 숫자를 파싱해서 더하거나,
+    // 그냥 타임스탬프를 활용하여 항상 고유하고 정렬 가능하게 만듭니다.
+    const doc = {
+      _type: 'post',
+      _id: `dummy-post-${timestamp}-${i}`, // ID에 타임스탬프를 추가하여 고유성 확보
+      title_kr,
+      title_en,
+      slug: {
+        _type: 'slug',
+        current: slug,
+      },
+      year,
+      client: clientName,
+      category: uniqueCategories,
+      orderRank: `z|${timestamp}|${i.toString().padStart(3, '0')}`, // 타임스탬프 기반 순서로 중복 방지 및 추가 시 뒤로 배치
+      thumbnail_size: ['small', 'medium', 'large'][Math.floor(Math.random() * 3)],
+      // 실제 이미지/비디오 데이터가 없으므로 썸네일 객체는 생략하거나 빈 상태로 둡니다.
+    }
+
+    transaction.createOrReplace(doc)
+
+    // 50개마다 트랜잭션 제출 (Sanity 제한 방지)
+    if (i % 50 === 0) {
+      await transaction.commit()
+      console.log(`Committed ${i} documents...`)
+      transaction.reset()
+    }
+
+}
+
+try {
+const result = await transaction.commit()
+console.log('Successfully generated all dummy data!')
+} catch (err) {
+console.error('Error generating dummy data:', err.message)
+console.log(
+'\n[!] 필독: Sanity 관리자 페이지(Manage) -> API -> Tokens에서 "Write" 권한이 있는 토큰을 생성하여 스크립트에 넣었는지 확인해주세요.',
+)
+}
+}
+
+generateDummyData()
+
+</details>
 
 ## 배포 URL
 
