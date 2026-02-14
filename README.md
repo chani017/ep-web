@@ -426,9 +426,9 @@ console.log(
 }
 
 generateDummyData()
+```
 
 </details>
-```
 
 ## 배포 URL
 
