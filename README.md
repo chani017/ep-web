@@ -318,65 +318,65 @@ export const postType = defineType({
 <summary><b>스크립트 코드 보기</b></summary>
 
 ```javascript
-import {createClient} from '@sanity/client'
+import { createClient } from "@sanity/client";
 
 const client = createClient({
-projectId: "f7s9b9q3",
-dataset: "production",
-useCdn: false,
-apiVersion: "2023-01-01",
-token:
-"skfz4KpREco0cJxjNeWZHRvIdal3E9fhCbvYBhgAEBlv42Mx74SGc6VqATOW32LdfGg5iuct5qTfhsQYeaGGW4Nr0s7JoNFXcSEJ0j9BceLOnBurBAn9EiS6IZP6ttJNMSwJE5neZBaOTWE3qdFp78ZnK5h1xfAaESmeSOjpmAzVP9l6GvXh", // 여기에 Write 권한이 있는 토큰을 넣으세요
+  projectId: "f7s9b9q3",
+  dataset: "production",
+  useCdn: false,
+  apiVersion: "2023-01-01",
+  token:
+    "skfz4KpREco0cJxjNeWZHRvIdal3E9fhCbvYBhgAEBlv42Mx74SGc6VqATOW32LdfGg5iuct5qTfhsQYeaGGW4Nr0s7JoNFXcSEJ0j9BceLOnBurBAn9EiS6IZP6ttJNMSwJE5neZBaOTWE3qdFp78ZnK5h1xfAaESmeSOjpmAzVP9l6GvXh", // 여기에 Write 권한이 있는 토큰을 넣으세요
 });
 
 const CATEGORIES = [
-"Graphic",
-"Editorial",
-"Website",
-"Identity",
-"Space",
-"Practice",
-"Motion",
-"Press",
-"Everyday",
+  "Graphic",
+  "Editorial",
+  "Website",
+  "Identity",
+  "Space",
+  "Practice",
+  "Motion",
+  "Press",
+  "Everyday",
 ];
 
 const CLIENTS = [
-"Samsung",
-"Apple",
-"Google",
-"Naver",
-"Kakao",
-"Hyundai",
-"LG",
-"Everyday Practice",
-"National Museum of Korea",
-"Seoul Museum of Art",
+  "Samsung",
+  "Apple",
+  "Google",
+  "Naver",
+  "Kakao",
+  "Hyundai",
+  "LG",
+  "Everyday Practice",
+  "National Museum of Korea",
+  "Seoul Museum of Art",
 ];
 
 async function generateDummyData() {
-console.log("Fetching current state...");
-const maxRankQuery =
-'\*[_type == "post" && defined(orderRank)] | order(orderRank desc)[0].orderRank';
-const maxRank = await client.fetch(maxRankQuery);
-console.log("Current Max OrderRank:", maxRank || "None");
+  console.log("Fetching current state...");
+  const maxRankQuery =
+    '*[_type == "post" && defined(orderRank)] | order(orderRank desc)[0].orderRank';
+  const maxRank = await client.fetch(maxRankQuery);
+  console.log("Current Max OrderRank:", maxRank || "None");
 
-// 기존 데이터 이후로 오도록 접두사 설정
-// 만약 이미 z| 로 시작하는 데이터가 있다면 그 뒤로 붙임
-const timestamp = Date.now();
+  // 기존 데이터 이후로 오도록 접두사 설정
+  // 만약 이미 z| 로 시작하는 데이터가 있다면 그 뒤로 붙임
+  const timestamp = Date.now();
 
-console.log(`Generating 300 dummy posts using timestamp ${timestamp}...`);
+  console.log(`Generating 300 dummy posts using timestamp ${timestamp}...`);
 
-const transaction = client.transaction();
+  const transaction = client.transaction();
 
-for (let i = 1; i <= 300; i++) {
-const title*kr = `더미 프로젝트 ${timestamp}-${i}`;
-const title_en = `Dummy Project ${timestamp}-${i}`;
-const slug = `dummy-project-${timestamp}-${i}`;
-const year = (
-Math.floor(Math.random() * (2025 - 2015 + 1)) + 2015
-).toString();
-const clientName = CLIENTS[Math.floor(Math.random() _ CLIENTS.length)];
+  for (let i = 1; i <= 300; i++) {
+    const title_kr = `더미 프로젝트 ${timestamp}-${i}`;
+    const title_en = `Dummy Project ${timestamp}-${i}`;
+    const slug = `dummy-project-${timestamp}-${i}`;
+    const year = (
+      Math.floor(Math.random() * (2025 - 2015 + 1)) + 2015
+    ).toString();
+    const clientName = CLIENTS[Math.floor(Math.random() * CLIENTS.length)];
 
     // 1~3개의 랜덤 카테고리 선택
     const randomCategories = Array.from(
@@ -415,21 +415,20 @@ const clientName = CLIENTS[Math.floor(Math.random() _ CLIENTS.length)];
       console.log(`Committed ${i} documents...`);
       transaction.reset();
     }
+  }
 
+  try {
+    const result = await transaction.commit();
+    console.log("Successfully generated all dummy data!");
+  } catch (err) {
+    console.error("Error generating dummy data:", err.message);
+    console.log(
+      '\n[!] 필독: Sanity 관리자 페이지(Manage) -> API -> Tokens에서 "Write" 권한이 있는 토큰을 생성하여 스크립트에 넣었는지 확인해주세요.',
+    );
+  }
 }
 
-try {
-const result = await transaction.commit();
-console.log("Successfully generated all dummy data!");
-} catch (err) {
-console.error("Error generating dummy data:", err.message);
-console.log(
-'\n[!] 필독: Sanity 관리자 페이지(Manage) -> API -> Tokens에서 "Write" 권한이 있는 토큰을 생성하여 스크립트에 넣었는지 확인해주세요.',
-);
-}
-}
-
-generateDummyData()
+generateDummyData();
 ```
 
 </details>

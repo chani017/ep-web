@@ -194,7 +194,7 @@ const PostCard = React.memo(
             {isMobile && !isGrid ? null : (
               // 그리드 뷰 콘텐츠 (데스크탑 & 모바일)
               <>
-                <p className="text-system-white text-size-md font-medium font-ep-sans leading-tight line-clamp-2">
+                <p className="text-system-white text-size-sm font-medium font-ep-sans leading-tight line-clamp-2">
                   {language === "kr" ? post.title_kr : post.title_en}
                 </p>
                 <div
