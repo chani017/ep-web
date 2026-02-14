@@ -303,7 +303,7 @@ export const postType = defineType({
 
 ### 2. `exhibitionType.ts` & `awardType.ts` (CV)
 
-사이드 패널(CV)에 노출되는 텍스트 위주의 정보입니다.
+사이드 패널(CV)에 노출되는 텍스트 위주의 아카이브 정보입니다.
 
 - **분리 이유**: 메인 `post`와 성격이 다른 목록형 데이터이므로, 관리 효율을 위해 별도 타입으로 분리했습니다.
 - **필드 구성**: `date` (YYYY.MM) 필드를 활용해 Figma와 동일한 과거순 정렬을 자동화해서 구현했습니다.
