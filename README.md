@@ -314,10 +314,10 @@ export const postType = defineType({
 
 - 이번 과제를 하면서 대량의 데이터들을 사전해 테스트해보기에는 양이 너무 많아 Sanity에서 더미 데이터들을 한번에 만들어낼 수 있는 스크립트를 만들어보았습니다. 다른 프로젝트를 테스트해볼 때도 유용할 것 같아 기록합니다.
 
-```script
 <details>
 <summary><b>스크립트 코드 보기</b></summary>
 
+```script
 import {createClient} from '@sanity/client'
 
 const client = createClient({
