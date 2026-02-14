@@ -8,8 +8,8 @@ interface ResizableLayoutProps {
 }
 
 export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
-  const MIN_SIDE_VW = 24;
-  const MIN_MAIN_VW = 42;
+  const MIN_MAIN_PX = 600;
+  const MIN_SIDE_PX = 400;
 
   const [leftWidth, setLeftWidth] = useState(67);
   const [isResizing, setIsResizing] = useState(false);
@@ -26,8 +26,11 @@ export default function ResizableLayout({ left, right }: ResizableLayoutProps) {
   const resize = useCallback(
     (e: PointerEvent) => {
       if (isResizing) {
-        const newWidth = (e.clientX / window.innerWidth) * 100;
-        if (newWidth >= MIN_MAIN_VW && newWidth <= 100 - MIN_SIDE_VW) {
+        if (
+          e.clientX >= MIN_MAIN_PX &&
+          e.clientX <= window.innerWidth - MIN_SIDE_PX
+        ) {
+          const newWidth = (e.clientX / window.innerWidth) * 100;
           setLeftWidth(newWidth);
         }
       }
