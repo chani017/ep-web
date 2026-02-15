@@ -26,7 +26,7 @@ export default function MobileTrigger() {
   return (
     <button
       onClick={handleClick}
-      className="fixed right-0 w-10 h-10 flex flex-col justify-center items-center cursor-pointer z-1000"
+      className="fixed right-0 w-9 h-9 flex flex-col justify-center items-center cursor-pointer z-1000"
     >
       <Image
         src="/plus.svg"

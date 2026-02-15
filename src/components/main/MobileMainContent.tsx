@@ -68,6 +68,7 @@ export default function MobileMainContent({
             widthPct={widthPct}
             viewMode={viewMode}
             isMobile={true}
+            searchTerm={filterState?.searchTerm}
           />
         ))}
       </div>

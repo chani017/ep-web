@@ -99,7 +99,7 @@ export default function ClientLayout({ posts, children }: ClientLayoutProps) {
         {!isPostPage && <MobileSidebar>{children}</MobileSidebar>}
 
         <div
-          className={`fixed inset-x-0 bottom-0 top-10 z-80 bg-background transition-transform duration-200 ease-in-out ${
+          className={`fixed inset-x-0 bottom-0 top-9 z-80 bg-background transition-transform duration-200 ease-in-out ${
             isPostPage ? "translate-y-0" : "translate-y-full"
           }`}
           onTransitionEnd={() => {
