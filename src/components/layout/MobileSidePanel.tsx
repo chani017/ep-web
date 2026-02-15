@@ -34,18 +34,18 @@ export default function MobileSidebar({ children }: MobileSidebarProps) {
         onClick={() => setIsMobileSidebarOpen(false)}
       />
       <div
-        className={`fixed top-[39px] left-0 w-full border-b border-system-gray z-500 transition-transform duration-300 ease-in-out ${
+        className={`fixed top-[35px] left-0 w-full border-b border-system-gray z-500 transition-transform duration-300 ease-in-out ${
           isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       />
       {/* 사이드패널 */}
       <div
-        className={`fixed top-0 left-0 h-full w-[calc(100%-40px)] border-r border-system-gray bg-background z-500 transition-transform duration-300 ease-in-out flex flex-col ${
+        className={`fixed top-0 left-0 h-full w-[calc(100%-36px)] border-r border-system-gray bg-background z-500 transition-transform duration-300 ease-in-out flex flex-col ${
           isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* 사이드패널 헤더 */}
-        <div className="flex justify-between items-center px-2 h-10 border-b border-system-gray">
+        <div className="flex justify-between items-center px-2 h-9 border-b border-system-gray">
           {/* 탭 */}
           <div className="flex items-center gap-x-2">
             {(["Contact", "CV", "Client"] as Tab[]).map((tab) => (
