@@ -5,7 +5,7 @@ import Image from "next/image";
 import React from "react";
 import { useAppContext } from "@/context/AppContext";
 import { useDropdown } from "@/hooks/useDropdown";
-import { CATEGORIES } from "@/constants/common";
+import { CATEGORIES } from "@/components/post/CategoryTag";
 import { useSearch } from "@/hooks/useSearch";
 import { useRouter } from "next/navigation";
 

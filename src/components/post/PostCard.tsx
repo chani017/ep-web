@@ -6,7 +6,21 @@ import Image from "next/image";
 import { type SanityDocument } from "next-sanity";
 import MuxPlayer from "@mux/mux-player-react";
 import { useInView } from "@/hooks/useInView";
-import { CATEGORY_COLORS } from "@/constants/common";
+import CategoryTag from "./CategoryTag";
+
+// 썸네일 크기 배율 정의
+export const SIZE_MULTIPLIERS: Record<string, number> = {
+  small: 0.65,
+  medium: 0.8,
+  large: 1.0,
+};
+
+// 모바일용 썸네일 크기 배율
+export const MOBILE_SIZE_MULTIPLIERS: Record<string, number> = {
+  small: 0.5,
+  medium: 0.65,
+  large: 0.8,
+};
 
 interface PostCardProps {
   post: SanityDocument;
@@ -54,72 +68,40 @@ const PostCard = React.memo(
     const isList = viewMode === "list";
     const isGrid = !isList;
 
-    // 컨테이너 (Link) 클래스
-    const getContainerClasses = () => {
-      if (isMobile) {
-        return `flex group ${
-          isGrid
-            ? "flex-col group-active:brightness-75"
-            : "flex-col border-b border-system-gray px-2 py-2 transition-colors active:bg-system-dark-gray/20"
-        }`;
-      } else {
-        // 데스크탑
-        return `group ${
-          isList
-            ? "col-span-4 grid grid-cols-4 border-b border-system-gray min-h-10 hover:bg-system-dark-gray transition-colors items-start px-1 py-2 gap-x-3"
-            : "flex flex-col"
-        }`;
-      }
-    };
+    const postContainerClasses = `group ${
+      isList
+        ? "max-md:flex max-md:flex-col max-md:border-b max-md:border-system-gray max-md:px-2 max-md:py-2 max-md:transition-colors max-md:active:bg-system-dark-gray/20 md:grid md:grid-cols-4 md:col-span-4 md:items-start md:gap-x-3 md:border-b md:border-system-gray md:px-1 md:py-2 md:min-h-10 md:transition-colors md:hover:bg-system-dark-gray"
+        : "max-md:flex max-md:flex-col max-md:group-active:brightness-75 md:flex md:flex-col"
+    }`;
 
-    // 컨테이너 스타일
-    const getContainerStyle = () => {
-      if (!isGrid || !widthPct) return undefined;
+    const gridViewClasses = `w-full overflow-hidden relative ${
+      isList
+        ? "hidden"
+        : "max-md:w-full max-md:relative md:flex md:flex-col md:w-full md:transition-all md:duration-150 md:group-hover:brightness-60"
+    }`;
 
-      const gapRem = 0.375;
-
-      // 모바일
-      if (isMobile) {
-        return {
-          flex: `0 0 calc(${widthPct}% - ${gapRem}rem)`,
-          maxWidth: `calc(${widthPct}% - ${gapRem}rem)`,
-        };
-      }
-
-      // 데스크탑
-      if (rowItemsCount) {
-        const gapOffset = (widthPct * (rowItemsCount - 1) * 0.5) / 100;
-
-        return {
-          flex: `0 0 calc(${widthPct}% - ${gapOffset}rem)`,
-        };
-      }
-
-      return undefined;
-    };
-
-    const getMediaContainerClasses = () => {
-      if (isMobile) {
-        return `${isGrid ? "w-full overflow-hidden relative" : "hidden"}`;
-      } else {
-        return "flex flex-col w-full transition-all duration-150 group-hover:brightness-60";
-      }
-    };
-
-    const getMediaStyle = () => {
-      if (!isMobile) {
-        return { display: isList ? "none" : "flex" };
-      }
-      return undefined;
-    };
+    // 화면 너비에 따른 썸네일 폭 조정
+    const finalStyle =
+      !isGrid || !widthPct
+        ? undefined
+        : {
+            flex: isMobile
+              ? `0 0 calc(${widthPct}% - 0.375rem)`
+              : `0 0 calc(${widthPct}% - ${
+                  rowItemsCount
+                    ? (widthPct * (rowItemsCount - 1) * 0.5) / 100
+                    : 0
+                }rem)`,
+            maxWidth: isMobile ? `calc(${widthPct}% - 0.375rem)` : undefined,
+          };
 
     return (
       <Link
         href={`/${post.slug?.current || ""}`}
-        className={getContainerClasses()}
-        style={getContainerStyle()}
+        className={postContainerClasses}
+        style={finalStyle}
       >
-        <div className={getMediaContainerClasses()} style={getMediaStyle()}>
+        <div className={gridViewClasses}>
           <div ref={cardRef} className="w-full overflow-hidden relative">
             {post.playbackId ? (
               <div className="w-full relative overflow-hidden">
@@ -187,57 +169,32 @@ const PostCard = React.memo(
 
           {/* 미디어 하단 콘텐츠 (그리드 뷰) */}
           <div
-            className={`flex ${
-              isMobile
-                ? "flex-col py-2 w-full"
-                : "flex-col gap-2 pt-2 w-full min-h-18"
-            }`}
+            className={`
+              flex flex-col w-full
+              max-md:py-2
+              md:gap-2 md:pt-2 md:min-h-18
+              ${isList ? "hidden" : ""}
+            `}
           >
-            {isMobile && !isGrid ? null : (
-              // 그리드 뷰 콘텐츠 (데스크탑 & 모바일)
-              <>
-                <p className="text-system-white text-size-sm font-medium font-ep-sans leading-tight line-clamp-2">
-                  {language === "kr" ? post.title_kr : post.title_en}
-                </p>
-                <div
-                  className={`flex flex-wrap gap-1 ${isMobile && isGrid ? "mt-2" : ""}`}
-                >
-                  {post.category?.map((category: string, index: number) => (
-                    <span
-                      key={`${category}-${index}`}
-                      className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
-                      style={{
-                        backgroundColor: CATEGORY_COLORS[category] || "#787878",
-                      }}
-                    >
-                      {category}
-                    </span>
-                  ))}
-                </div>
-              </>
-            )}
+            {/* 카테고리 */}
+            <>
+              <p className="text-system-white text-size-sm font-medium font-ep-sans leading-tight line-clamp-2">
+                {language === "kr" ? post.title_kr : post.title_en}
+              </p>
+              <CategoryTag
+                categories={post.category}
+                className="mt-2 md:mt-0"
+              />
+            </>
           </div>
         </div>
 
-        {/* 리스트 뷰 콘텐츠 */}
         {/* 데스크탑 리스트 뷰 */}
-        {!isMobile && isList && (
-          <>
+        {isList && (
+          <div className="contents max-md:hidden">
             <div className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-size-md text-system-white font-ep-sans">
               <span>{language === "kr" ? post.title_kr : post.title_en}</span>
-              <div className="flex gap-1 shrink-0">
-                {post.category?.map((category: string) => (
-                  <span
-                    key={category}
-                    className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
-                    style={{
-                      backgroundColor: CATEGORY_COLORS[category] || "#787878",
-                    }}
-                  >
-                    {category}
-                  </span>
-                ))}
-              </div>
+              <CategoryTag categories={post.category} className="shrink-0" />
             </div>
             <div className="col-span-1 text-size-md text-system-white font-ep-sans uppercase">
               {post.publishedAt}
@@ -251,29 +208,17 @@ const PostCard = React.memo(
             >
               {post.client || ""}
             </div>
-          </>
+          </div>
         )}
 
         {/* 모바일 리스트 뷰 */}
-        {isMobile && !isGrid && (
-          <div className="flex justify-between items-start gap-4">
+        {isList && (
+          <div className="flex justify-between items-start gap-4 md:hidden">
             <div className="flex-1 flex flex-wrap items-center gap-2">
               <p className="font-ep-sans leading-tight text-system-white font-medium text-size-md">
                 {language === "kr" ? post.title_kr : post.title_en}
               </p>
-              <div className="flex flex-wrap gap-1">
-                {post.category?.map((category: string, index: number) => (
-                  <span
-                    key={`${category}-${index}`}
-                    className="rounded-[4px] px-[0.35rem] py-[0.15rem] font-ep-sans font-medium leading-none text-[11px] text-system-dark"
-                    style={{
-                      backgroundColor: CATEGORY_COLORS[category] || "#787878",
-                    }}
-                  >
-                    {category}
-                  </span>
-                ))}
-              </div>
+              <CategoryTag categories={post.category} />
             </div>
             <div className="text-right text-[11px] text-system-gray font-ep-sans whitespace-nowrap pt-0.5">
               {post.publishedAt}

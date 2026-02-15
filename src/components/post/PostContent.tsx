@@ -5,7 +5,7 @@ import Image from "next/image";
 import { PortableText, type SanityDocument } from "next-sanity";
 import { client } from "@/sanity/client";
 import { useAppContext } from "@/context/AppContext";
-import { CATEGORY_COLORS } from "@/constants/common";
+import CategoryTag, { CATEGORY_COLORS } from "./CategoryTag";
 import MediaRenderer from "./MediaRenderer";
 
 interface PostContentProps {
@@ -160,17 +160,10 @@ export default function PostContent({
                 {post.publishedAt}
               </span>
               <div className="flex flex-col gap-0.5 items-end">
-                {post.category?.map((category: string) => (
-                  <span
-                    key={category}
-                    className="px-[0.35rem] py-[0.15rem] rounded-[4px] text-[11px] leading-none font-medium font-ep-sans text-system-dark"
-                    style={{
-                      backgroundColor: CATEGORY_COLORS[category] || "#787878",
-                    }}
-                  >
-                    {category}
-                  </span>
-                ))}
+                <CategoryTag
+                  categories={post.category}
+                  className="flex-col gap-0.5 items-end"
+                />
               </div>
             </div>
           </div>
