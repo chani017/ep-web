@@ -180,13 +180,13 @@ const ClientSection = ({
     <h3 className="underline underline-offset-6 decoration-1 decoration-system-gray uppercase font-medium mb-5">
       <p>Clients</p>
     </h3>
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(180px,1fr))] w-full gap-y-1">
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(180px,1fr))] w-full gap-y-1 items-start justify-items-start ">
       {clients.map((client: string) => {
         const isVisible = visibleClients.includes(client.trim());
         return (
           <button
             key={client}
-            className={`break-keep text-left text-size-sm md:text-size-md transition-colors cursor-pointer ${
+            className={`break-keep text-left text-size-sm md:text-size-md transition-colors cursor-pointer${
               isVisible
                 ? "text-system-gray hover:text-system-white"
                 : "text-system-white hover:text-system-gray"
