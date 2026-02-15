@@ -59,9 +59,9 @@ npm run dev
 
 ### **Utility Libraries: clsx, tailwind-merge, cva**
 
-- **도입 이유**: Tailwind CSS를 사용하면서 발생하는 클래스 충돌 문제를 해결하고, 복잡한 조건부 스타일링을 효율적으로 관리하기 위해 도입했습니다.
-- **clsx & tailwind-merge**: 조건부 클래스 결합과 Tailwind 클래스 병합을 담당하며, 이를 `cn` 유틸리티 함수로 추상화하여 사용합니다.
-- **cva (Class Variance Authority)**: 컴포넌트의 다양한 변형(Variant)을 명확하게 정의하고 관리하기 위해 사용합니다. (예: `PostCard`의 그리드/리스트 뷰 스타일 분리)
+- **도입 이유**: Tailwind CSS를 사용하면서 발생하는 클래스 충돌 문제를 해결하고, 반응형 설계에 따른 복잡한 조건부 스타일링을 효율적으로 관리하기 위해 도입했습니다.
+- **clsx & tailwind-merge**: 조건에 따라 클래스를 조합하고, 충돌하는 Tailwind 클래스를 정리하기 위해 사용했습니다. 두 라이브러리를 묶어 cn 유틸 함수로 만들어 일관되게 관리했습니다.
+- **cva (Class Variance Authority)**: 컴포넌트의 variant를 구조적으로 관리하기 위해 도입했습니다. 예를 들어 PostCard의 그리드/리스트 뷰 스타일을 분리해 확장성과 가독성을 높였습니다.
 
 ### **영상 스트리밍: Mux Video API**
 
