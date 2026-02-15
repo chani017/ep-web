@@ -26,7 +26,7 @@ NEXT_PUBLIC_SANITY_DATASET=production
 NEXT_PUBLIC_SANITY_API_VERSION=2024-02-06
 ```
 
-### 3. 실행 (Run)
+### 3. 실행
 
 ```bash
 npm run dev
@@ -102,8 +102,8 @@ src/
 │   │   ├── MainContent.tsx    # 데스크탑: 헤더, 필터, 그리드, 페이지네이션
 │   │   └── MobileMainContent.tsx # 모바일: 결과 수, 그리드, 페이지네이션
 │   ├── 📂 post/              # 포스트 단위 UI
-│   │   ├── PostCard.tsx       # 카드/리스트 셀 (썸네일, 제목, 카테고리, Mux 지연 로드)
-│   │   ├── PostContent.tsx    # 상세: 제목, 미디어, PortableText, 링크
+│   │   ├── PostCard.tsx       # 그리드/리스트 셀 (썸네일, 제목, 카테고리)
+│   │   ├── PostContent.tsx    # 프로젝트 세부내용: 제목, 미디어, PortableText, 링크
 │   │   ├── MediaRenderer.tsx  # image / mux.video / youtube 분기 렌더
 │   │   └── CategoryTag.tsx    # 카테고리 칩 + CATEGORIES/CATEGORY_COLORS
 │   └── 📂 common/
@@ -447,6 +447,12 @@ async function generateDummyData() {
 }
 
 generateDummyData()
+```
+
+### 실행
+
+```bash
+node generateDummyData.js
 ```
 
 </details>
