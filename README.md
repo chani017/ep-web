@@ -57,6 +57,12 @@ npm run dev
 
 - **선정 이유**: grobal CSS 변수(`@theme`)를 활용한 디자인 시스템 구축이 용이하고, 클래스 기반 스타일링으로 개발 생산성을 높이기 위해 선택했습니다.
 
+### **Utility Libraries: clsx, tailwind-merge, cva**
+
+- **도입 이유**: Tailwind CSS를 사용하면서 발생하는 클래스 충돌 문제를 해결하고, 복잡한 조건부 스타일링을 효율적으로 관리하기 위해 도입했습니다.
+- **clsx & tailwind-merge**: 조건부 클래스 결합과 Tailwind 클래스 병합을 담당하며, 이를 `cn` 유틸리티 함수로 추상화하여 사용합니다.
+- **cva (Class Variance Authority)**: 컴포넌트의 다양한 변형(Variant)을 명확하게 정의하고 관리하기 위해 사용합니다. (예: `PostCard`의 그리드/리스트 뷰 스타일 분리)
+
 ### **영상 스트리밍: Mux Video API**
 
 - **선정 이유**: 일상의실천의 장점인 고화질의 모션 포스터를 웹에서도 끊김 없이 제공하기 위해, 적응형 비트레이트 스트리밍(HLS)을 지원하는 Mux를 도입했습니다. 특히 Sanity와도 플러그인 연동이 잘 되어있기 때문에, 파일 업로드 및 관리에도 매우 수월합니다.
@@ -138,68 +144,65 @@ Sanity Studio는 데이터의 성격에 따라 **메인 포트폴리오**와 **�
 <summary><b>postType.ts 코드 보기</b></summary>
 
 ```typescript
-import { defineField, defineType } from "sanity";
-import { ThumbnailSizeField } from "./components/ThumbnailSizeField";
-import {
-  orderRankField,
-  orderRankOrdering,
-} from "@sanity/orderable-document-list";
+import {defineField, defineType} from 'sanity'
+import {ThumbnailSizeField} from './components/ThumbnailSizeField'
+import {orderRankField, orderRankOrdering} from '@sanity/orderable-document-list'
 
 export const postType = defineType({
-  name: "post",
-  title: "프로젝트",
-  type: "document",
+  name: 'post',
+  title: '프로젝트',
+  type: 'document',
   orderings: [orderRankOrdering],
   fields: [
-    orderRankField({ type: "post" }),
+    orderRankField({type: 'post'}),
     defineField({
-      name: "title_kr",
-      title: "제목 (국문)",
-      type: "string",
+      name: 'title_kr',
+      title: '제목 (국문)',
+      type: 'string',
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: "title_en",
-      title: "제목 (영문)",
-      type: "string",
+      name: 'title_en',
+      title: '제목 (영문)',
+      type: 'string',
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: "slug",
-      title: "URL 슬러그",
-      type: "slug",
-      options: { source: "title_kr" },
+      name: 'slug',
+      title: 'URL 슬러그',
+      type: 'slug',
+      options: {source: 'title_kr'},
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: "year",
-      title: "연도",
-      type: "string",
+      name: 'year',
+      title: '연도',
+      type: 'string',
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: "client",
-      title: "클라이언트",
-      type: "string",
+      name: 'client',
+      title: '클라이언트',
+      type: 'string',
     }),
     defineField({
-      name: "category",
-      title: "카테고리",
-      type: "array",
+      name: 'category',
+      title: '카테고리',
+      type: 'array',
       of: [
         {
-          type: "string",
+          type: 'string',
           options: {
             list: [
-              { title: "Graphic", value: "Graphic" },
-              { title: "Editorial", value: "Editorial" },
-              { title: "Website", value: "Website" },
-              { title: "Identity", value: "Identity" },
-              { title: "Space", value: "Space" },
-              { title: "Practice", value: "Practice" },
-              { title: "Motion", value: "Motion" },
-              { title: "Press", value: "Press" },
-              { title: "Everyday", value: "Everyday" },
+              {title: 'Graphic', value: 'Graphic'},
+              {title: 'Editorial', value: 'Editorial'},
+              {title: 'Website', value: 'Website'},
+              {title: 'Identity', value: 'Identity'},
+              {title: 'Space', value: 'Space'},
+              {title: 'Practice', value: 'Practice'},
+              {title: 'Motion', value: 'Motion'},
+              {title: 'Press', value: 'Press'},
+              {title: 'Everyday', value: 'Everyday'},
             ],
           },
           validation: (rule) => rule.required(),
@@ -207,113 +210,113 @@ export const postType = defineType({
       ],
     }),
     defineField({
-      name: "thumbnail",
-      title: "썸네일 (이미지 또는 비디오)",
-      type: "object",
+      name: 'thumbnail',
+      title: '썸네일 (이미지 또는 비디오)',
+      type: 'object',
       fields: [
         {
-          name: "type",
-          title: "종류",
-          type: "string",
+          name: 'type',
+          title: '종류',
+          type: 'string',
           options: {
             list: [
-              { title: "이미지", value: "image" },
-              { title: "비디오", value: "video" },
+              {title: '이미지', value: 'image'},
+              {title: '비디오', value: 'video'},
             ],
-            layout: "radio",
+            layout: 'radio',
           },
-          initialValue: "image",
+          initialValue: 'image',
         },
         {
-          name: "image",
-          title: "이미지",
-          type: "image",
-          hidden: ({ parent }) => parent?.type !== "image",
+          name: 'image',
+          title: '이미지',
+          type: 'image',
+          hidden: ({parent}) => parent?.type !== 'image',
         },
         {
-          name: "video",
-          title: "비디오",
-          type: "mux.video",
-          hidden: ({ parent }) => parent?.type !== "video",
+          name: 'video',
+          title: '비디오',
+          type: 'mux.video',
+          hidden: ({parent}) => parent?.type !== 'video',
         },
       ],
     }),
     defineField({
-      name: "thumbnail_size",
-      title: "썸네일 크기",
-      type: "string",
+      name: 'thumbnail_size',
+      title: '썸네일 크기',
+      type: 'string',
       options: {
         list: [
-          { title: "Small", value: "small" },
-          { title: "Medium", value: "medium" },
-          { title: "Large", value: "large" },
+          {title: 'Small', value: 'small'},
+          {title: 'Medium', value: 'medium'},
+          {title: 'Large', value: 'large'},
         ],
       },
-      initialValue: "medium",
+      initialValue: 'medium',
       components: {
         field: ThumbnailSizeField,
       },
     }),
     defineField({
-      name: "media",
-      title: "미디어 갤러리",
-      type: "array",
+      name: 'media',
+      title: '미디어 갤러리',
+      type: 'array',
       of: [
         {
-          name: "image",
-          title: "이미지",
-          type: "image",
-          options: { hotspot: true },
+          name: 'image',
+          title: '이미지',
+          type: 'image',
+          options: {hotspot: true},
         },
         {
-          type: "object",
-          name: "youtube",
-          title: "유튜브 비디오",
+          type: 'object',
+          name: 'youtube',
+          title: '유튜브 비디오',
           fields: [
             {
-              name: "url",
-              type: "url",
-              title: "유튜브 주소",
+              name: 'url',
+              type: 'url',
+              title: '유튜브 주소',
             },
           ],
         },
       ],
     }),
     defineField({
-      name: "description_kr",
-      title: "내용 (국문)",
-      type: "array",
-      of: [{ type: "block" }],
+      name: 'description_kr',
+      title: '내용 (국문)',
+      type: 'array',
+      of: [{type: 'block'}],
     }),
     defineField({
-      name: "description_en",
-      title: "내용 (영문)",
-      type: "array",
-      of: [{ type: "block" }],
+      name: 'description_en',
+      title: '내용 (영문)',
+      type: 'array',
+      of: [{type: 'block'}],
     }),
     defineField({
-      name: "additional_link",
-      title: "추가 링크",
-      type: "array",
-      of: [{ type: "url" }],
+      name: 'additional_link',
+      title: '추가 링크',
+      type: 'array',
+      of: [{type: 'url'}],
     }),
   ],
   preview: {
     select: {
-      title: "title_kr",
-      subtitle: "client",
-      media: "thumbnail.image",
+      title: 'title_kr',
+      subtitle: 'client',
+      media: 'thumbnail.image',
     },
     prepare(selection) {
-      const { title, subtitle, media } = selection;
+      const {title, subtitle, media} = selection
       return {
         title: title,
         subtitle: subtitle,
         media: media,
-      };
+      }
     },
   },
-});
+})
 ```
 
 </details>
@@ -337,117 +340,113 @@ export const postType = defineType({
 <summary><b>스크립트 코드 보기</b></summary>
 
 ```javascript
-import { createClient } from "@sanity/client";
+import {createClient} from '@sanity/client'
 
 const client = createClient({
-  projectId: "f7s9b9q3",
-  dataset: "production",
+  projectId: 'f7s9b9q3',
+  dataset: 'production',
   useCdn: false,
-  apiVersion: "2023-01-01",
+  apiVersion: '2023-01-01',
   token:
-    "skfz4KpREco0cJxjNeWZHRvIdal3E9fhCbvYBhgAEBlv42Mx74SGc6VqATOW32LdfGg5iuct5qTfhsQYeaGGW4Nr0s7JoNFXcSEJ0j9BceLOnBurBAn9EiS6IZP6ttJNMSwJE5neZBaOTWE3qdFp78ZnK5h1xfAaESmeSOjpmAzVP9l6GvXh", // 여기에 Write 권한이 있는 토큰을 넣으세요
-});
+    'skfz4KpREco0cJxjNeWZHRvIdal3E9fhCbvYBhgAEBlv42Mx74SGc6VqATOW32LdfGg5iuct5qTfhsQYeaGGW4Nr0s7JoNFXcSEJ0j9BceLOnBurBAn9EiS6IZP6ttJNMSwJE5neZBaOTWE3qdFp78ZnK5h1xfAaESmeSOjpmAzVP9l6GvXh', // 여기에 Write 권한이 있는 토큰을 넣으세요
+})
 
 const CATEGORIES = [
-  "Graphic",
-  "Editorial",
-  "Website",
-  "Identity",
-  "Space",
-  "Practice",
-  "Motion",
-  "Press",
-  "Everyday",
-];
+  'Graphic',
+  'Editorial',
+  'Website',
+  'Identity',
+  'Space',
+  'Practice',
+  'Motion',
+  'Press',
+  'Everyday',
+]
 
 const CLIENTS = [
-  "Samsung",
-  "Apple",
-  "Google",
-  "Naver",
-  "Kakao",
-  "Hyundai",
-  "LG",
-  "Everyday Practice",
-  "National Museum of Korea",
-  "Seoul Museum of Art",
-];
+  'Samsung',
+  'Apple',
+  'Google',
+  'Naver',
+  'Kakao',
+  'Hyundai',
+  'LG',
+  'Everyday Practice',
+  'National Museum of Korea',
+  'Seoul Museum of Art',
+]
 
 async function generateDummyData() {
-  console.log("Fetching current state...");
+  console.log('Fetching current state...')
   const maxRankQuery =
-    '*[_type == "post" && defined(orderRank)] | order(orderRank desc)[0].orderRank';
-  const maxRank = await client.fetch(maxRankQuery);
-  console.log("Current Max OrderRank:", maxRank || "None");
+    '*[_type == "post" && defined(orderRank)] | order(orderRank desc)[0].orderRank'
+  const maxRank = await client.fetch(maxRankQuery)
+  console.log('Current Max OrderRank:', maxRank || 'None')
 
   // 기존 데이터 이후로 오도록 접두사 설정
   // 만약 이미 z| 로 시작하는 데이터가 있다면 그 뒤로 붙임
-  const timestamp = Date.now();
+  const timestamp = Date.now()
 
-  console.log(`Generating 300 dummy posts using timestamp ${timestamp}...`);
+  console.log(`Generating 300 dummy posts using timestamp ${timestamp}...`)
 
-  const transaction = client.transaction();
+  const transaction = client.transaction()
 
   for (let i = 1; i <= 300; i++) {
-    const title_kr = `더미 프로젝트 ${timestamp}-${i}`;
-    const title_en = `Dummy Project ${timestamp}-${i}`;
-    const slug = `dummy-project-${timestamp}-${i}`;
-    const year = (
-      Math.floor(Math.random() * (2025 - 2015 + 1)) + 2015
-    ).toString();
-    const clientName = CLIENTS[Math.floor(Math.random() * CLIENTS.length)];
+    const title_kr = `더미 프로젝트 ${timestamp}-${i}`
+    const title_en = `Dummy Project ${timestamp}-${i}`
+    const slug = `dummy-project-${timestamp}-${i}`
+    const year = (Math.floor(Math.random() * (2025 - 2015 + 1)) + 2015).toString()
+    const clientName = CLIENTS[Math.floor(Math.random() * CLIENTS.length)]
 
     // 1~3개의 랜덤 카테고리 선택
     const randomCategories = Array.from(
-      { length: Math.floor(Math.random() * 3) + 1 },
+      {length: Math.floor(Math.random() * 3) + 1},
       () => CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)],
-    );
-    const uniqueCategories = [...new Set(randomCategories)];
+    )
+    const uniqueCategories = [...new Set(randomCategories)]
 
     // orderRank 생성:
     // 기존 maxRank가 z| 로 시작하면 그 숫자를 파싱해서 더하거나,
     // 그냥 타임스탬프를 활용하여 항상 고유하고 정렬 가능하게 만듭니다.
     const doc = {
-      _type: "post",
+      _type: 'post',
       _id: `dummy-post-${timestamp}-${i}`, // ID에 타임스탬프를 추가하여 고유성 확보
       title_kr,
       title_en,
       slug: {
-        _type: "slug",
+        _type: 'slug',
         current: slug,
       },
       year,
       client: clientName,
       category: uniqueCategories,
-      orderRank: `z|${timestamp}|${i.toString().padStart(3, "0")}`, // 타임스탬프 기반 순서로 중복 방지 및 추가 시 뒤로 배치
-      thumbnail_size: ["small", "medium", "large"][
-        Math.floor(Math.random() * 3)
-      ],
+      orderRank: `z|${timestamp}|${i.toString().padStart(3, '0')}`, // 타임스탬프 기반 순서로 중복 방지 및 추가 시 뒤로 배치
+      thumbnail_size: ['small', 'medium', 'large'][Math.floor(Math.random() * 3)],
       // 실제 이미지/비디오 데이터가 없으므로 썸네일 객체는 생략하거나 빈 상태로 둡니다.
-    };
+    }
 
-    transaction.createOrReplace(doc);
+    transaction.createOrReplace(doc)
 
     // 50개마다 트랜잭션 제출 (Sanity 제한 방지)
     if (i % 50 === 0) {
-      await transaction.commit();
-      console.log(`Committed ${i} documents...`);
-      transaction.reset();
+      await transaction.commit()
+      console.log(`Committed ${i} documents...`)
+      transaction.reset()
     }
   }
 
   try {
-    const result = await transaction.commit();
-    console.log("Successfully generated all dummy data!");
+    const result = await transaction.commit()
+    console.log('Successfully generated all dummy data!')
   } catch (err) {
-    console.error("Error generating dummy data:", err.message);
+    console.error('Error generating dummy data:', err.message)
     console.log(
       '\n[!] 필독: Sanity 관리자 페이지(Manage) -> API -> Tokens에서 "Write" 권한이 있는 토큰을 생성하여 스크립트에 넣었는지 확인해주세요.',
-    );
+    )
   }
 }
 
-generateDummyData();
+generateDummyData()
 ```
 
 </details>
