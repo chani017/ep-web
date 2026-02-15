@@ -1,55 +1,58 @@
-"use client";
+'use client'
 
-import React from "react";
+import {cn} from '@/lib/utils'
 
 interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  className?: string;
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
+  className?: string
 }
 
 export default function Pagination({
   currentPage,
   totalPages,
   onPageChange,
-  className = "",
+  className = '',
 }: PaginationProps) {
-  if (totalPages <= 1) return null;
+  if (totalPages <= 1) return null
 
   const renderPageNumbers = () => {
-    const pages = [];
-    const windowSize = 5;
+    const pages = []
+    const windowSize = 5
 
-    pages.push(1);
+    pages.push(1)
 
-    const start = Math.max(2, currentPage - windowSize);
-    const end = Math.min(totalPages - 1, currentPage + windowSize);
+    const start = Math.max(2, currentPage - windowSize)
+    const end = Math.min(totalPages - 1, currentPage + windowSize)
 
     if (start > 2) {
-      pages.push("...");
+      pages.push('...')
     }
 
     for (let i = start; i <= end; i++) {
-      pages.push(i);
+      pages.push(i)
     }
 
     if (end < totalPages - 1) {
-      pages.push("...");
+      pages.push('...')
     }
 
     if (totalPages > 1) {
-      pages.push(totalPages);
+      pages.push(totalPages)
     }
 
-    return pages;
-  };
+    return pages
+  }
 
-  const pageNumbers = renderPageNumbers();
+  const pageNumbers = renderPageNumbers()
 
   return (
     <div
-      className={`flex flex-wrap justify-start items-center text-size-sm gap-x-1 gap-y-2 ${className}`}
+      className={cn(
+        'flex flex-wrap justify-start items-center text-size-sm gap-x-1 gap-y-2',
+        className,
+      )}
     >
       {currentPage > 1 && (
         <button
@@ -61,7 +64,7 @@ export default function Pagination({
       )}
 
       {pageNumbers.map((page, index) => {
-        if (page === "...") {
+        if (page === '...') {
           return (
             <span
               key={`ellipsis-${index}`}
@@ -69,22 +72,23 @@ export default function Pagination({
             >
               ...
             </span>
-          );
+          )
         }
 
         return (
           <button
             key={page}
             onClick={() => onPageChange(page as number)}
-            className={`font-ep-sans transition-colors cursor-pointer px-2 leading-5 rounded-md min-w-4 text-center ${
+            className={cn(
+              'font-ep-sans transition-colors cursor-pointer px-2 leading-5 rounded-md min-w-4 text-center',
               currentPage === page
-                ? "text-system-white bg-transparent hover:bg-system-dark-gray"
-                : "text-system-white bg-[#464646] hover:bg-system-dark-gray hover:text-system-white"
-            }`}
+                ? 'text-system-white bg-transparent hover:bg-system-dark-gray'
+                : 'text-system-white bg-[#464646] hover:bg-system-dark-gray hover:text-system-white',
+            )}
           >
             {page}
           </button>
-        );
+        )
       })}
 
       {currentPage < totalPages && (
@@ -96,5 +100,5 @@ export default function Pagination({
         </button>
       )}
     </div>
-  );
+  )
 }
