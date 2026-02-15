@@ -375,6 +375,7 @@ export default function MainContent({
                     rowItemsCount={rowItemsCount}
                     widthPct={widthPct}
                     isMobile={false}
+                    searchTerm={searchTerm}
                   />
                 ))}
               </div>

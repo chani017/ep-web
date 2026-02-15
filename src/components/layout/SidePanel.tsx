@@ -186,9 +186,9 @@ const ClientSection = ({
         return (
           <button
             key={client}
-            className={`break-keep text-left text-size-sm md:text-size-md transition-colors cursor-pointer${
+            className={`break-keep text-left text-size-sm md:text-size-md transition-colors cursor-pointer ${
               isVisible
-                ? "text-system-gray hover:text-system-white"
+                ? "text-system-gray"
                 : "text-system-white hover:text-system-gray"
             }`}
             onClick={() => {

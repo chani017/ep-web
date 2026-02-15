@@ -16,6 +16,7 @@ interface PostCardProps {
   rowItemsCount?: number;
   widthPct?: number;
   isMobile?: boolean;
+  searchTerm?: string;
 }
 
 const loadedVideos = new Set<string>();
@@ -29,6 +30,7 @@ const PostCard = React.memo(
     cols,
     widthPct,
     isMobile = false,
+    searchTerm,
   }: PostCardProps) => {
     const [cardRef, inView] = useInView();
 
@@ -61,7 +63,7 @@ const PostCard = React.memo(
             : "flex-col border-b border-system-gray px-2 py-2 transition-colors active:bg-system-dark-gray/20"
         }`;
       } else {
-        // Desktop
+        // 데스크탑
         return `group ${
           isList
             ? "col-span-4 grid grid-cols-4 border-b border-system-gray min-h-10 hover:bg-system-dark-gray transition-colors items-start px-1 py-2 gap-x-3"
@@ -240,7 +242,13 @@ const PostCard = React.memo(
             <div className="col-span-1 text-size-md text-system-white font-ep-sans uppercase">
               {post.publishedAt}
             </div>
-            <div className="col-span-1 text-size-md text-system-white font-ep-sans uppercase text-left">
+            <div
+              className={`col-span-1 text-size-md font-ep-sans uppercase text-left ${
+                searchTerm && post.client === searchTerm
+                  ? "text-system-gray"
+                  : "text-system-white"
+              }`}
+            >
               {post.client || ""}
             </div>
           </>
