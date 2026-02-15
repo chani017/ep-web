@@ -15,7 +15,7 @@ import { useSearch } from "@/hooks/useSearch";
 import PostCard from "../post/PostCard";
 import MediaRenderer from "../post/MediaRenderer";
 import Pagination from "../common/Pagination";
-import { CATEGORY_COLORS, CATEGORIES } from "@/constants/common";
+import CategoryTag, { CATEGORIES, CATEGORY_COLORS } from "../post/CategoryTag";
 
 interface FilterState {
   searchTerm: string;

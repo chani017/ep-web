@@ -7,7 +7,7 @@ import { usePage } from "@/hooks/usePage";
 import { usePostGridLayout } from "@/hooks/usePostGridLayout";
 import PostCard from "../post/PostCard";
 import Pagination from "../common/Pagination";
-import { CATEGORY_COLORS } from "@/constants/common";
+import { CATEGORY_COLORS } from "../post/CategoryTag";
 
 interface MobileMainContentProps {
   posts: SanityDocument[];
