@@ -61,7 +61,7 @@ npm run dev
 
 - **도입 이유**: Tailwind CSS를 사용하면서 발생하는 클래스 충돌 문제를 해결하고, 반응형 설계에 따른 복잡한 조건부 스타일링을 효율적으로 관리하기 위해 도입했습니다.
 - **clsx & tailwind-merge**: 조건에 따라 클래스를 조합하고, 충돌하는 Tailwind 클래스를 정리하기 위해 사용했습니다. 두 라이브러리를 묶어 cn 유틸 함수로 만들어 일관되게 관리했습니다.
-- **cva (Class Variance Authority)**: 컴포넌트의 variant를 구조적으로 관리하기 위해 도입했습니다. 예를 들어 PostCard의 그리드/리스트 뷰 스타일을 분리해 확장성과 가독성을 높였습니다.
+- **cva (Class Variance Authority)**: 컴포넌트의 변형을 구조적으로 관리하기 위해 도입했습니다. 예를 들어 PostCard의 그리드/리스트 뷰 스타일을 분리해 확장성과 가독성을 높였습니다.
 
 ### **영상 스트리밍: Mux Video API**
 
@@ -325,7 +325,7 @@ export const postType = defineType({
 
 ### 2. `exhibitionType.ts` & `awardType.ts` (CV)
 
-사이드 패널(CV)에 노출되는 텍스트 위주의 정보입니다.
+사이드 패널(CV)에 노출되는 텍스트 위주의 아카이브 정보입니다.
 
 - **분리 이유**: 메인 `post`와 성격이 다른 목록형 데이터이므로, 관리 효율을 위해 별도 타입으로 분리했습니다.
 - **필드 구성**: `date` (YYYY.MM) 필드를 활용해 Figma와 동일한 과거순 정렬을 자동화해서 구현했습니다.
