@@ -73,11 +73,6 @@ export default function MobileHeader({filterState, viewMode, setViewMode}: Mobil
     availableCategories,
   } = filterState || {}
   const handleLogoClick = () => {
-    setIsFullContentMode(false)
-    setCurrentPost(null)
-    setSearchTerm?.('')
-    setSelectedYear?.('Year')
-    setSelectedCategory?.('All Types')
     window.location.href = 'https://ep-web-three.vercel.app'
   }
 

@@ -60,12 +60,9 @@ export default function MainContent({filterState, ...rest}: MainContentProps) {
     filteredPosts,
     availableCategories,
   } = filterState || {}
+
   const handleLogoClick = () => {
-    setIsFullContentMode(false)
-    setCurrentPost(null)
-    setSearchTerm?.('')
-    setSelectedYear?.('Year')
-    setSelectedCategory?.('All Types')
+    window.location.href = 'https://ep-web-three.vercel.app'
   }
 
   // 검색 훅
