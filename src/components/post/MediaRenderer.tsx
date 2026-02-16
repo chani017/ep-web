@@ -1,34 +1,33 @@
-"use client";
+'use client'
 
-import React from "react";
-import Image from "next/image";
-import MuxPlayer from "@mux/mux-player-react";
-import imageUrlBuilder from "@sanity/image-url";
-import { SanityImageSource } from "@sanity/image-url";
-import { client } from "@/sanity/client";
+import React from 'react'
+import Image from 'next/image'
+import MuxPlayer from '@mux/mux-player-react'
+import imageUrlBuilder from '@sanity/image-url'
+import {SanityImageSource} from '@sanity/image-url'
+import {client} from '@/sanity/client'
+import {cn} from '@/lib/utils'
 
-const { projectId, dataset } = client.config();
+const {projectId, dataset} = client.config()
 const urlFor = (source: SanityImageSource) =>
-  projectId && dataset
-    ? imageUrlBuilder({ projectId, dataset }).image(source)
-    : null;
+  projectId && dataset ? imageUrlBuilder({projectId, dataset}).image(source) : null
 
 interface MediaItem {
-  _type: string;
-  _key?: string;
-  caption?: string;
-  asset?: { playbackId?: string };
-  url?: string;
-  image?: { asset?: { _ref?: string } };
-  [key: string]: any;
+  _type: string
+  _key?: string
+  caption?: string
+  asset?: {playbackId?: string}
+  url?: string
+  image?: {asset?: {_ref?: string}}
+  [key: string]: any
 }
 
 interface MediaRendererProps {
-  item: MediaItem;
-  index: number;
-  isMobile?: boolean;
-  showCaption?: boolean;
-  className?: string;
+  item: MediaItem
+  index: number
+  isMobile?: boolean
+  showCaption?: boolean
+  className?: string
 }
 
 export default function MediaRenderer({
@@ -36,16 +35,16 @@ export default function MediaRenderer({
   index,
   isMobile = false,
   showCaption = true,
-  className = "w-full",
+  className = 'w-full',
 }: MediaRendererProps) {
-  if (item._type === "image") {
-    const imgUrl = urlFor(item)?.url();
+  if (item._type === 'image') {
+    const imgUrl = urlFor(item)?.url()
     return (
       <figure key={item._key || index} className={className}>
         {imgUrl && (
           <Image
             src={imgUrl}
-            alt={item.caption || ""}
+            alt={item.caption || ''}
             width={0}
             height={0}
             sizes="100vw"
@@ -54,18 +53,21 @@ export default function MediaRenderer({
         )}
         {showCaption && item.caption && (
           <figcaption
-            className={`text-left text-system-gray mt-2 font-ep-sans ${isMobile ? "text-size-sm" : "text-size-md"}`}
+            className={cn(
+              'text-left text-system-gray mt-2 font-ep-sans',
+              isMobile ? 'text-size-sm' : 'text-size-md',
+            )}
           >
             {item.caption}
           </figcaption>
         )}
       </figure>
-    );
+    )
   }
 
-  if (item._type === "mux.video") {
-    const playbackId = item.asset?.playbackId;
-    if (!playbackId) return null;
+  if (item._type === 'mux.video') {
+    const playbackId = item.asset?.playbackId
+    if (!playbackId) return null
     return (
       <div key={item._key || index} className={className}>
         <MuxPlayer
@@ -74,27 +76,27 @@ export default function MediaRenderer({
           autoPlay="muted"
           loop
           muted
-          style={{ width: "100%", aspectRatio: isMobile ? "1/1" : "16/9" }}
+          style={{width: '100%', aspectRatio: isMobile ? '1/1' : '16/9'}}
           className="w-full h-auto block"
-          {...({ videoQuality: "basic" } as {
-            videoQuality?: string;
+          {...({videoQuality: 'basic'} as {
+            videoQuality?: string
           })}
         />
       </div>
-    );
+    )
   }
 
-  if (item._type === "youtube") {
+  if (item._type === 'youtube') {
     const videoId = item.url?.match(
       /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
-    )?.[1];
-    if (!videoId) return null;
+    )?.[1]
+    if (!videoId) return null
 
     return (
       <div
         key={item._key || index}
-        className={`${className} overflow-hidden ${isMobile ? "aspect-video rounded-sm" : ""}`}
-        style={{ aspectRatio: isMobile ? undefined : "1/1" }}
+        className={cn(className, 'overflow-hidden', isMobile && 'aspect-video rounded-sm')}
+        style={{aspectRatio: isMobile ? undefined : '1/1'}}
       >
         <iframe
           width="100%"
@@ -105,8 +107,8 @@ export default function MediaRenderer({
           allowFullScreen
         ></iframe>
       </div>
-    );
+    )
   }
 
-  return null;
+  return null
 }

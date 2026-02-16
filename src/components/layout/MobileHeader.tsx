@@ -1,58 +1,66 @@
-"use client";
+'use client'
 
-import Image from "next/image";
+import Image from 'next/image'
 
-import React from "react";
-import { useAppContext } from "@/context/AppContext";
-import { useDropdown } from "@/hooks/useDropdown";
-import { CATEGORIES } from "@/components/post/CategoryTag";
-import { useSearch } from "@/hooks/useSearch";
-import { useRouter } from "next/navigation";
+import React from 'react'
+import {useAppContext} from '@/context/AppContext'
+import {useDropdown} from '@/hooks/useDropdown'
+import {CATEGORIES} from '@/components/post/CategoryTag'
+import {useSearch} from '@/hooks/useSearch'
+import {useRouter} from 'next/navigation'
+import {cva} from 'class-variance-authority'
+import {cn} from '@/lib/utils'
+
+const dropdownItemVariants = cva(
+  'py-1 text-size-lg font-ep-sans cursor-pointer transition-colors',
+  {
+    variants: {
+      state: {
+        selected: 'text-system-white bg-white/10',
+        available: 'text-system-white hover:bg-white/10',
+        disabled: 'text-system-white opacity-50',
+      },
+    },
+    defaultVariants: {
+      state: 'available',
+    },
+  },
+)
 
 interface FilterState {
-  searchTerm: string;
-  setSearchTerm: (term: string) => void;
-  selectedYear: string;
-  setSelectedYear: (year: string) => void;
-  selectedCategory: string;
-  setSelectedCategory: (category: string) => void;
-  uniqueYears: string[];
-  filteredPosts: unknown[];
-  availableCategories: Set<string>;
+  searchTerm: string
+  setSearchTerm: (term: string) => void
+  selectedYear: string
+  setSelectedYear: (year: string) => void
+  selectedCategory: string
+  setSelectedCategory: (category: string) => void
+  uniqueYears: string[]
+  filteredPosts: unknown[]
+  availableCategories: Set<string>
 }
 
 interface MobileHeaderProps {
-  filterState?: FilterState;
-  viewMode?: "mobileImg" | "list";
-  setViewMode?: (mode: "mobileImg" | "list") => void;
-  isPostPage?: boolean;
+  filterState?: FilterState
+  viewMode?: 'mobileImg' | 'list'
+  setViewMode?: (mode: 'mobileImg' | 'list') => void
+  isPostPage?: boolean
 }
 
-export default function MobileHeader({
-  filterState,
-  viewMode,
-  setViewMode,
-}: MobileHeaderProps) {
-  const { language, setLanguage, setIsFullContentMode, setCurrentPost } =
-    useAppContext();
-  const router = useRouter();
+export default function MobileHeader({filterState, viewMode, setViewMode}: MobileHeaderProps) {
+  const {language, setLanguage, setIsFullContentMode, setCurrentPost} = useAppContext()
+  const router = useRouter()
 
-  const { isSearchFocused, setIsSearchFocused, handleSearchChange } =
-    useSearch();
+  const {isSearchFocused, setIsSearchFocused, handleSearchChange} = useSearch()
 
   // 카테고리 드롭다운
   const {
     isOpen: isCategoryOpen,
     setIsOpen: setIsCategoryOpen,
     dropdownRef: categoryDropdownRef,
-  } = useDropdown();
+  } = useDropdown()
 
   // 연도 드롭다운
-  const {
-    isOpen: isYearOpen,
-    setIsOpen: setIsYearOpen,
-    dropdownRef: yearDropdownRef,
-  } = useDropdown();
+  const {isOpen: isYearOpen, setIsOpen: setIsYearOpen, dropdownRef: yearDropdownRef} = useDropdown()
 
   const {
     searchTerm,
@@ -63,15 +71,15 @@ export default function MobileHeader({
     setSelectedCategory,
     uniqueYears,
     availableCategories,
-  } = filterState || {};
+  } = filterState || {}
   const handleLogoClick = () => {
-    setIsFullContentMode(false);
-    setCurrentPost(null);
-    setSearchTerm?.("");
-    setSelectedYear?.("Year");
-    setSelectedCategory?.("All Types");
-    window.location.href = "https://ep-web-three.vercel.app";
-  };
+    setIsFullContentMode(false)
+    setCurrentPost(null)
+    setSearchTerm?.('')
+    setSelectedYear?.('Year')
+    setSelectedCategory?.('All Types')
+    window.location.href = 'https://ep-web-three.vercel.app'
+  }
 
   return (
     <main className="sticky top-0 z-50 px-2">
@@ -86,19 +94,21 @@ export default function MobileHeader({
         {/* 국문/영문 전환 */}
         <div className="flex items-center text-size-xl font-normal font-ep-sans">
           <span
-            className={`${
-              language === "kr" ? "text-system-white" : "text-system-gray"
-            } cursor-pointer hover:text-system-white transition-colors`}
-            onClick={() => setLanguage("kr")}
+            className={cn(
+              'cursor-pointer hover:text-system-white transition-colors',
+              language === 'kr' ? 'text-system-white' : 'text-system-gray',
+            )}
+            onClick={() => setLanguage('kr')}
           >
             Kor
           </span>
           <span className="text-system-gray mx-1.5">/</span>
           <span
-            className={`${
-              language === "en" ? "text-system-white" : "text-system-gray"
-            } cursor-pointer hover:text-system-white transition-colors`}
-            onClick={() => setLanguage("en")}
+            className={cn(
+              'cursor-pointer hover:text-system-white transition-colors',
+              language === 'en' ? 'text-system-white' : 'text-system-gray',
+            )}
+            onClick={() => setLanguage('en')}
           >
             Eng
           </span>
@@ -120,11 +130,12 @@ export default function MobileHeader({
                 className="w-4 h-4 shrink-0"
               />
               <div
-                className={`ml-auto flex items-center relative transition-all duration-150 ease-in-out ${
+                className={cn(
+                  'ml-auto flex items-center relative transition-all duration-150 ease-in-out',
                   isSearchFocused || searchTerm
-                    ? "w-[calc(100%-2.5rem)]"
-                    : "w-[calc(100%-1.25rem)]"
-                }`}
+                    ? 'w-[calc(100%-2.5rem)]'
+                    : 'w-[calc(100%-1.25rem)]',
+                )}
               >
                 {!searchTerm && (
                   <span className="absolute inset-y-0 left-0 pointer-events-none text-size-lg font-ep-sans text-system-gray flex items-center">
@@ -145,55 +156,49 @@ export default function MobileHeader({
               </div>
             </div>
             <div className="flex items-center gap-2">
-              {(searchTerm !== "" ||
-                selectedCategory !== "All Types" ||
-                selectedYear !== "Year") && (
+              {(searchTerm !== '' ||
+                selectedCategory !== 'All Types' ||
+                selectedYear !== 'Year') && (
                 <button
                   onClick={() => {
-                    setSearchTerm?.("");
-                    setSelectedCategory?.("All Types");
-                    setSelectedYear?.("Year");
+                    setSearchTerm?.('')
+                    setSelectedCategory?.('All Types')
+                    setSelectedYear?.('Year')
                   }}
                   className="transition-opacity active:opacity-50"
                 >
-                  <Image
-                    src="/reset.svg"
-                    alt="Reset"
-                    width={20}
-                    height={20}
-                    className="w-5 h-5"
-                  />
+                  <Image src="/reset.svg" alt="Reset" width={20} height={20} className="w-5 h-5" />
                 </button>
               )}
             </div>
 
             <div className="flex items-center gap-2.5 ml-5">
               <button
-                onClick={() => setViewMode && setViewMode("mobileImg")}
-                className={`w-5 h-5 transition-colors duration-150 ${
-                  viewMode === "mobileImg"
-                    ? "bg-system-white"
-                    : "bg-system-gray"
-                }`}
+                onClick={() => setViewMode && setViewMode('mobileImg')}
+                className={cn(
+                  'w-5 h-5 transition-colors duration-150',
+                  viewMode === 'mobileImg' ? 'bg-system-white' : 'bg-system-gray',
+                )}
                 style={{
-                  maskImage: "url(/gridview.svg)",
-                  WebkitMaskImage: "url(/gridview.svg)",
-                  maskRepeat: "no-repeat",
-                  maskPosition: "center",
-                  maskSize: "contain",
+                  maskImage: 'url(/gridview.svg)',
+                  WebkitMaskImage: 'url(/gridview.svg)',
+                  maskRepeat: 'no-repeat',
+                  maskPosition: 'center',
+                  maskSize: 'contain',
                 }}
               />
               <button
-                onClick={() => setViewMode && setViewMode("list")}
-                className={`w-5 h-5 transition-colors duration-150 ${
-                  viewMode === "list" ? "bg-system-white" : "bg-system-gray"
-                }`}
+                onClick={() => setViewMode && setViewMode('list')}
+                className={cn(
+                  'w-5 h-5 transition-colors duration-150',
+                  viewMode === 'list' ? 'bg-system-white' : 'bg-system-gray',
+                )}
                 style={{
-                  maskImage: "url(/listview.svg)",
-                  WebkitMaskImage: "url(/listview.svg)",
-                  maskRepeat: "no-repeat",
-                  maskPosition: "center",
-                  maskSize: "contain",
+                  maskImage: 'url(/listview.svg)',
+                  WebkitMaskImage: 'url(/listview.svg)',
+                  maskRepeat: 'no-repeat',
+                  maskPosition: 'center',
+                  maskSize: 'contain',
                 }}
               />
             </div>
@@ -215,41 +220,39 @@ export default function MobileHeader({
                   alt="Dropdown"
                   width={14}
                   height={14}
-                  className={`w-3.5 h-3.5 transition-transform duration-150 ${
-                    isCategoryOpen ? "-rotate-180" : ""
-                  }`}
+                  className={cn(
+                    'w-3.5 h-3.5 transition-transform duration-150',
+                    isCategoryOpen && '-rotate-180',
+                  )}
                 />
               </button>
               <div
-                className={`absolute top-full left-0 w-full bg-system-dark-gray border-t border-b border-system-gray z-40 transition-all duration-200 ease-in-out origin-top ${
+                className={cn(
+                  'absolute top-full left-0 w-full bg-system-dark-gray border-t border-b border-system-gray z-40 transition-all duration-200 ease-in-out origin-top',
                   isCategoryOpen
-                    ? "max-h-60 opacity-100 translate-y-0 overflow-y-auto no-scrollbar"
-                    : "max-h-0 opacity-0 -translate-y-1 pointer-events-none"
-                }`}
+                    ? 'max-h-60 opacity-100 translate-y-0 overflow-y-auto no-scrollbar'
+                    : 'max-h-0 opacity-0 -translate-y-1 pointer-events-none',
+                )}
               >
                 {CATEGORIES.map((category) => {
-                  const isAvailable =
-                    category === "All Types" ||
-                    availableCategories?.has(category);
-                  const isSelected = selectedCategory === category;
+                  const isAvailable = category === 'All Types' || availableCategories?.has(category)
+                  const isSelected = selectedCategory === category
                   return (
                     <div
                       key={category}
-                      className={`py-1 text-size-lg font-ep-sans cursor-pointer transition-colors ${
-                        isSelected
-                          ? "text-system-white bg-white/10"
-                          : isAvailable
-                            ? "text-system-white hover:bg-white/10"
-                            : "text-system-white opacity-50"
-                      }`}
+                      className={cn(
+                        dropdownItemVariants({
+                          state: isSelected ? 'selected' : isAvailable ? 'available' : 'disabled',
+                        }),
+                      )}
                       onClick={() => {
-                        setSelectedCategory?.(category);
-                        setIsCategoryOpen(false);
+                        setSelectedCategory?.(category)
+                        setIsCategoryOpen(false)
                       }}
                     >
                       {category}
                     </div>
-                  );
+                  )
                 })}
               </div>
             </div>
@@ -269,29 +272,31 @@ export default function MobileHeader({
                   alt="Dropdown"
                   width={14}
                   height={14}
-                  className={`w-3.5 h-3.5 transition-transform duration-150 ${
-                    isYearOpen ? "-rotate-180" : ""
-                  }`}
+                  className={cn(
+                    'w-3.5 h-3.5 transition-transform duration-150',
+                    isYearOpen && '-rotate-180',
+                  )}
                 />
               </button>
               <div
-                className={`absolute top-full left-0 w-full bg-system-dark-gray border-t border-b border-system-gray z-40 transition-all duration-200 ease-in-out origin-top ${
+                className={cn(
+                  'absolute top-full left-0 w-full bg-system-dark-gray border-t border-b border-system-gray z-40 transition-all duration-200 ease-in-out origin-top',
                   isYearOpen
-                    ? "max-h-48 opacity-100 translate-y-0 overflow-y-auto no-scrollbar"
-                    : "max-h-0 opacity-0 -translate-y-1 pointer-events-none"
-                }`}
+                    ? 'max-h-48 opacity-100 translate-y-0 overflow-y-auto no-scrollbar'
+                    : 'max-h-0 opacity-0 -translate-y-1 pointer-events-none',
+                )}
               >
                 {(uniqueYears ?? []).map((year: string) => (
                   <div
                     key={year}
-                    className={`py-1 text-size-lg font-ep-sans cursor-pointer transition-colors ${
-                      selectedYear === year
-                        ? "text-system-white bg-white/10"
-                        : "text-system-white hover:bg-white/10"
-                    }`}
+                    className={cn(
+                      dropdownItemVariants({
+                        state: selectedYear === year ? 'selected' : 'available',
+                      }),
+                    )}
                     onClick={() => {
-                      setSelectedYear?.(year);
-                      setIsYearOpen(false);
+                      setSelectedYear?.(year)
+                      setIsYearOpen(false)
                     }}
                   >
                     {year}
@@ -303,5 +308,5 @@ export default function MobileHeader({
         </div>
       )}
     </main>
-  );
+  )
 }

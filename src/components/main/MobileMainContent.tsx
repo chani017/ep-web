@@ -1,51 +1,50 @@
-"use client";
+'use client'
 
-import React from "react";
-import { type SanityDocument } from "next-sanity";
-import { useAppContext } from "@/context/AppContext";
-import { usePage } from "@/hooks/usePage";
-import { usePostGridLayout } from "@/hooks/usePostGridLayout";
-import PostCard from "../post/PostCard";
-import Pagination from "../common/Pagination";
-import { CATEGORY_COLORS } from "../post/CategoryTag";
+import React from 'react'
+import {type SanityDocument} from 'next-sanity'
+import {useAppContext} from '@/context/AppContext'
+import {usePage} from '@/hooks/usePage'
+import {usePostGridLayout} from '@/hooks/usePostGridLayout'
+import PostCard from '../post/PostCard'
+import Pagination from '../common/Pagination'
+import {CATEGORY_COLORS} from '../post/CategoryTag'
+import {cn} from '@/lib/utils'
 
 interface MobileMainContentProps {
-  posts: SanityDocument[];
+  posts: SanityDocument[]
   filterState?: {
-    searchTerm: string;
-    setSearchTerm: (term: string) => void;
-    selectedYear: string;
-    setSelectedYear: (year: string) => void;
-    selectedCategory: string;
-    setSelectedCategory: (category: string) => void;
-    uniqueYears: string[];
-    filteredPosts: SanityDocument[];
-    availableCategories: Set<string>;
-  };
-  viewMode?: "mobileImg" | "list";
-  scrollToTop?: () => void;
+    searchTerm: string
+    setSearchTerm: (term: string) => void
+    selectedYear: string
+    setSelectedYear: (year: string) => void
+    selectedCategory: string
+    setSelectedCategory: (category: string) => void
+    uniqueYears: string[]
+    filteredPosts: SanityDocument[]
+    availableCategories: Set<string>
+  }
+  viewMode?: 'mobileImg' | 'list'
+  scrollToTop?: () => void
 }
 
 export default function MobileMainContent({
   posts,
   filterState,
-  viewMode = "mobileImg",
+  viewMode = 'mobileImg',
   scrollToTop,
 }: MobileMainContentProps) {
-  const { language } = useAppContext();
+  const {language} = useAppContext()
 
-  const { filteredPosts } = filterState || {};
+  const {filteredPosts} = filterState || {}
 
-  const { currentPage, setCurrentPage, paginatedPosts, totalPages } = usePage(
-    filteredPosts || posts,
-  );
+  const {currentPage, setCurrentPage, paginatedPosts, totalPages} = usePage(filteredPosts || posts)
 
   const renderedPosts = usePostGridLayout({
     posts: paginatedPosts,
     cols: 2,
     viewMode,
     isMobile: true,
-  });
+  })
 
   return (
     <main className="px-2 wrapper-content ">
@@ -54,13 +53,14 @@ export default function MobileMainContent({
       </div>
 
       <div
-        className={`mt-3 ${
-          viewMode === "mobileImg"
-            ? "flex flex-wrap gap-x-2 gap-y-6"
-            : "flex flex-col border-t border-system-gray"
-        }`}
+        className={cn(
+          'mt-3',
+          viewMode === 'mobileImg'
+            ? 'flex flex-wrap gap-x-2 gap-y-6'
+            : 'flex flex-col border-t border-system-gray',
+        )}
       >
-        {renderedPosts.map(({ post, widthPct }) => (
+        {renderedPosts.map(({post, widthPct}) => (
           <PostCard
             key={post._id}
             post={post}
@@ -77,11 +77,11 @@ export default function MobileMainContent({
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={(page) => {
-          setCurrentPage(page);
-          scrollToTop?.();
+          setCurrentPage(page)
+          scrollToTop?.()
         }}
         className="mt-2 mb-20"
       />
     </main>
-  );
+  )
 }
