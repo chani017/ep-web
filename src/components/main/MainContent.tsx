@@ -62,6 +62,11 @@ export default function MainContent({filterState, ...rest}: MainContentProps) {
   } = filterState || {}
 
   const handleLogoClick = () => {
+    setIsFullContentMode(false)
+    setCurrentPost(null)
+    setSearchTerm?.('')
+    setSelectedYear?.('Year')
+    setSelectedCategory?.('All Types')
     window.location.href = 'https://ep-web-three.vercel.app'
   }
 

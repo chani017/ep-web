@@ -84,7 +84,7 @@ src/
 │   ├── usePage.ts         # 페이지네이션 + URL 동기화
 │   ├── usePostFilter.ts   # 검색/연도/카테고리 필터
 │   ├── useResponCols.ts   # ResizeObserver 기반 컬럼 수
-│   ├── useInView.ts       # IntersectionObserver 지연 로드
+│   ├── useInView.ts       # Lazy Loading 지연 로드
 │   ├── useDropdown.ts     # 외부 클릭 시 드롭다운 닫기
 │   ├── useSearch.ts       # 검색 포커스/핸들러
 │   └── usePostGridLayout.ts # 그리드 비율 계산 (thumbnail_size 기반)
@@ -94,8 +94,8 @@ src/
 │   ├── 📂 layout/            # 레이아웃·네비게이션
 │   │   ├── ClientLayout.tsx   # isMobile 분기, 데스크탑/모바일 구조
 │   │   ├── ResizableLayout.tsx # 좌우 분할 + 드래그 리사이즈
-│   │   ├── SidePanel.tsx      # Contact/CV/Client 탭 콘텐츠
-│   │   ├── SidePanelHeader.tsx # 탭 버튼 + 풀스크린 토글
+│   │   ├── SidePanel.tsx      # Contact/CV/Client 사이드 패널 콘텐츠
+│   │   ├── SidePanelHeader.tsx # 사이드 패널 헤더(탭 버튼 + 풀스크린 토글)
 │   │   ├── MobileHeader.tsx   # 모바일 상단(로고, 언어, 필터)
 │   │   └── MobileSidePanel.tsx # 모바일 슬라이드 사이드바
 │   ├── 📂 main/              # 메인 그리드/리스트
@@ -105,7 +105,7 @@ src/
 │   │   ├── PostCard.tsx       # 그리드/리스트 셀 (썸네일, 제목, 카테고리)
 │   │   ├── PostContent.tsx    # 프로젝트 세부내용: 제목, 미디어, PortableText, 링크
 │   │   ├── MediaRenderer.tsx  # image / mux.video / youtube 분기 렌더
-│   │   └── CategoryTag.tsx    # 카테고리 칩 + CATEGORIES/CATEGORY_COLORS
+│   │   └── CategoryTag.tsx    # 카테고리 태그 정보(컬러, 텍스트 등)
 │   └── 📂 common/
 │       ├── Pagination.tsx     # 페이지 번호 + 이전/다음
 │       └── MobileTrigger.tsx  # 모바일 메뉴/닫기 플로팅 버튼
