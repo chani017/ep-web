@@ -1,4 +1,7 @@
-import type { NextConfig } from "next";
+import type {NextConfig} from 'next'
+import dns from 'node:dns'
+
+dns.setDefaultResultOrder('ipv4first')
 
 const nextConfig: NextConfig = {
   experimental: {
@@ -12,15 +15,15 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "cdn.sanity.io",
+        protocol: 'https',
+        hostname: 'cdn.sanity.io',
       },
       {
-        protocol: "https",
-        hostname: "image.mux.com",
+        protocol: 'https',
+        hostname: 'image.mux.com',
       },
     ],
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig

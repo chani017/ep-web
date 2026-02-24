@@ -5,7 +5,6 @@ import Image from 'next/image'
 import React from 'react'
 import Link from 'next/link'
 import {type SanityDocument} from 'next-sanity'
-import {client} from '@/sanity/client'
 import {useAppContext} from '@/context/AppContext'
 import {usePage} from '@/hooks/usePage'
 import {useDropdown} from '@/hooks/useDropdown'
@@ -16,7 +15,8 @@ import {cn} from '@/lib/utils'
 import PostCard from '../post/PostCard'
 import MediaRenderer from '../post/MediaRenderer'
 import Pagination from '../common/Pagination'
-import CategoryTag, {CATEGORIES, CATEGORY_COLORS} from '../post/CategoryTag'
+import {CATEGORIES, CATEGORY_COLORS} from '../post/CategoryTag'
+import {type MediaItem} from '../post/MediaRenderer'
 
 interface FilterState {
   searchTerm: string
@@ -35,8 +35,7 @@ interface MainContentProps {
   filterState?: FilterState
 }
 
-export default function MainContent({filterState, ...rest}: MainContentProps) {
-  void rest.posts
+export default function MainContent({filterState}: MainContentProps) {
   const {
     language,
     setLanguage,
@@ -149,9 +148,7 @@ export default function MainContent({filterState, ...rest}: MainContentProps) {
                 {language === 'kr' ? currentPost.title_kr : currentPost.title_en}
               </h1>
               <div className="flex items-start gap-2 shrink-0">
-                <span className="text-xl text-system-white font-ep-sans">
-                  {currentPost.publishedAt}
-                </span>
+                <span className="text-xl text-system-white font-ep-sans">{currentPost.year}</span>
                 <div className="flex flex-col items-end gap-1 mt-1">
                   {currentPost.category?.map((category: string) => (
                     <span
@@ -169,7 +166,7 @@ export default function MainContent({filterState, ...rest}: MainContentProps) {
             </div>
             {/* 상세 페이지: 미디어 리스트 (이미지, 비디오) */}
             <div>
-              {(currentPost.media || []).map((item: any, index: number) => (
+              {(currentPost.media || []).map((item: MediaItem, index: number) => (
                 <MediaRenderer
                   key={item._key || index}
                   item={item}

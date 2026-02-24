@@ -3,7 +3,6 @@
 import React from 'react'
 import Image from 'next/image'
 import {PortableText, type SanityDocument} from 'next-sanity'
-import {client} from '@/sanity/client'
 import {useAppContext} from '@/context/AppContext'
 import CategoryTag, {CATEGORY_COLORS} from './CategoryTag'
 import MediaRenderer from './MediaRenderer'
@@ -165,7 +164,7 @@ export default function PostContent({post, isMobile = false}: PostContentProps) 
           </div>
 
           <div className="flex flex-col gap-2 px-2 mb-5">
-            {media.map((item: any, index: number) => (
+            {media.map((item: MediaItem, index: number) => (
               <MediaRenderer key={item._key || index} item={item} index={index} isMobile={mobile} />
             ))}
           </div>
@@ -211,7 +210,7 @@ export default function PostContent({post, isMobile = false}: PostContentProps) 
             </div>
           </div>
           <div className="flex flex-col gap-4 pb-20">
-            {media.map((item: any, index: number) => (
+            {media.map((item: MediaItem, index: number) => (
               <MediaRenderer key={item._key || index} item={item} index={index} isMobile={mobile} />
             ))}
           </div>

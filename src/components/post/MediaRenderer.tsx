@@ -12,14 +12,14 @@ const {projectId, dataset} = client.config()
 const urlFor = (source: SanityImageSource) =>
   projectId && dataset ? imageUrlBuilder({projectId, dataset}).image(source) : null
 
-interface MediaItem {
+export interface MediaItem {
   _type: string
   _key?: string
   caption?: string
   asset?: {playbackId?: string}
   url?: string
   image?: {asset?: {_ref?: string}}
-  [key: string]: any
+  [key: string]: unknown
 }
 
 interface MediaRendererProps {

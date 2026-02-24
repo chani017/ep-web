@@ -27,7 +27,7 @@ export const MOBILE_SIZE_MULTIPLIERS: Record<string, number> = {
 const postCardVariants = cva('group', {
   variants: {
     mode: {
-      list: 'max-md:flex max-md:flex-col max-md:border-b max-md:border-system-gray max-md:px-2 max-md:py-2 max-md:transition-colors max-md:active:bg-system-dark-gray/20 md:grid md:grid-cols-4 md:col-span-4 md:items-start md:gap-x-3 md:border-b md:border-system-gray md:px-1 md:py-2 md:min-h-10 md:transition-colors md:hover:bg-system-dark-gray',
+      list: 'max-md:flex max-md:flex-col max-md:border-b max-md:border-system-gray max-md:px-2 max-md:transition-colors max-md:active:bg-system-dark-gray/20 md:grid md:grid-cols-4 md:col-span-4 md:items-start md:gap-x-3 md:border-b md:border-system-gray md:p-1.5 md:transition-colors md:hover:bg-system-dark-gray',
       grid: 'max-md:flex max-md:flex-col max-md:group-active:brightness-75 md:flex md:flex-col',
     },
   },
@@ -55,7 +55,6 @@ const PostCard = React.memo(
     language,
     viewMode,
     rowItemsCount,
-    cols,
     widthPct,
     isMobile = false,
     searchTerm,
@@ -76,20 +75,11 @@ const PostCard = React.memo(
       ? `https://image.mux.com/${post.playbackId}/thumbnail.webp?width=480&time=0`
       : null
 
-    // viewMode: 데스크탑은 "desktopImg", 모바일은 "mobileImg"
     const isList = viewMode === 'list'
-    const isGrid = !isList
-
-    const gridViewClasses = cn(
-      'w-full overflow-hidden relative',
-      isList
-        ? 'hidden'
-        : 'max-md:w-full max-md:relative md:flex md:flex-col md:w-full md:transition-all md:duration-150 md:group-hover:brightness-60',
-    )
 
     // 화면 너비에 따른 썸네일 폭 조정
     const finalStyle =
-      !isGrid || !widthPct
+      isList || !widthPct
         ? undefined
         : {
             flex: isMobile
@@ -106,7 +96,14 @@ const PostCard = React.memo(
         className={cn(postCardVariants({mode: isList ? 'list' : 'grid'}))}
         style={finalStyle}
       >
-        <div className={gridViewClasses}>
+        <div
+          className={cn(
+            'w-full overflow-hidden relative',
+            isList
+              ? 'hidden'
+              : 'max-md:w-full max-md:relative md:flex md:flex-col md:w-full md:transition-all md:duration-150 md:group-hover:brightness-60',
+          )}
+        >
           <div ref={cardRef} className="w-full overflow-hidden relative">
             {post.playbackId ? (
               <div className="w-full relative overflow-hidden">
@@ -126,19 +123,14 @@ const PostCard = React.memo(
                         display: 'block',
                       } as React.CSSProperties & Record<`--${string}`, string>
                     }
-                    {...({videoQuality: 'basic'} as {
-                      videoQuality?: string
-                    })}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    {...({videoQuality: 'basic'} as any)}
                   />
                 ) : (
                   <Image
                     src={muxThumbnail || post.imageUrl}
                     className="w-full h-auto object-contain"
-                    alt={
-                      language === 'kr'
-                        ? ((post.title_kr as string) ?? '')
-                        : ((post.title_en as string) ?? '')
-                    }
+                    alt={language === 'kr' ? (post.title_kr ?? '') : (post.title_en ?? '')}
                     width={0}
                     height={0}
                     sizes="100vw"
@@ -149,11 +141,7 @@ const PostCard = React.memo(
             ) : post.imageUrl ? (
               <Image
                 src={post.imageUrl}
-                alt={
-                  language === 'kr'
-                    ? ((post.title_kr as string) ?? '')
-                    : ((post.title_en as string) ?? '')
-                }
+                alt={language === 'kr' ? (post.title_kr ?? '') : (post.title_en ?? '')}
                 className="w-full h-auto object-contain"
                 width={0}
                 height={0}
@@ -161,9 +149,10 @@ const PostCard = React.memo(
               />
             ) : (
               <div
-                className={`flex w-full aspect-square items-center justify-center bg-system-dark-gray/20 font-ep-sans text-system-gray ${
-                  isMobile ? 'text-size-md' : 'text-size-sm'
-                }`}
+                className={cn(
+                  'flex w-full aspect-square items-center justify-center bg-system-dark-gray/20 font-ep-sans text-system-gray',
+                  isMobile ? 'text-size-md' : 'text-size-sm',
+                )}
               >
                 No Media
               </div>
@@ -172,56 +161,55 @@ const PostCard = React.memo(
 
           {/* 미디어 하단 콘텐츠 (그리드 뷰) */}
           <div
-            className={`
-              flex flex-col w-full
-              max-md:py-2
-              md:gap-2 md:pt-2 md:min-h-18
-              ${isList ? 'hidden' : ''}
-            `}
+            className={cn(
+              'flex flex-col w-full max-md:py-2 md:gap-2 md:pt-2 md:min-h-18',
+              isList && 'hidden',
+            )}
           >
-            {/* 카테고리 */}
-            <>
-              <p className="text-system-white text-size-sm font-medium font-ep-sans leading-tight line-clamp-2">
-                {language === 'kr' ? post.title_kr : post.title_en}
-              </p>
-              <CategoryTag categories={post.category} className="mt-2 md:mt-0" />
-            </>
+            <p className="text-system-white text-size-sm md:text-size-md font-medium font-ep-sans leading-tight line-clamp-2">
+              {language === 'kr' ? post.title_kr : post.title_en}
+            </p>
+            <CategoryTag categories={post.category} className="mt-2 md:mt-0" />
           </div>
         </div>
 
-        {/* 데스크탑 리스트 뷰 */}
+        {/* 리스트 뷰 (데스크탑 & 모바일) */}
         {isList && (
-          <div className="contents max-md:hidden">
-            <div className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-size-md text-system-white font-ep-sans">
-              <span>{language === 'kr' ? post.title_kr : post.title_en}</span>
-              <CategoryTag categories={post.category} className="shrink-0" />
+          <>
+            {/* 데스크탑 */}
+            <div className="contents max-md:hidden">
+              <div className="col-span-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-size-md text-system-white font-ep-sans">
+                <span>{language === 'kr' ? post.title_kr : post.title_en}</span>
+                <CategoryTag categories={post.category} className="shrink-0" />
+              </div>
+              <div className="col-span-1 text-size-md text-system-white font-ep-sans uppercase">
+                {post.year}
+              </div>
+              <div
+                className={cn(
+                  'col-span-1 text-size-md font-ep-sans uppercase text-left',
+                  searchTerm && post.client === searchTerm
+                    ? 'text-system-gray'
+                    : 'text-system-white',
+                )}
+              >
+                {post.client || ''}
+              </div>
             </div>
-            <div className="col-span-1 text-size-md text-system-white font-ep-sans uppercase">
-              {post.publishedAt}
-            </div>
-            <div
-              className={`col-span-1 text-size-md font-ep-sans uppercase text-left ${
-                searchTerm && post.client === searchTerm ? 'text-system-gray' : 'text-system-white'
-              }`}
-            >
-              {post.client || ''}
-            </div>
-          </div>
-        )}
 
-        {/* 모바일 리스트 뷰 */}
-        {isList && (
-          <div className="flex justify-between items-start gap-4 md:hidden">
-            <div className="flex-1 flex flex-wrap items-center gap-2">
-              <p className="font-ep-sans leading-tight text-system-white font-medium text-size-md">
-                {language === 'kr' ? post.title_kr : post.title_en}
-              </p>
-              <CategoryTag categories={post.category} />
+            {/* 모바일 */}
+            <div className="flex justify-between items-start gap-4 md:hidden">
+              <div className="flex-1 flex flex-wrap items-center gap-2">
+                <p className="font-ep-sans leading-tight text-system-white font-medium text-size-md">
+                  {language === 'kr' ? post.title_kr : post.title_en}
+                </p>
+                <CategoryTag categories={post.category} />
+              </div>
+              <div className="text-right text-[11px] text-system-gray font-ep-sans whitespace-nowrap pt-0.5">
+                {post.year}
+              </div>
             </div>
-            <div className="text-right text-[11px] text-system-gray font-ep-sans whitespace-nowrap pt-0.5">
-              {post.publishedAt}
-            </div>
-          </div>
+          </>
         )}
       </Link>
     )

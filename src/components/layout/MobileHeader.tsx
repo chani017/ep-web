@@ -7,7 +7,6 @@ import {useAppContext} from '@/context/AppContext'
 import {useDropdown} from '@/hooks/useDropdown'
 import {CATEGORIES} from '@/components/post/CategoryTag'
 import {useSearch} from '@/hooks/useSearch'
-import {useRouter} from 'next/navigation'
 import {cva} from 'class-variance-authority'
 import {cn} from '@/lib/utils'
 
@@ -47,8 +46,7 @@ interface MobileHeaderProps {
 }
 
 export default function MobileHeader({filterState, viewMode, setViewMode}: MobileHeaderProps) {
-  const {language, setLanguage, setIsFullContentMode, setCurrentPost} = useAppContext()
-  const router = useRouter()
+  const {language, setLanguage} = useAppContext()
 
   const {isSearchFocused, setIsSearchFocused, handleSearchChange} = useSearch()
 
