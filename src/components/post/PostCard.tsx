@@ -166,10 +166,13 @@ const PostCard = React.memo(
               isList && 'hidden',
             )}
           >
-            <p className="text-system-white text-size-sm md:text-size-md font-medium font-ep-sans leading-tight line-clamp-2">
-              {language === 'kr' ? post.title_kr : post.title_en}
-            </p>
-            <CategoryTag categories={post.category} className="mt-2 md:mt-0" />
+            {/* 카테고리 */}
+            <>
+              <p className="text-system-white text-size-sm md:text-size-md font-medium font-ep-sans leading-tight line-clamp-2">
+                {language === 'kr' ? post.title_kr : post.title_en}
+              </p>
+              <CategoryTag categories={post.category} className="mt-2 md:mt-0" />
+            </>
           </div>
         </div>
 
@@ -196,7 +199,6 @@ const PostCard = React.memo(
                 {post.client || ''}
               </div>
             </div>
-
             {/* 모바일 */}
             <div className="flex justify-between items-start gap-4 md:hidden">
               <div className="flex-1 flex flex-wrap items-center gap-2">
