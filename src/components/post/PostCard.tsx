@@ -181,7 +181,7 @@ const PostCard = React.memo(
           >
             {/* 카테고리 */}
             <>
-              <p className="text-system-white text-size-sm font-medium font-ep-sans leading-tight line-clamp-2">
+              <p className="text-system-white text-size-md font-medium font-ep-sans leading-tight line-clamp-2">
                 {language === 'kr' ? post.title_kr : post.title_en}
               </p>
               <CategoryTag categories={post.category} className="mt-2 md:mt-0" />
@@ -197,7 +197,7 @@ const PostCard = React.memo(
               <CategoryTag categories={post.category} className="shrink-0" />
             </div>
             <div className="col-span-1 text-size-md text-system-white font-ep-sans uppercase">
-              {post.publishedAt}
+              {post.year}
             </div>
             <div
               className={`col-span-1 text-size-md font-ep-sans uppercase text-left ${
