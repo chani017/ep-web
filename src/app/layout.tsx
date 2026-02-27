@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import { client } from "@/sanity/client";
-import { type SanityDocument } from "next-sanity";
-import { AppProvider } from "@/context/AppContext";
-import ClientLayout from "@/components/layout/ClientLayout";
+import type {Metadata} from 'next'
+import './globals.css'
+import {client} from '@/sanity/client'
+import {type SanityDocument} from 'next-sanity'
+import {AppProvider} from '@/context/AppContext'
+import ClientLayout from '@/components/layout/ClientLayout'
 
 export const metadata: Metadata = {
-  title: "일상의실천",
-  description: "일상의실천",
-};
+  title: '일상의실천',
+  description: '일상의실천',
+}
 
 const POSTS_QUERY = `*[
   _type == "post"
@@ -26,17 +26,18 @@ const POSTS_QUERY = `*[
     images[0].asset->url
   ),
   thumbnail_size,
-  "playbackId": thumbnail.video.asset->playbackId
-}`;
+  "playbackId": thumbnail.video.asset->playbackId,
+  "videoAspectRatio": thumbnail.video.asset->data.aspect_ratio
+}`
 
-const options = { next: { revalidate: 30 } };
+const options = {next: {revalidate: 30}}
 
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
-  const posts = await client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options);
+  const posts = await client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options)
 
   return (
     <html lang="en">
@@ -46,5 +47,5 @@ export default async function RootLayout({
         </AppProvider>
       </body>
     </html>
-  );
+  )
 }

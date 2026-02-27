@@ -1,27 +1,32 @@
-import { client } from "@/sanity/client";
-import { type SanityDocument } from "next-sanity";
-import PostContent from "@/components/post/PostContent";
-import { notFound } from "next/navigation";
+import {client} from '@/sanity/client'
+import {type SanityDocument} from 'next-sanity'
+import PostContent from '@/components/post/PostContent'
+import {notFound} from 'next/navigation'
 
-const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]`;
+const POST_QUERY = `*[_type == "post" && slug.current == $slug][0] {
+  ...,
+  media[]{
+    ...,
+    _type == "mux.video" => {
+      "playbackId": asset->playbackId,
+      "aspectRatio": asset->data.aspect_ratio
+    }
+  }
+}`
 
-const options = { next: { revalidate: 30 } };
+const options = {next: {revalidate: 30}}
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{slug: string}>
 }
 
-export default async function ProjectPage({ params }: PageProps) {
-  const { slug } = await params;
-  const post = await client.fetch<SanityDocument>(
-    POST_QUERY,
-    { slug },
-    options,
-  );
+export default async function ProjectPage({params}: PageProps) {
+  const {slug} = await params
+  const post = await client.fetch<SanityDocument>(POST_QUERY, {slug}, options)
 
   if (!post) {
-    notFound();
+    notFound()
   }
 
-  return <PostContent post={post} />;
+  return <PostContent post={post} />
 }

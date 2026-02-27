@@ -17,6 +17,8 @@ export interface MediaItem {
   _key?: string
   caption?: string
   asset?: {playbackId?: string}
+  playbackId?: string
+  aspectRatio?: string
   url?: string
   image?: {asset?: {_ref?: string}}
   [key: string]: unknown
@@ -66,22 +68,43 @@ export default function MediaRenderer({
   }
 
   if (item._type === 'mux.video') {
-    const playbackId = item.asset?.playbackId
+    const playbackId = (item.playbackId as string) || item.asset?.playbackId
     if (!playbackId) return null
+
+    const rawAspect = (item.aspectRatio as string) || '16:9'
+    const formattedAspect = rawAspect.replace(':', '/')
+    const finalAspectRatio = isMobile ? '1/1' : formattedAspect
+
     return (
-      <div key={item._key || index} className={className}>
+      <div
+        key={item._key || index}
+        className={cn(className, 'bg-system-white overflow-hidden transition-opacity duration-300')}
+        style={{aspectRatio: finalAspectRatio}}
+      >
         <MuxPlayer
           playbackId={playbackId}
           streamType="on-demand"
           autoPlay="muted"
           loop
           muted
-          style={{width: '100%', aspectRatio: isMobile ? '1/1' : '16/9'}}
-          className="w-full h-auto block"
-          {...({videoQuality: 'basic'} as {
-            videoQuality?: string
-          })}
-        />
+          placeholder=""
+          poster=""
+          style={
+            {
+              width: '100%',
+              height: '100%',
+              '--controls': 'none',
+              '--media-background-color': '#FFFFFF',
+              aspectRatio: finalAspectRatio,
+              display: 'block',
+            } as React.CSSProperties & Record<`--${string}`, string>
+          }
+          className="w-full h-full block object-cover"
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          {...({videoQuality: 'basic'} as any)}
+        >
+          <div slot="poster" className="w-full h-full bg-white" />
+        </MuxPlayer>
       </div>
     )
   }

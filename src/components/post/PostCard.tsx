@@ -27,7 +27,7 @@ export const MOBILE_SIZE_MULTIPLIERS: Record<string, number> = {
 const postCardVariants = cva('group', {
   variants: {
     mode: {
-      list: 'max-md:flex max-md:flex-col max-md:border-b max-md:border-system-gray max-md:px-2 max-md:transition-colors max-md:active:bg-system-dark-gray/20 md:grid md:grid-cols-4 md:col-span-4 md:items-start md:gap-x-3 md:border-b md:border-system-gray md:p-1.5 md:transition-colors md:hover:bg-system-dark-gray',
+      list: 'border-b border-system-gray transition-colors max-md:flex md:flex-col max-md:active:bg-system-dark-gray/20 md:grid md:grid-cols-4 md:col-span-4 md:items-start md:gap-x-3 md:p-1.5 md:hover:bg-system-dark-gray',
       grid: 'max-md:flex max-md:flex-col max-md:group-active:brightness-75 md:flex md:flex-col',
     },
   },
@@ -115,26 +115,31 @@ const PostCard = React.memo(
                     autoPlay="muted"
                     loop
                     muted
-                    placeholder={muxThumbnail || post.imageUrl || undefined}
+                    placeholder=""
+                    poster=""
                     className="w-full h-auto block"
                     style={
                       {
                         '--controls': 'none',
+                        '--media-background-color': '#FFFFFF',
+                        aspectRatio: post.videoAspectRatio
+                          ? post.videoAspectRatio.replace(':', '/')
+                          : undefined,
                         display: 'block',
                       } as React.CSSProperties & Record<`--${string}`, string>
                     }
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     {...({videoQuality: 'basic'} as any)}
-                  />
+                  >
+                    <div slot="poster" className="w-full h-full bg-white" />
+                  </MuxPlayer>
                 ) : (
-                  <Image
-                    src={muxThumbnail || post.imageUrl}
-                    className="w-full h-auto object-contain"
-                    alt={language === 'kr' ? (post.title_kr ?? '') : (post.title_en ?? '')}
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    loading="lazy"
+                  <div
+                    className="w-full bg-white"
+                    style={{
+                      aspectRatio: post.videoAspectRatio
+                        ? post.videoAspectRatio.replace(':', '/')
+                        : '16/9',
+                    }}
                   />
                 )}
               </div>
@@ -200,15 +205,12 @@ const PostCard = React.memo(
               </div>
             </div>
             {/* 모바일 */}
-            <div className="flex justify-between items-start gap-4 md:hidden">
-              <div className="flex-1 flex flex-wrap items-center gap-2">
-                <p className="font-ep-sans leading-tight text-system-white font-medium text-size-md">
+            <div className="flex justify-between items-start gap-4 md:hidden py-2">
+              <div className="flex-1 flex flex-wrap items-center gap-1">
+                <p className="font-ep-sans leading-tight text-system-white font-medium text-size-sm">
                   {language === 'kr' ? post.title_kr : post.title_en}
                 </p>
                 <CategoryTag categories={post.category} />
-              </div>
-              <div className="text-right text-[11px] text-system-gray font-ep-sans whitespace-nowrap pt-0.5">
-                {post.year}
               </div>
             </div>
           </>
