@@ -27,8 +27,8 @@ export const MOBILE_SIZE_MULTIPLIERS: Record<string, number> = {
 const postCardVariants = cva('group', {
   variants: {
     mode: {
-      list: 'border-b border-system-gray transition-colors max-md:flex md:flex-col max-md:active:bg-system-dark-gray/20 md:grid md:grid-cols-4 md:col-span-4 md:items-start md:gap-x-3 md:p-1.5 md:hover:bg-system-dark-gray',
-      grid: 'max-md:flex max-md:flex-col max-md:group-active:brightness-75 md:flex md:flex-col',
+      list: 'border-b border-system-gray transition-colors flex flex-col active:bg-system-dark-gray/20 md:grid md:grid-cols-4 md:col-span-4 md:items-start md:gap-x-3 md:py-1.5 md:hover:bg-system-dark-gray md:active:bg-transparent',
+      grid: 'flex flex-col group-active:brightness-75 md:group-active:brightness-100 md:brightness-100',
     },
   },
   defaultVariants: {
@@ -101,7 +101,7 @@ const PostCard = React.memo(
             'w-full overflow-hidden relative',
             isList
               ? 'hidden'
-              : 'max-md:w-full max-md:relative md:flex md:flex-col md:w-full md:transition-all md:duration-150 md:group-hover:brightness-60',
+              : 'w-full relative md:flex md:flex-col md:transition-all md:duration-150 md:group-hover:brightness-60',
           )}
         >
           <div ref={cardRef} className="w-full overflow-hidden relative">
@@ -167,7 +167,7 @@ const PostCard = React.memo(
           {/* 미디어 하단 콘텐츠 (그리드 뷰) */}
           <div
             className={cn(
-              'flex flex-col w-full max-md:py-2 md:gap-2 md:pt-2 md:min-h-18',
+              'flex flex-col w-full pt-2 pb-2 md:pb-0 md:gap-2 md:min-h-18',
               isList && 'hidden',
             )}
           >

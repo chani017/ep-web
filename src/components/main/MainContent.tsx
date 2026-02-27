@@ -182,7 +182,7 @@ export default function MainContent({filterState}: MainContentProps) {
             <div className="flex-1 overflow-y-auto no-scrollbar relative" ref={containerRef}>
               <div className="sticky top-0 pb-1 bg-background/80 backdrop-blur-md z-50">
                 {/* 카테고리 필터 리스트 */}
-                <div className="relative flex flex-wrap justify-start items-center px-2 py-1 pr-16 gap-x-2 text-size-xl leading-tight">
+                <div className="relative flex flex-wrap justify-start items-center px-2 py-1 pr-20 gap-x-2 text-size-xl leading-tight">
                   {CATEGORIES.map((category) => {
                     const isAvailable =
                       category === 'All Types' || availableCategories?.has(category)
