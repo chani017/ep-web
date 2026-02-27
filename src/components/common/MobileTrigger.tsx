@@ -34,7 +34,7 @@ export default function MobileTrigger() {
         alt="Menu"
         width={20}
         height={20}
-        className={cn('w-5 h-5 transition-transform duration-200', isRotated && 'rotate-135')}
+        className={cn('w-5 h-5 transition-transform duration-300', isRotated && 'rotate-135')}
         style={{display: 'block'}}
       />
     </button>
