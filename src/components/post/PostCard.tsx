@@ -83,11 +83,11 @@ const PostCard = React.memo(
         ? undefined
         : {
             flex: isMobile
-              ? `0 0 calc(${widthPct}% - 0.375rem)`
+              ? `0 0 calc(${widthPct}% - 0.25rem)`
               : `0 0 calc(${widthPct}% - ${
                   rowItemsCount ? (widthPct * (rowItemsCount - 1) * 0.5) / 100 : 0
                 }rem)`,
-            maxWidth: isMobile ? `calc(${widthPct}% - 0.375rem)` : undefined,
+            maxWidth: isMobile ? `calc(${widthPct}% - 0.25rem)` : undefined,
           }
 
     return (
